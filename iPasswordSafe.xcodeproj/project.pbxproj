@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 45;
+	objectVersion = 46;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -56,7 +56,7 @@
 
 /* Begin PBXFileReference section */
 		1D30AB110D05D00D00671497 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
-		1D6058910D05DD3D006BFB54 /* PasswordVault.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PasswordVault.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		1D6058910D05DD3D006BFB54 /* PasswordSafes.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PasswordSafes.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1DF5F4DF0D08C38300B7A737 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		2892E40F0DC94CBA00A64D0F /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		3013F255124A74E100C82647 /* MainWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = MainWindow.xib; path = resources/MainWindow.xib; sourceTree = "<group>"; };
@@ -121,7 +121,7 @@
 		19C28FACFE9D520D11CA2CBB /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				1D6058910D05DD3D006BFB54 /* PasswordVault.app */,
+				1D6058910D05DD3D006BFB54 /* PasswordSafes.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -237,7 +237,7 @@
 			);
 			name = iPasswordSafe;
 			productName = iPasswordSafe;
-			productReference = 1D6058910D05DD3D006BFB54 /* PasswordVault.app */;
+			productReference = 1D6058910D05DD3D006BFB54 /* PasswordSafes.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -249,7 +249,7 @@
 				ORGANIZATIONNAME = JasonJohnsonSoftware;
 			};
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "iPasswordSafe" */;
-			compatibilityVersion = "Xcode 3.1";
+			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 1;
 			knownRegions = (
@@ -341,6 +341,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Don't Code Sign";
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -351,7 +352,8 @@
 					"$(inherited)",
 					"\"$(SRCROOT)/thirdpartysource/PasswordSafe/build/Debug-iphonesimulator\"",
 				);
-				PRODUCT_NAME = PasswordVault;
+				PRODUCT_NAME = PasswordSafes;
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 			};
 			name = Debug;
 		};
@@ -359,6 +361,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Don't Code Sign";
 				COPY_PHASE_STRIP = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = iPasswordSafe_Prefix.pch;
@@ -367,7 +370,8 @@
 					"$(inherited)",
 					"\"$(SRCROOT)/thirdpartysource/PasswordSafe/build/Debug-iphonesimulator\"",
 				);
-				PRODUCT_NAME = PasswordVault;
+				PRODUCT_NAME = PasswordSafes;
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -383,7 +387,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				PREBINDING = NO;
 				REZ_SEARCH_PATHS = "";
-				SDKROOT = iphonesimulator4.1;
+				SDKROOT = iphoneos;
 				USER_HEADER_SEARCH_PATHS = "include thirdpartysource/PasswordSafe";
 			};
 			name = Debug;
@@ -400,7 +404,7 @@
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				PREBINDING = NO;
 				REZ_SEARCH_PATHS = "";
-				SDKROOT = iphonesimulator4.1;
+				SDKROOT = iphoneos;
 				USER_HEADER_SEARCH_PATHS = "include thirdpartysource/PasswordSafe";
 			};
 			name = Release;

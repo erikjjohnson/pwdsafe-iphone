@@ -61,7 +61,7 @@
     
     if ((self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil])) {
         databaseFactory           = [theDatabaseFactory retain];
-        self.navigationItem.title = @"Add vault";
+        self.navigationItem.title = @"Add safe";
     }
     return self;
 }
@@ -172,7 +172,7 @@
                              withFileNamed:[self createUniqueFilenameWithPrefix:friendlyName.text]
                                 passphrase:passphrase.text
                                   errorMsg:&errorMsg]) {
-        UIAlertView *v = [[UIAlertView alloc] initWithTitle:@"Add vault failed"
+        UIAlertView *v = [[UIAlertView alloc] initWithTitle:@"Add safe failed"
                                                     message:[errorMsg localizedDescription]
                                                    delegate:nil
                                           cancelButtonTitle:@"Dismiss"

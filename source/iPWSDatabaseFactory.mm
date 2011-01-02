@@ -85,8 +85,8 @@ static NSString *kiPWSDatabaseFactoryUserDefaults = @"kiPWSDatabaseFactoryUserDe
         NSArray *docDirs = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, true);
         if (![docDirs count]) {
             return nil;
-            UIAlertView *v = [[UIAlertView alloc] initWithTitle:@"Unable to find vaults"
-                                                        message:@"The location of the vaults is missing.  Try backing up vaults with iTunes file sharing then reinstall the application."
+            UIAlertView *v = [[UIAlertView alloc] initWithTitle:@"Unable to find safes"
+                                                        message:@"The location of the safes is missing.  Try backing up safes with iTunes file sharing then reinstall the application."
                                                        delegate:nil
                                               cancelButtonTitle:@"Dismiss"
                                               otherButtonTitles:nil];

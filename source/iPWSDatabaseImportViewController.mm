@@ -55,7 +55,7 @@
     if (nil == theDatabaseFactory) return nil;
     if ((self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil])) {
         databaseFactory           = [theDatabaseFactory retain];
-        self.navigationItem.title = @"Import vault";
+        self.navigationItem.title = @"Import safe";
         
         // Fill in the list of known passwordsafe file names
         selectedImportFileIdx = 0;
@@ -70,8 +70,8 @@
 
         // If there are no files to import, display a warning and return nil
         if (![psafeFiles count]) {
-            UIAlertView *warning = [[UIAlertView alloc] initWithTitle:@"No vaults to import"
-                                                              message:@"No unmapped vaults were found.  Use iTunes file sharing to import an existing PasswordSafe file."
+            UIAlertView *warning = [[UIAlertView alloc] initWithTitle:@"No safes to import"
+                                                              message:@"No unmapped safes were found.  Use iTunes file sharing to import an existing PasswordSafe file."
                                                              delegate:nil
                                                     cancelButtonTitle:@"Dismiss"
                                                     otherButtonTitles:nil];

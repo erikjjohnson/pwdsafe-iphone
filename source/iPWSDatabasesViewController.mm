@@ -51,8 +51,8 @@
 
 
 // ---- Class variables
-static NSString *CREATE_DATABASE_BUTTON_STR = @"Create new vault";
-static NSString *IMPORT_DATABASE_BUTTON_STR = @"Import existing vault";
+static NSString *CREATE_DATABASE_BUTTON_STR = @"Create new safe";
+static NSString *IMPORT_DATABASE_BUTTON_STR = @"Import existing safe";
 
 // Each time we prompt for a passphrase, we have to save context regarding what the operation was that
 // required the passphrase.  To this end, the passphrasePromptContext dictionary contains the following keys
@@ -95,7 +95,7 @@ enum {
     if (!passphrasePromptContext) passphrasePromptContext = [[[NSMutableDictionary alloc] init] retain];
     if (!databaseFactory)         databaseFactory         = [[iPWSDatabaseFactory alloc] initWithDelegate:self];
     
-    self.navigationItem.title = @"Vaults";
+    self.navigationItem.title = @"Safes";
     self.navigationItem.rightBarButtonItem = self.editButtonItem;
     
     // Set the toolbar
@@ -219,7 +219,7 @@ enum {
 
 // ---- Add button
 - (void)addDatabaseButtonPressed {
-    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@"Create or Import Vault?"
+    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@"Create or Import Safe?"
                                                              delegate:self 
                                                     cancelButtonTitle:@"Cancel"
                                                destructiveButtonTitle:nil

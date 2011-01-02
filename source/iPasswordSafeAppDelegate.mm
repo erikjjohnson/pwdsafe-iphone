@@ -48,7 +48,7 @@
 #pragma mark -
 #pragma mark Application lifecycle
 
-// The first real entry point to the application.  Set the default user defaults and add the "vaults"
+// The first real entry point to the application.  Set the default user defaults and add the "safes"
 // view
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {    
     

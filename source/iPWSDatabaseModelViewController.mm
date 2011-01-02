@@ -63,7 +63,7 @@
     if (self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil]) {
         model                     = [theModel retain];
         model.delegate            = self;
-        self.navigationItem.title = @"Vault entries";
+        self.navigationItem.title = @"Safe entries";
 
         // Add the toolbar
         iPasswordSafeAppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
