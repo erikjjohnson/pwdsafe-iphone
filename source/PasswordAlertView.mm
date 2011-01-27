@@ -30,7 +30,6 @@
 #define kUITextFieldHeight   30.0
 #define kUITextFieldXPadding 12.0
 #define kUITextFieldYPadding 5.0
-#define kUIAlertOffset       50.0
 
 // Class PasswordAlertView
 // Description
@@ -69,10 +68,6 @@
 				[self insertSubview:self.passwordTextField aboveSubview:view];
             }
 		}
-        
-		// add a transform to move the UIAlertView above the keyboard
-		CGAffineTransform myTransform = CGAffineTransformMakeTranslation(0.0, kUIAlertOffset);
-		[self setTransform:myTransform];
 	}
 	return self;
 }
@@ -137,7 +132,7 @@
 	}
 		
 	// size UIAlertView frame by height of UITextField
-	frame.size.height += kUITextFieldHeight + + kUITextFieldYPadding + 2.0;
+	frame.size.height += kUITextFieldHeight + kUITextFieldYPadding + 2.0;
 	[self setFrame:frame];
 }
 
