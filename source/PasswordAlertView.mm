@@ -29,7 +29,7 @@
 
 #define kUITextFieldHeight   30.0
 #define kUITextFieldXPadding 12.0
-#define kUITextFieldYPadding 10.0
+#define kUITextFieldYPadding 5.0
 #define kUIAlertOffset       50.0
 
 // Class PasswordAlertView
@@ -65,7 +65,7 @@
 		// insert UITextField before the first button
 		BOOL inserted = NO;
 		for (UIView *view in self.subviews) {
-			if(!inserted && ![view isKindOfClass:[UILabel class]]) {
+			if (!inserted && ![view isKindOfClass:[UILabel class]]) {
 				[self insertSubview:self.passwordTextField aboveSubview:view];
             }
 		}
@@ -99,8 +99,8 @@
 // Determine maximum y-coordinate of UILabel objects. 
 - (CGFloat) maxLabelYCoordinate {
 	CGFloat maxY = 0;
-	for( UIView *view in self.subviews ){
-		if([view isKindOfClass:[UILabel class]]) {
+	for (UIView *view in self.subviews ){
+		if ([view isKindOfClass:[UILabel class]]) {
 			CGRect viewFrame = [view frame];
 			CGFloat lowerY = viewFrame.origin.y + viewFrame.size.height;
 			if(lowerY > maxY) maxY = lowerY;
@@ -114,29 +114,30 @@
 	[super layoutSubviews];
 	CGRect frame       = [self frame];
     CGRect bounds      = [self bounds];
-    CGFloat alertWidth = bounds.size.width;
-    
-	// Perform layout of subviews just once
-	CGFloat labelMaxY = [self maxLabelYCoordinate];
+    CGFloat alertWidth = bounds.size.width;    
+	CGFloat labelMaxY  = [self maxLabelYCoordinate];
         
 	// Insert UITextField below labels and move other fields down accordingly
-	for(UIView *view in self.subviews){
-		if([view isKindOfClass:[UITextField class]]){
+	for (UIView *view in self.subviews){
+		if ([view isKindOfClass:[UITextField class]]){
 			CGRect viewFrame = CGRectMake(
 										kUITextFieldXPadding, 
 										labelMaxY + kUITextFieldYPadding, 
 										alertWidth - 2.0*kUITextFieldXPadding, 
 										kUITextFieldHeight);
 			[view setFrame:viewFrame];
-		} else if(![view isKindOfClass:[UILabel class]]) {
+        // Only move the other fields down if they are not the labels above
+        // the text field or the outer "box" (UIImageView)
+		} else if (![view isKindOfClass:[UILabel class]] &&
+                   ![view isKindOfClass:[UIImageView class]]) {
 			CGRect viewFrame = [view frame];
-			viewFrame.origin.y += kUITextFieldHeight;
+			viewFrame.origin.y += kUITextFieldHeight + kUITextFieldYPadding;
 			[view setFrame:viewFrame];
 		}
 	}
 		
 	// size UIAlertView frame by height of UITextField
-	frame.size.height += kUITextFieldHeight + 2.0;
+	frame.size.height += kUITextFieldHeight + + kUITextFieldYPadding + 2.0;
 	[self setFrame:frame];
 }
 
