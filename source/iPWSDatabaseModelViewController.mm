@@ -39,6 +39,7 @@
 
 - (int)letterToSection:(char)c;
 - (char)sectionToLetter:(int)i;
+- (NSString *)sectionToString:(int)i;
 
 - (UIBarButtonItem *)addButton;
 
@@ -122,7 +123,23 @@
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
     if (![[sectionData objectAtIndex:section] count]) return nil;
-    return [NSString stringWithFormat:@"%c", [self sectionToLetter:section]];
+    return [self sectionToString:section];
+}
+
+- (NSArray *)sectionIndexTitlesForTableView:(UITableView *)tableView {
+    static NSMutableArray *indexTitles = nil;
+    if (nil == indexTitles) {
+        indexTitles = [[NSMutableArray alloc] init];
+        int numSections = [sectionData count];
+        for (int s = 0; s < numSections; ++s) {
+            [indexTitles addObject:[self sectionToString:s]];
+        }
+    }
+    return indexTitles;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView sectionForSectionIndexTitle:(NSString *)title atIndex:(NSInteger)index {
+    return index;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -288,6 +305,10 @@
 - (char)sectionToLetter:(int)i {
     if (i == ([sectionData count] - 1)) return '#';
     return i + 'A';
+}
+
+- (NSString *)sectionToString:(int)i {
+    return [NSString stringWithFormat:@"%c", [self sectionToLetter:i]];
 }
 
 @end
