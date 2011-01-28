@@ -70,6 +70,6 @@
 
 // Entry modifications (passphrase required)
 - (BOOL)addDatabaseEntry:(iPWSDatabaseEntryModel *)entry;
-- (BOOL)removeDatabaseEntryAtIndex:(NSInteger)idx;
+- (BOOL)removeDatabaseEntry:(iPWSDatabaseEntryModel *)entry;
 
 @end

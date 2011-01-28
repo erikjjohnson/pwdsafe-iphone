@@ -31,6 +31,15 @@
 
 // ---- Private interface
 @interface iPWSDatabaseModelViewController ()
+- (void)initSectionDataWithModel:(iPWSDatabaseModel *)model;
+- (void)addEntryToSection:(iPWSDatabaseEntryModel *)entry;
+- (void)removeEntryFromSectionAtIndexPath:(NSIndexPath *)indexPath;
+- (void)removeEntryFromSection:(iPWSDatabaseEntryModel *)entry;
+- (iPWSDatabaseEntryModel *)entryAtIndexPath:(NSIndexPath *)indexPath;
+
+- (int)letterToSection:(char)c;
+- (char)sectionToLetter:(int)i;
+
 - (UIBarButtonItem *)addButton;
 
 - (void)addButtonPressed;
@@ -65,6 +74,9 @@
         model.delegate            = self;
         self.navigationItem.title = @"Safe entries";
 
+        // Map the model to the section data
+        [self initSectionDataWithModel:model];
+            
         // Add the toolbar
         iPasswordSafeAppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
         self.toolbarItems = [NSArray arrayWithObjects: self.addButton, 
@@ -100,12 +112,17 @@
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 1;
+    return [sectionData count];
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     [self updateEditButton];
-    return [model.entries count];
+    return [[sectionData objectAtIndex:section] count];
+}
+
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+    if (![[sectionData objectAtIndex:section] count]) return nil;
+    return [NSString stringWithFormat:@"%c", [self sectionToLetter:section]];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -117,7 +134,7 @@
                 autorelease];
     }
 
-    iPWSDatabaseEntryModel *entry = [model.entries objectAtIndex:indexPath.row];
+    iPWSDatabaseEntryModel *entry = [self entryAtIndexPath:indexPath];
     cell.textLabel.text = entry.title;
     
     return cell;
@@ -140,8 +157,11 @@
                                             forRowAtIndexPath:(NSIndexPath *)indexPath {
     
     if (editingStyle == UITableViewCellEditingStyleDelete) {
-        [model removeDatabaseEntryAtIndex:indexPath.row];
-        [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
+        [model removeDatabaseEntry:[self entryAtIndexPath:indexPath]];
+        [self removeEntryFromSectionAtIndexPath:indexPath];
+        [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] 
+                         withRowAnimation:UITableViewRowAnimationFade];
+        [self.tableView reloadData];
     }   
     else if (editingStyle == UITableViewCellEditingStyleInsert) {
         // Not supported
@@ -170,11 +190,14 @@
 - (void)iPWSDatabaseEntryViewController:(iPWSDatabaseEntryViewController *)entryViewController 
                   didFinishEditingEntry:(iPWSDatabaseEntryModel *)entry {
     [model addDatabaseEntry:entry];
+    [self addEntryToSection:entry];
     entryViewController.delegate = nil;
     [self.tableView reloadData];
 }
 
 - (void)iPWSDatabaseModel:(iPWSDatabaseModel *)model didChangeEntry:(iPWSDatabaseEntryModel *)entry {
+    [self removeEntryFromSection:entry];
+    [self addEntryToSection:entry];
     [self.tableView reloadData];
 }
 
@@ -187,7 +210,7 @@
     iPWSDatabaseEntryViewController *vc = 
         [[iPWSDatabaseEntryViewController alloc] initWithNibName:@"iPWSDatabaseEntryViewController"
                                                           bundle:nil
-                                                           entry:[model.entries objectAtIndex:indexPath.row]
+                                                           entry:[self entryAtIndexPath:indexPath]
                                                         delegate:nil];
     [self.navigationController pushViewController:vc animated:YES];
     [vc release];
@@ -200,9 +223,72 @@
 - (void)dealloc {
     [addButton release];
     [model release];
+    [sectionData release];
     [super dealloc];
 }
 
+// Private interface - section handling
+- (void)initSectionDataWithModel:(iPWSDatabaseModel *)m {
+    // Create an array for the 26 letters plus one "catchall".  Each array
+    // maps to another array which holds model entries 
+    
+    // First create the empty array of arrays
+    int numSections = 'Z' - 'A' + 2;
+    sectionData = [[NSMutableArray alloc] initWithCapacity:numSections];
+    for (int s = 0; s < numSections; ++s) {
+        [sectionData insertObject:[[NSMutableArray alloc] initWithCapacity:0]
+                          atIndex:s];
+    }
+    
+    // Now iterate the model entries and add them
+    int numEntries = [m.entries count];
+    for (int e = 0; e < numEntries; ++e) {
+        [self addEntryToSection:[m.entries objectAtIndex:e]];
+    }
+}
+
+- (void)addEntryToSection:(iPWSDatabaseEntryModel *)entry {
+    // Find the index based on the first letter of the entry.  If this isn't
+    // A-Z, then default to the last catchall section
+    int firstLetter = toupper([entry.title characterAtIndex:0]);
+    int idx = [self letterToSection:firstLetter];
+    
+    // Add the entry and sort the section array
+    NSMutableArray *a = [sectionData objectAtIndex:idx];
+    [a addObject:entry];
+    NSSortDescriptor *sorter = [NSSortDescriptor sortDescriptorWithKey:@"title" 
+                                                             ascending:YES];
+    [a sortUsingDescriptors:[NSArray arrayWithObject:sorter]];
+}
+
+- (void)removeEntryFromSectionAtIndexPath:(NSIndexPath *)indexPath {
+    [[sectionData objectAtIndex:indexPath.section] removeObjectAtIndex:indexPath.row];
+}
+
+- (void)removeEntryFromSection:(iPWSDatabaseEntryModel *)entry {
+    int numSections = [sectionData count];
+    for (int s = 0; s < numSections; ++s) {
+        [[sectionData objectAtIndex:s] removeObjectIdenticalTo:entry];
+    }
+}
+
+- (iPWSDatabaseEntryModel *)entryAtIndexPath:(NSIndexPath *)indexPath {
+    return [[sectionData objectAtIndex:indexPath.section] objectAtIndex:indexPath.row];
+}
+
+
+- (int)letterToSection:(char)c {
+    int idx = [sectionData count] - 1;
+    if (('A' <= c) && ('Z' >= c)) {
+        idx = c - 'A';
+    }
+    return idx;
+}
+
+- (char)sectionToLetter:(int)i {
+    if (i == ([sectionData count] - 1)) return '#';
+    return i + 'A';
+}
 
 @end
 

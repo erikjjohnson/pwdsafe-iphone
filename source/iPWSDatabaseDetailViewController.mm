@@ -160,7 +160,9 @@ static struct CellMapArray {
     if (0 == indexPath.section) {
         modelNameTextField      = (UITextField *)[cell viewWithTag:1];
         modelNameTextField.text = [self modelFriendlyName];
-        [modelNameTextField addTarget:self action:@selector(modelNameChanged:) forControlEvents:UIControlEventEditingChanged];
+        [modelNameTextField addTarget:self 
+                               action:@selector(modelNameChanged:) 
+                     forControlEvents:UIControlEventEditingChanged];
         [modelNameTextField setEnabled:NO];
         
         UILabel *l = (UILabel *)[cell viewWithTag:2];

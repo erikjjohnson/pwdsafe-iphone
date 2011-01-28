@@ -37,9 +37,6 @@
 
 // ----- Private interface
 @interface iPWSDatabaseModel ()
-// ---- Entry management
-- (void)sortEntries;
-
 // ---- File management
 - (BOOL)openPWSfileForReading;
 - (BOOL)openPWSfileForWriting;
@@ -160,7 +157,6 @@ static BOOL sessionKeyInitialized = NO;
                 [entries addObject:[[iPWSDatabaseEntryModel alloc] initWithData:&item delegate:self]];
                 item = CItemData(); // The C model does not clear all fields, so do so here
             }
-            [self sortEntries];
         } else { 
             // The file will be newly created. 
             if (![self openPWSfileForWriting]) {
@@ -188,12 +184,12 @@ static BOOL sessionKeyInitialized = NO;
 // Entry modifications (passphrase required)
 - (BOOL)addDatabaseEntry:(iPWSDatabaseEntryModel *)entry {
     [entries addObject:entry];
-    [self sortEntries];
+    entry.delegate = self;
     return [self syncToFile];
 }
 
-- (BOOL)removeDatabaseEntryAtIndex:(NSInteger)idx {
-    [entries removeObjectAtIndex:idx];    
+- (BOOL)removeDatabaseEntry:(iPWSDatabaseEntryModel *)entry {
+    [entries removeObjectIdenticalTo:entry];    
     return [self syncToFile];
 }
 
@@ -205,17 +201,6 @@ static BOOL sessionKeyInitialized = NO;
 
 
 // ---- Private interface
-
-// Entry management
-- (void)sortEntries {    
-    // If the preferences specify, keep the entries sorted
-    BOOL sortEntries = [[NSUserDefaults standardUserDefaults] boolForKey:@"sort_entries"];
-    if (sortEntries) {
-        NSSortDescriptor *sorter = [NSSortDescriptor sortDescriptorWithKey:@"title" ascending:YES];
-        [entries sortUsingDescriptors:[NSArray arrayWithObject:sorter]];
-    }
-}
-
 
 // File management
 - (BOOL)openPWSfileForReading {

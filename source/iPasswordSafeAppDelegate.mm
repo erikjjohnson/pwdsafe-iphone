@@ -58,7 +58,6 @@
                               [NSNumber numberWithBool:YES], @"show_popup_on_copy",
                               [NSNumber numberWithBool:YES], @"require_passphrase_on_resume",
                               [NSNumber numberWithBool:YES], @"preserve_files_on_delete",
-                              [NSNumber numberWithBool:NO],  @"sort_entries",
                               @"8",                          @"password_generator_length",
                               [NSNumber numberWithBool:YES], @"password_generator_use_lowercase",
                               [NSNumber numberWithBool:YES], @"password_generator_use_uppercase",

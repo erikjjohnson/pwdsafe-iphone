@@ -37,8 +37,9 @@
 //  selected push an EntryViewController to display that entry
 @interface iPWSDatabaseModelViewController : UITableViewController <iPWSDatabaseEntryViewControllerDelegate, 
                                                                     iPWSDatabaseModelDelegate> {
-    iPWSDatabaseModel *model;
-    UIBarButtonItem   *addButton;
+    iPWSDatabaseModel   *model;
+    NSMutableArray      *sectionData;
+    UIBarButtonItem     *addButton;
 }
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil model:(iPWSDatabaseModel *)theModel;
