@@ -37,9 +37,14 @@
 //  selected push an EntryViewController to display that entry
 @interface iPWSDatabaseModelViewController : UITableViewController <iPWSDatabaseEntryViewControllerDelegate, 
                                                                     iPWSDatabaseModelDelegate> {
-    iPWSDatabaseModel   *model;
-    NSMutableArray      *sectionData;
-    UIBarButtonItem     *addButton;
+    iPWSDatabaseModel    *model;
+    NSMutableArray       *sectionData;
+    NSMutableArray       *searchResults;
+    UIBarButtonItem      *addButton;
+    UIBarButtonItem      *searchDoneButton;
+    IBOutlet UISearchBar *searchBar;
+    BOOL                  isSearching;
+    BOOL                  isSelectable;
 }
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil model:(iPWSDatabaseModel *)theModel;

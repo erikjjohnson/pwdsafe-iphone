@@ -84,7 +84,6 @@
                 entry:(iPWSDatabaseEntryModel *)theEntry
              delegate:(id<iPWSDatabaseEntryViewControllerDelegate>)theDelegate;
 
-
 // Editing notifications
 - (IBAction)titleTextChanged;
 - (IBAction)urlTextChanged;

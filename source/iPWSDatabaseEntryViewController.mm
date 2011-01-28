@@ -87,7 +87,7 @@ static NSString *OPEN_BUTTON_STR                     = @"Open URL";
         entry                     = [theEntry retain];
         self.delegate             = theDelegate;    
         self.navigationItem.title = @"Entry";
-        
+         
         // Add the toolbar
         iPasswordSafeAppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
         self.toolbarItems = [NSArray arrayWithObjects: self.copyAndLaunchButton,
@@ -436,6 +436,7 @@ static NSString *OPEN_BUTTON_STR                     = @"Open URL";
                                                                       nil];
     [actionSheet showInView:[self view]];    
 }
+
 
 // Called when the Add button action sheet is finished - either Create or Import
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {

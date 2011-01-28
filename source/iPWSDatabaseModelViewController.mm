@@ -41,9 +41,13 @@
 - (char)sectionToLetter:(int)i;
 - (NSString *)sectionToString:(int)i;
 
+- (void)updateSearchResults;
+
 - (UIBarButtonItem *)addButton;
+- (UIBarButtonItem *)searchDoneButton;
 
 - (void)addButtonPressed;
+- (void)searchDoneButtonPressed;
 - (void)updateEditButton;
 @end
 
@@ -67,6 +71,17 @@
     return addButton;
 }
 
+- (UIBarButtonItem *)searchDoneButton {
+    // Lazy initialize a search done button
+    if (!searchDoneButton) {
+        searchDoneButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
+                                                                         target:self
+                                                                         action:@selector(searchDoneButtonPressed)];        
+    }
+    return searchDoneButton;    
+}
+
+
 // Initializer
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil model:(iPWSDatabaseModel *)theModel {
     if (!theModel) return nil;
@@ -77,21 +92,27 @@
 
         // Map the model to the section data
         [self initSectionDataWithModel:model];
-            
+        
         // Add the toolbar
         iPasswordSafeAppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
         self.toolbarItems = [NSArray arrayWithObjects: self.addButton, 
                                                        appDelegate.flexibleSpaceButton,
                                                        appDelegate.lockAllDatabasesButton, 
                                                        nil];
-    }
+        // Initialize the search results
+        searchResults = [[NSMutableArray alloc] init];
+        isSearching  = NO;
+        [self updateSearchResults];
+     }
     return self;
 }
-
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.navigationItem.rightBarButtonItem = self.editButtonItem;
+
+    // Setup the search bar
+    searchBar.autocorrectionType = UITextAutocorrectionTypeNo;
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -103,45 +124,48 @@
 #pragma mark -
 #pragma mark Table view data source
 
-// Disable the edit button if there are no entries
-- (void)updateEditButton {
-    NSInteger count = [model.entries count];
-    if (!count) {
-        self.editing = NO;
-    }    
-    [self.editButtonItem setEnabled:(0 != count)];
-}
-
+// Number of sections (26 + 1) - the alphabet plus a catch-all
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return [sectionData count];
+    return isSearching ? 1 : [sectionData count];
 }
 
+// Number of entries per section
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     [self updateEditButton];
-    return [[sectionData objectAtIndex:section] count];
+    return isSearching ? [searchResults count] : [[sectionData objectAtIndex:section] count];
 }
 
+// Section headings - letters A - Z, or # for the catch-all
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+    if (isSearching) return nil;
     if (![[sectionData objectAtIndex:section] count]) return nil;
     return [self sectionToString:section];
 }
 
+// Index (bar on the right side) with the letters A - Z and #
 - (NSArray *)sectionIndexTitlesForTableView:(UITableView *)tableView {
     static NSMutableArray *indexTitles = nil;
     if (nil == indexTitles) {
         indexTitles = [[NSMutableArray alloc] init];
+        [indexTitles addObject:UITableViewIndexSearch];
         int numSections = [sectionData count];
         for (int s = 0; s < numSections; ++s) {
             [indexTitles addObject:[self sectionToString:s]];
         }
     }
-    return indexTitles;
+    return isSearching ? nil : indexTitles;
 }
 
+// When the index bar is pressed, return the right section to scroll to
 - (NSInteger)tableView:(UITableView *)tableView sectionForSectionIndexTitle:(NSString *)title atIndex:(NSInteger)index {
-    return index;
+    if (index == 0) {
+        [tableView setContentOffset:CGPointZero animated:NO];
+        return NSNotFound;
+    }
+    return index - 1;
 }
 
+// Cell data for a particular section and row
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     static NSString *CellIdentifier = @"Cell";
     
@@ -151,12 +175,63 @@
                 autorelease];
     }
 
-    iPWSDatabaseEntryModel *entry = [self entryAtIndexPath:indexPath];
+    iPWSDatabaseEntryModel *entry = isSearching ? [searchResults objectAtIndex:indexPath.row] :
+                                                  [self entryAtIndexPath:indexPath];
     cell.textLabel.text = entry.title;
     
     return cell;
 }
 
+// ---- Searching
+// Don't allow selecting of items until the search has some specific results
+- (void)searchBarTextDidBeginEditing:(UISearchBar *)theSearchBar {
+    isSearching = YES;
+    self.navigationItem.rightBarButtonItem = [self searchDoneButton];
+    [self updateSearchResults];
+    [self.tableView reloadData];
+}
+
+// Cancel the search
+- (void)searchDoneButtonPressed {
+    isSearching    = NO;
+    searchBar.text = @"";
+    [searchBar resignFirstResponder];
+    self.navigationItem.rightBarButtonItem = self.editButtonItem;
+    [self updateSearchResults];
+}
+
+// When the search text changes, clear the old results and update new ones
+- (void)searchBar:(UISearchBar *)theSearchBar textDidChange:(NSString *)searchText {
+    [self updateSearchResults];
+    [self.tableView reloadData];
+}
+
+// When the user clicks the "enter" (or search) button on the keypad
+-(void) searchBarSearchButtonClicked:(UISearchBar *)theSearchBar {
+    [self updateSearchResults];
+}
+
+// Fill in the search data array with the list of entries matching the current search parameters
+- (void)updateSearchResults {    
+    NSString *searchText = searchBar.text;
+    [searchResults removeAllObjects];
+
+    isSelectable = !isSearching ? YES : ((searchText != nil) && ([searchText length] > 0));
+    self.tableView.scrollEnabled = isSelectable;
+    if (!isSearching || !isSelectable) return;
+    
+    for (iPWSDatabaseEntryModel *entry in model.entries)
+    {
+        NSString *title = entry.title;
+        NSRange r = [title rangeOfString:searchText options:NSCaseInsensitiveSearch];
+        if (NSNotFound != r.location) {
+            [searchResults addObject:entry];
+        }
+    }
+}
+
+
+// ---- Orientations
 // Override to allow orientations other than the default portrait orientation.
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
     return ((interfaceOrientation == UIInterfaceOrientationPortrait) ||
@@ -164,9 +239,25 @@
             (interfaceOrientation == UIInterfaceOrientationLandscapeRight));
 }
 
+
+// ---- Editing and selection
 // Override to support conditional editing of the table view.
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
-    return YES;
+    return !isSearching;
+}
+
+// Disable the edit button if there are no entries
+- (void)updateEditButton {
+    NSInteger count = [model.entries count];
+    if (!count) {
+        self.editing = NO;
+    }    
+    [self.editButtonItem setEnabled:(0 != count)];
+}
+
+// Disallow selections while initially searching
+- (NSIndexPath *)tableView :(UITableView *)theTableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    return isSelectable ? indexPath : nil;
 }
 
 // Override to support editing the table view.
@@ -185,7 +276,7 @@
     }   
 }
 
-// ----- Button handling
+// ----- Add button handling
 
 // Adding an entry consists of pushing an entry view controller in edit mode.  When the view controller
 // is done editing it will call iPWSDatabaseEntryViewController:didFinishEditingEntry:
@@ -215,6 +306,7 @@
 - (void)iPWSDatabaseModel:(iPWSDatabaseModel *)model didChangeEntry:(iPWSDatabaseEntryModel *)entry {
     [self removeEntryFromSection:entry];
     [self addEntryToSection:entry];
+    [self updateSearchResults];
     [self.tableView reloadData];
 }
 
@@ -227,7 +319,8 @@
     iPWSDatabaseEntryViewController *vc = 
         [[iPWSDatabaseEntryViewController alloc] initWithNibName:@"iPWSDatabaseEntryViewController"
                                                           bundle:nil
-                                                           entry:[self entryAtIndexPath:indexPath]
+                                                           entry:isSearching ? [searchResults objectAtIndex:indexPath.row] :
+                                                                               [self entryAtIndexPath:indexPath]
                                                         delegate:nil];
     [self.navigationController pushViewController:vc animated:YES];
     [vc release];
@@ -239,6 +332,7 @@
 
 - (void)dealloc {
     [addButton release];
+    [searchDoneButton release];
     [model release];
     [sectionData release];
     [super dealloc];
