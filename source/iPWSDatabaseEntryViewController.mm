@@ -31,7 +31,8 @@
 #import "corelib/PWPolicy.h"
 #import "corelib/PWSprefs.h"
 
-// ---- Private implementation
+//------------------------------------------------------------------------------------
+// Private implementation
 @interface iPWSDatabaseEntryViewController ()
 - (UIBarButtonItem *)editButton;
 - (UIBarButtonItem *)doneButton;
@@ -50,12 +51,14 @@
 @end
 
 
-// ----- Class variables
+//------------------------------------------------------------------------------------
+// Class variables
 static NSString *COPY_PASSPHRASE_AND_OPEN_BUTTON_STR = @"Copy passphrase & Open";
 static NSString *COPY_USERNAME_AND_OPEN_BUTTON_STR   = @"Copy username & Open";
 static NSString *OPEN_BUTTON_STR                     = @"Open URL";
 
 
+//------------------------------------------------------------------------------------
 // Class iPWSDatabaseEntryViewController
 // Description
 //  The EntryViewController displays a single PasswordSafe entry.  Currently this displays
@@ -67,8 +70,10 @@ static NSString *OPEN_BUTTON_STR                     = @"Open URL";
 //  that first copies the password (or username) and the launches safari with the given URL
 @implementation iPWSDatabaseEntryViewController
 
-// ---- Instance methods
+//------------------------------------------------------------------------------------
+// Instance methods
 
+//------------------------------------------------------------------------------------
 // Accessors
 @synthesize delegate;
 @synthesize titleTextField;
@@ -77,6 +82,7 @@ static NSString *OPEN_BUTTON_STR                     = @"Open URL";
 @synthesize urlTextField;
 @synthesize notesTextView;
 
+//------------------------------------------------------------------------------------
 // Initializer
 - (id)initWithNibName:(NSString *)nibNameOrNil 
                bundle:(NSBundle *)nibBundleOrNil
@@ -119,6 +125,7 @@ static NSString *OPEN_BUTTON_STR                     = @"Open URL";
 }
 
 
+//------------------------------------------------------------------------------------
 #pragma mark -
 #pragma mark Table view data source
 
@@ -179,6 +186,7 @@ static NSString *OPEN_BUTTON_STR                     = @"Open URL";
 }
 
 
+//------------------------------------------------------------------------------------
 #pragma mark -
 #pragma mark Table view delegate
 
@@ -233,7 +241,7 @@ static NSString *OPEN_BUTTON_STR                     = @"Open URL";
 }
 
 
-
+//------------------------------------------------------------------------------------
 #pragma mark -
 #pragma mark Memory management
 
@@ -247,7 +255,9 @@ static NSString *OPEN_BUTTON_STR                     = @"Open URL";
     [super dealloc];
 }
 
-// ----- Editing mode changes
+
+//------------------------------------------------------------------------------------
+// Editing mode changes
 - (BOOL)editing {
     return editing;
 }
@@ -317,9 +327,11 @@ static NSString *OPEN_BUTTON_STR                     = @"Open URL";
 }
 
 
-// ----- Private interface
+//------------------------------------------------------------------------------------
+// Private interface
 
-// ---- Navigation buttons
+//------------------------------------------------------------------------------------
+// Navigation buttons
 - (UIBarButtonItem *)editButton {
     if (!editButton) {
         editButton = [[UIBarButtonItem alloc] initWithTitle:@"Edit"
@@ -423,8 +435,9 @@ static NSString *OPEN_BUTTON_STR                     = @"Open URL";
     }
 }
 
-// Paste and Launch
 
+//------------------------------------------------------------------------------------
+// Paste and Launch
 - (void)copyAndLaunchButtonPressed {
     UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@"Copy and Launch"
                                                              delegate:self 

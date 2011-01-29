@@ -33,6 +33,7 @@
 #import "iPWSDatabaseEntryModel.h"
 #import "iPWSDatabaseModelDelegate.h"
 
+//------------------------------------------------------------------------------------
 // Class: iPWSDatabaseModel
 // Description:
 //  Each iPWSDatabaseModel represents a single, password-validated PasswordSafe database.  The underlying file that
@@ -55,12 +56,12 @@
 + (BOOL)isPasswordSafeFile:(NSString *)filePath;
 
 // Accessors 
-@property (readonly) NSArray                      *entries;
-@property (assign) id<iPWSDatabaseModelDelegate>   delegate;
-@property (readonly) NSString                     *fileName;
-@property (copy) NSString                         *friendlyName;
+@property (readonly) NSArray                       *entries;
+@property (assign)   id<iPWSDatabaseModelDelegate>  delegate;
+@property (readonly) NSString                      *fileName;
+@property (copy)     NSString                      *friendlyName;
 @property (readonly) PWSfile::VERSION              version;
-@property (readonly) const PWSfile::HeaderRecord  *headerRecord;
+@property (readonly) const PWSfile::HeaderRecord   *headerRecord;
 
 // Initialization - if the file does not exist, a new database is created.
 - (id)initNamed:(NSString *)theFriendlyName 

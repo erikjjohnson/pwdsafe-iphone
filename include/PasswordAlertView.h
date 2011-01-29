@@ -28,6 +28,7 @@
 
 #import <UIKit/UIKit.h>
 
+//------------------------------------------------------------------------------------
 // Class PasswordAlertView
 // Description
 //  Displays an alert view dialog box with a secure text entry field.  The text field can

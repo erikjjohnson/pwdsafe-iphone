@@ -28,17 +28,26 @@
 
 #import "iPWSDatabaseEntryModel.h"
 
+//------------------------------------------------------------------------------------
 // Class: iPWSDatabaseEntryModel
 // Description:
 //  Represents a single entry in the password safe database.  This is backed by the C-library version which
 //  stores the data encrypted in memory
+ 
+#define SET_FIELD(f, m)                   \
+  if ([f isEqualToString:self.f]) return; \
+  data.m ([(f) UTF8String]);              \
+  [self changed];
 
-// ---- Private interface
+//------------------------------------------------------------------------------------
+// Private interface
 @interface iPWSDatabaseEntryModel () 
+- (NSString *)stringForStringX:(const StringX&)stringX;
 - (void)changed;
 @end
 
-// ---- Entry implementation
+//------------------------------------------------------------------------------------
+// Entry implementation
 @implementation iPWSDatabaseEntryModel
 
 @synthesize delegate;
@@ -59,88 +68,40 @@
     [super dealloc];
 }
 
+//------------------------------------------------------------------------------------
 // Accessors
-- (NSString *)title {
-    return [NSString stringWithUTF8String:data.GetTitle().c_str()];
-}
+- (NSString *)title              { return [self stringForStringX:data.GetTitle()]; }
+- (NSString *)user               { return [self stringForStringX:data.GetUser()]; }
+- (NSString *)password           { return [self stringForStringX:data.GetPassword()]; }
+- (NSString *)url                { return [self stringForStringX:data.GetURL()]; }
+- (NSString *)notes              { return [self stringForStringX:data.GetNotes()]; }
+- (NSString *)accessTime         { return [self stringForStringX:data.GetATime()]; }
+- (NSString *)creationTime       { return [self stringForStringX:data.GetCTime()]; }
+- (NSString *)passwordExpiryTime { return [self stringForStringX:data.GetXTime()]; }
 
-- (void)setTitle:(NSString *)title {
-    if ([title isEqualToString:self.title]) return;
-    
-    data.SetTitle([title UTF8String]);
-    [self changed];
-}
+- (void)setTitle:(NSString *)title { SET_FIELD(title, SetTitle); }
+- (void)setUser:(NSString *)user   { SET_FIELD(user, SetUser); }
+- (void)setPassword:password       { SET_FIELD(password, SetPassword); }
+- (void)setUrl:(NSString *)url     { SET_FIELD(url, SetURL); }
+- (void)setNotes:(NSString *)notes { SET_FIELD(notes, SetNotes); }
 
-- (NSString *)user {
-    return [NSString stringWithUTF8String:data.GetUser().c_str()];
-}
+- (const CItemData *)dataPtr       { return &data; }
 
-- (void)setUser:(NSString *)user {
-    if ([user isEqualToString:self.user]) return;
-    
-    data.SetUser([user UTF8String]);
-    [self changed];
-}
-
-- (NSString *)password {
-    return [NSString stringWithUTF8String:data.GetPassword().c_str()];
-}
-
-- (void)setPassword:password {
-    if ([password isEqualToString:self.password]) return;
-
-    data.SetPassword([password UTF8String]);
-    [self changed];
-}
-
-- (NSString *)url {
-    return [NSString stringWithUTF8String:data.GetURL().c_str()];
-}
-
-- (void)setUrl:(NSString *)url {
-    if ([url isEqualToString:self.url]) return;
-
-    data.SetURL([url UTF8String]);
-    [self changed];
-}
-
-- (NSString *)notes {
-    return [NSString stringWithUTF8String:data.GetNotes().c_str()];
-}
-
-- (void)setNotes:(NSString *)notes {
-    if ([notes isEqualToString:self.notes]) return;
-
-    data.SetNotes([notes UTF8String]);
-    [self changed];
-}
-
-- (NSString *)accessTime {
-    return [NSString stringWithUTF8String:data.GetATime().c_str()];
-}
-
-- (NSString *)creationTime {
-    return [NSString stringWithUTF8String:data.GetCTime().c_str()];
-}
-
-- (NSString *)passwordExpiryTime {
-    return [NSString stringWithUTF8String:data.GetXTime().c_str()];
-}
-
-- (const CItemData *)dataPtr {
-    return &data;
-}
-
-// ---- Instance methods
+//------------------------------------------------------------------------------------
+// Instance methods
 - (BOOL)writeToPWSfile:(PWSfile *)pwsFileHandle {
     return !pwsFileHandle->WriteRecord(data);
 }
 
 
-// ---- Private interface
+//------------------------------------------------------------------------------------
+// Private interface
 - (void)changed {
     [self.delegate iPWSDatabaseEntryModelChanged:self];
 }
 
+- (NSString *)stringForStringX:(const StringX&)stringX {
+    return [NSString stringWithUTF8String:stringX.c_str()];
+}
 
 @end

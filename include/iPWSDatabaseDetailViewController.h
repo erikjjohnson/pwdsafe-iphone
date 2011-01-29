@@ -30,6 +30,7 @@
 #import "iPWSDatabaseModel.h"
 #import "iPWSDatabaseFactory.h"
 
+//------------------------------------------------------------------------------------
 // Class iPWSDatabaseDetailViewController
 // Description
 //  The DatabaseDetailViewController displays the header information about the given PasswordSafe model.  This includes

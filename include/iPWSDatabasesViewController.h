@@ -30,6 +30,7 @@
 #import "iPWSDatabaseFactory.h"
 #import "iPWSDatabaseFactoryDelegate.h"
 
+//------------------------------------------------------------------------------------
 // Class: DatabasesViewController
 // Description:
 //  The DatabasesViewController is a TableViewController that displays the list of known

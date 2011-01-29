@@ -29,6 +29,7 @@
 #import "iPWSDatabaseFactory.h"
 #import "corelib/ItemData.h"
 
+//------------------------------------------------------------------------------------
 // Class: iPWSDatabaseFactory
 // Description:
 //  The iPWSDatabaseFactory is represents the list of known PasswordSafe databases.
@@ -40,7 +41,8 @@
 //  to instantiate the database instance.
 //
 
-// ---- Private interface
+//------------------------------------------------------------------------------------
+// Private interface
 @interface iPWSDatabaseFactory () 
 - (void)synchronizeUserDefaults;
 
@@ -48,12 +50,15 @@
 @end
 
 
-// ---- Class variables
+//------------------------------------------------------------------------------------
+// Class variables
+
 // The key placed in the UserDefaults to retrieve the allDatabasesInfo
 static NSString *kiPWSDatabaseFactoryUserDefaults = @"kiPWSDatabaseFactoryUserDefaults";
 
 
-// ---- Factory implementation
+//------------------------------------------------------------------------------------
+// Factory implementation
 @implementation iPWSDatabaseFactory
 
 @synthesize documentsDirectory;
@@ -108,7 +113,8 @@ static NSString *kiPWSDatabaseFactoryUserDefaults = @"kiPWSDatabaseFactoryUserDe
     [super dealloc];
 }
 
-// ---- Instance methods
+//------------------------------------------------------------------------------------
+// Instance methods
 
 // Enumerating the friendly names
 - (NSArray *)friendlyNames {
@@ -120,6 +126,7 @@ static NSString *kiPWSDatabaseFactoryUserDefaults = @"kiPWSDatabaseFactoryUserDe
     return [self.friendlyNames containsObject:friendlyName];
 }
 
+// Determine if the given filename already is already in our preferences file (i.e., already in the list of safes)
 - (BOOL)isFileNameMapped:(NSString *)fileName {
     NSEnumerator *etr = [databaseFileNames objectEnumerator];
     NSString *name;
@@ -134,6 +141,7 @@ static NSString *kiPWSDatabaseFactoryUserDefaults = @"kiPWSDatabaseFactoryUserDe
     return [documentsDirectory stringByAppendingPathComponent:[databaseFileNames objectForKey:friendlyName]];
 }
 
+//------------------------------------------------------------------------------------
 // Accessing the database models
 
 // The database for a given name.  The friendlyName may exists, but the database not exist if either
@@ -162,13 +170,15 @@ static NSString *kiPWSDatabaseFactoryUserDefaults = @"kiPWSDatabaseFactoryUserDe
     [databases removeObjectForKey:friendlyName];
 }
 
+// Remove all models - useful for locking all databases
 - (void)removeAllDatabaseModels {
     [databases removeAllObjects];
 }
 
-
+//------------------------------------------------------------------------------------
 // Modify the known databases
 
+// Add a new database
 - (BOOL)addDatabaseNamed:(NSString *)friendlyName 
            withFileNamed:(NSString *)fileName
               passphrase:(NSString *)passphrase
@@ -200,6 +210,7 @@ static NSString *kiPWSDatabaseFactoryUserDefaults = @"kiPWSDatabaseFactoryUserDe
     return YES;
 }
 
+// Rename an existing database to a new friendly name
 - (BOOL)renameDatabaseNamed:(NSString *)origFriendlyName 
                   toNewName:(NSString *)newFriendlyName
                    errorMsg:(NSError **)errorMsg {
@@ -239,6 +250,8 @@ static NSString *kiPWSDatabaseFactoryUserDefaults = @"kiPWSDatabaseFactoryUserDe
     return YES;
 }
 
+// Remove a database both from the in memory mapping and the list of known databases.  Might remove the file
+// if the preferences indicate
 - (BOOL)removeDatabaseNamed:(NSString *)friendlyName errorMsg:(NSError **)errorMsg {
     // Sanity checks
     if (![self doesFriendlyNameExist:friendlyName]) {
@@ -262,14 +275,16 @@ static NSString *kiPWSDatabaseFactoryUserDefaults = @"kiPWSDatabaseFactoryUserDe
     return YES;
 }
 
+//------------------------------------------------------------------------------------
+// Private interface
 
-// ---- Private interface
-
+// Synchronize the current in-memory list of safes with the preferences
 - (void)synchronizeUserDefaults {
     [[NSUserDefaults standardUserDefaults] setObject:databaseFileNames forKey:kiPWSDatabaseFactoryUserDefaults];
     [[NSUserDefaults standardUserDefaults] synchronize]; 
 }
 
+// Build an error object for the given error string
 - (NSError *)errorWithStr:(NSString *)errorStr {
     NSDictionary *userInfo = [NSDictionary dictionaryWithObject:errorStr forKey:NSLocalizedDescriptionKey];
     return [NSError errorWithDomain:@"iPWS" code:0 userInfo:userInfo];

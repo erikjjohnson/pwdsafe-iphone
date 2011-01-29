@@ -31,6 +31,7 @@
 #define kUITextFieldXPadding 12.0
 #define kUITextFieldYPadding 5.0
 
+//------------------------------------------------------------------------------------
 // Class PasswordAlertView
 // Description
 //  Displays an alert view dialog box with a secure text entry field.  The text field can

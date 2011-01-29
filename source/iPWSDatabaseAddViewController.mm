@@ -28,7 +28,8 @@
 
 #import "iPWSDatabaseAddViewController.h"
 
-// ---- Private interface declaration 
+//------------------------------------------------------------------------------------
+// Private interface declaration 
 @interface iPWSDatabaseAddViewController ()
 - (UIBarButtonItem *)cancelButton;
 - (UIBarButtonItem *)doneButton;
@@ -44,14 +45,16 @@
 - (NSString *)createUniqueFilenameWithPrefix: (NSString *)prefix;
 @end
 
-
+//------------------------------------------------------------------------------------
 // Class: iPWSDatabaseAddViewController
 // Description:
 //  Represents a view and controller for creating a new PasswordSafe database
 @implementation iPWSDatabaseAddViewController
 
-// ---- Public interface
+//------------------------------------------------------------------------------------
+// Public interface
 
+//------------------------------------------------------------------------------------
 // Initialization
 - (id)initWithNibName:(NSString *)nibNameOrNil 
                bundle:(NSBundle *)nibBundleOrNil 
@@ -74,8 +77,8 @@
     [super dealloc];
 }
 
-
-// ---- Instance methods
+//------------------------------------------------------------------------------------
+// Instance methods
 - (void)viewDidLoad {   
     [super viewDidLoad];
 	
@@ -93,7 +96,8 @@
     self.navigationController.toolbarHidden = YES;    
 }
 
-// ---- Interface builder events
+//------------------------------------------------------------------------------------
+// Interface builder events
 - (IBAction)friendlyNameChanged:(id)sender {
     [self updateDoneButton];
 }
@@ -115,8 +119,8 @@
     [confirmPassphrase resignFirstResponder];    
 }
 
-
-// ---- Private interface 
+//------------------------------------------------------------------------------------
+// Private interface 
 
 // Lazily construct two buttons
 - (UIBarButtonItem *)cancelButton {
@@ -139,6 +143,7 @@
     return doneButton;
 }
 
+//------------------------------------------------------------------------------------
 // Methods to enable/disable the done button and password phrase mismatch text based on current text fields
 - (BOOL)isPassphraseValid {
     return ([[passphrase text] length] && [[passphrase text] isEqualToString:[confirmPassphrase text]]);
@@ -158,7 +163,7 @@
     [confirmPassphraseMismatchLabel setHidden:isConfirmValid];
 }
 
-
+//------------------------------------------------------------------------------------
 // Handle cancelation and completion
 - (void)cancelButtonPressed {
     [self.navigationController popViewControllerAnimated:NO];
@@ -182,6 +187,7 @@
     }
 }
      
+//------------------------------------------------------------------------------------
 // Construct a unique filename within the documents directory
 - (NSString *)createUniqueFilenameWithPrefix: (NSString *)prefix {
     // First strip all of the non-alpha/digit characters from the prefix

@@ -29,7 +29,8 @@
 #import "iPWSDatabaseEntryViewController.h"
 #import "iPasswordSafeAppDelegate.h"
 
-// ---- Private interface
+//------------------------------------------------------------------------------------
+// Private interface
 @interface iPWSDatabaseModelViewController ()
 - (void)initSectionDataWithModel:(iPWSDatabaseModel *)model;
 - (void)addEntryToSection:(iPWSDatabaseEntryModel *)entry;
@@ -52,15 +53,18 @@
 @end
 
 
+//------------------------------------------------------------------------------------
 // Class: iPWSDatabaseModelViewController
 // Description:
 //  Represents a simple table view controller displaying the entries of a database model.  When an entry is
 //  selected push an EntryViewController to display that entry
 @implementation iPWSDatabaseModelViewController
 
-// ---- Instance methods
+//------------------------------------------------------------------------------------
+// Instance methods
 
-// ---- Accessors
+//------------------------------------------------------------------------------------
+// Accessors
 - (UIBarButtonItem *)addButton {
     // Lazy initialize an add button
     if (!addButton) {
@@ -74,7 +78,7 @@
 - (UIBarButtonItem *)searchDoneButton {
     // Lazy initialize a search done button
     if (!searchDoneButton) {
-        searchDoneButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
+        searchDoneButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
                                                                          target:self
                                                                          action:@selector(searchDoneButtonPressed)];        
     }
@@ -82,6 +86,7 @@
 }
 
 
+//------------------------------------------------------------------------------------
 // Initializer
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil model:(iPWSDatabaseModel *)theModel {
     if (!theModel) return nil;
@@ -120,6 +125,7 @@
     self.navigationController.toolbarHidden = NO;  
 }
 
+//------------------------------------------------------------------------------------
 // Table data source
 #pragma mark -
 #pragma mark Table view data source
@@ -182,7 +188,8 @@
     return cell;
 }
 
-// ---- Searching
+//------------------------------------------------------------------------------------
+// Searching
 // Don't allow selecting of items until the search has some specific results
 - (void)searchBarTextDidBeginEditing:(UISearchBar *)theSearchBar {
     isSearching = YES;
@@ -231,7 +238,8 @@
 }
 
 
-// ---- Orientations
+//------------------------------------------------------------------------------------
+// Orientations
 // Override to allow orientations other than the default portrait orientation.
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
     return ((interfaceOrientation == UIInterfaceOrientationPortrait) ||
@@ -240,7 +248,8 @@
 }
 
 
-// ---- Editing and selection
+//------------------------------------------------------------------------------------
+// Editing and selection
 // Override to support conditional editing of the table view.
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
     return !isSearching;
@@ -276,7 +285,9 @@
     }   
 }
 
-// ----- Add button handling
+
+//------------------------------------------------------------------------------------
+// Add button handling
 
 // Adding an entry consists of pushing an entry view controller in edit mode.  When the view controller
 // is done editing it will call iPWSDatabaseEntryViewController:didFinishEditingEntry:
@@ -311,6 +322,7 @@
 }
 
 
+//------------------------------------------------------------------------------------
 // Table view delegate
 #pragma mark -
 #pragma mark Table view delegate
@@ -326,6 +338,7 @@
     [vc release];
 }
 
+//------------------------------------------------------------------------------------
 // Memory management
 #pragma mark -
 #pragma mark Memory management
@@ -338,6 +351,8 @@
     [super dealloc];
 }
 
+
+//------------------------------------------------------------------------------------
 // Private interface - section handling
 - (void)initSectionDataWithModel:(iPWSDatabaseModel *)m {
     // Create an array for the 26 letters plus one "catchall".  Each array

@@ -29,7 +29,8 @@
 #import "iPWSDatabaseDetailViewController.h"
 #import "iPWSDatabaseFactory.h"
 
-// ---- Private interface
+//------------------------------------------------------------------------------------
+// Private interface
 @interface iPWSDatabaseDetailViewController ()
 - (NSString *)modelFriendlyName;
 - (NSString *)modelNumberOfEntries;
@@ -51,7 +52,7 @@
 - (void)modelNameChanged:(id)sender;
 @end
 
-
+//------------------------------------------------------------------------------------
 // Class iPWSDatabaseDetailViewController
 // Description
 //  The DatabaseDetailViewController displays the header information about the given PasswordSafe model.  This includes
@@ -89,7 +90,8 @@ static struct CellMapArray {
     { modificationDetailsSectionFields, sizeof(modificationDetailsSectionFields)/sizeof(modificationDetailsSectionFields[0]), NO }
 };
 
-// ---- Public interface
+//------------------------------------------------------------------------------------
+// Public interface
 
 // Initialization
 - (id)initWithNibName:(NSString *)nibNameOrNil 
@@ -117,7 +119,7 @@ static struct CellMapArray {
     [super dealloc];
 }
 
-
+//------------------------------------------------------------------------------------
 // Interface handlers
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -129,7 +131,7 @@ static struct CellMapArray {
     self.navigationController.toolbarHidden = YES;    
 }
 
-
+//------------------------------------------------------------------------------------
 // Table data source 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return (sizeof(CellMappings)/sizeof(CellMappings[0]));
@@ -177,6 +179,7 @@ static struct CellMapArray {
     return cell;
 }
 
+//------------------------------------------------------------------------------------
 // Table view delgate
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     if (0 != indexPath.section) {
@@ -184,7 +187,9 @@ static struct CellMapArray {
     }
 }
 
-// ---- Private interface 
+
+//------------------------------------------------------------------------------------
+// Private interface 
 - (NSString *)modelFriendlyName {
     return model.friendlyName;
 }
@@ -214,7 +219,8 @@ static struct CellMapArray {
 }
 
 
-// ---- Navigation buttons
+//------------------------------------------------------------------------------------
+// Navigation buttons
 - (UIBarButtonItem *)renameButton {
     if (!renameButton) {
         renameButton = [[UIBarButtonItem alloc] initWithTitle:@"Rename"
@@ -245,7 +251,9 @@ static struct CellMapArray {
     return cancelRenameButton;
 }
 
-// ---- Handle renaming modes
+
+//------------------------------------------------------------------------------------
+// Handle renaming modes
 - (BOOL)renaming {
     return renaming;
 }

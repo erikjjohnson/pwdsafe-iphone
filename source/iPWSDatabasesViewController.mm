@@ -34,7 +34,8 @@
 #import "iPWSDatabaseModelViewController.h"
 #import "PasswordAlertView.h"
 
-// ---- Private interface declaration
+//------------------------------------------------------------------------------------
+// Private interface declaration
 @interface iPWSDatabasesViewController ()
 - (void)addDatabaseButtonPressed;
 - (void)updateEditButton;
@@ -50,7 +51,8 @@
 @end
 
 
-// ---- Class variables
+//------------------------------------------------------------------------------------
+// Class variables
 static NSString *CREATE_DATABASE_BUTTON_STR = @"Create new safe";
 static NSString *IMPORT_DATABASE_BUTTON_STR = @"Import existing safe";
 
@@ -63,7 +65,7 @@ enum {
     PASSPHRASE_PROMPT_SHOW_DATABASE_DETAILS_TAG
 };
 
-
+//------------------------------------------------------------------------------------
 // Class: iPWSDatabasesViewController
 // Description:
 //  The DatabasesViewController is a TableViewController that displays the list of known
@@ -73,6 +75,7 @@ enum {
 //  the application.
 @implementation iPWSDatabasesViewController
 
+//------------------------------------------------------------------------------------
 // Accessors
 @synthesize databaseFactory;
 
@@ -86,9 +89,10 @@ enum {
     return addDatabaseButton;
 }
 
-// ---- Interface handlers
+//------------------------------------------------------------------------------------
+// Interface handlers
 
-// viewDidLoad
+// Update the navigation buttons and toolbar items
 - (void)viewDidLoad {
     [super viewDidLoad];
 
@@ -106,22 +110,25 @@ enum {
                                                    nil];
 }
 
+// Unhide the toolbar
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     self.navigationController.toolbarHidden = NO; 
 }
 
- // Override to allow orientations other than the default portrait orientation.
- - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
-     // Return YES for supported orientations
-     return ((interfaceOrientation == UIInterfaceOrientationPortrait) ||
-             (interfaceOrientation == UIInterfaceOrientationLandscapeLeft) ||
-             (interfaceOrientation == UIInterfaceOrientationLandscapeRight));
- }
+// Override to allow orientations other than the default portrait orientation.
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
+    // Return YES for supported orientations
+    return ((interfaceOrientation == UIInterfaceOrientationPortrait) ||
+            (interfaceOrientation == UIInterfaceOrientationLandscapeLeft) ||
+            (interfaceOrientation == UIInterfaceOrientationLandscapeRight));
+}
 
 
+//------------------------------------------------------------------------------------
+// Table view data source
 
-// ---- Table view data source
+// Only enable the edit button if there is at least one database
 - (void)updateEditButton {
     NSInteger count = [databaseFactory.friendlyNames count];
     if (!count) {
@@ -130,15 +137,18 @@ enum {
     [self.editButtonItem setEnabled:(0 != count)];
 }
 
+// Only one section - the list of friendly database names
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return 1;
 }
 
+// The number of databases known to us
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     [self updateEditButton];
     return [databaseFactory.friendlyNames count];
 }
 
+// Each cell is simply the friendly name of the database
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     static NSString *CellIdentifier = @"Cell";
     
@@ -153,10 +163,12 @@ enum {
     return cell;
 }
 
+// Yes, we can edit a database (i.e., delete it)
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
     return YES;
 }
 
+// Called when a database is deleted
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle 
                                             forRowAtIndexPath:(NSIndexPath *)indexPath {
     
@@ -174,7 +186,10 @@ enum {
 }
 
 
-// ---- Table view delegate
+//------------------------------------------------------------------------------------
+// Table view delegate
+
+// When a database is selected, prompt for the passphrase and then navigate to the model
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     NSString *friendlyName = [self friendlyNameAtIndex: indexPath.row];
     iPWSDatabaseModel *model = [databaseFactory databaseModelNamed:friendlyName errorMsg:NULL];
@@ -189,6 +204,7 @@ enum {
     
 }
 
+// Navigate to the given database model
 - (void)showDatabaseModel:(iPWSDatabaseModel *)model {
     iPWSDatabaseModelViewController *vc = [[iPWSDatabaseModelViewController alloc] 
                                            initWithNibName:@"iPWSDatabaseModelViewController"
@@ -200,7 +216,8 @@ enum {
 }
 
 
-// ---- Custom actions
+//------------------------------------------------------------------------------------
+// Custom actions
 
 // Called when a detailed view of a database is requested (i.e., edit the database friendly name)
 - (void)tableView: (UITableView *)tableView accessoryButtonTappedForRowWithIndexPath: (NSIndexPath *)indexPath {
@@ -217,7 +234,10 @@ enum {
 }
 
 
-// ---- Add button
+//------------------------------------------------------------------------------------
+// Add operations
+
+// The add new database either by importing or creating new
 - (void)addDatabaseButtonPressed {
     UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@"Create or Import Safe?"
                                                              delegate:self 
@@ -254,8 +274,10 @@ enum {
 }
 
 
-// ---- Passphrase management and prompting
+//------------------------------------------------------------------------------------
+// Passphrase management and prompting
 
+// Ask the user for the passphrase for a database
 - (void)promptForPassphraseForName:(NSString *)friendlyName tag:(NSInteger)tag {
     // Setup the callback context
     [passphrasePromptContext setObject:friendlyName forKey:kPassphrasePromptContextFriendlyName];
@@ -300,28 +322,16 @@ enum {
     }
 }
 
-
-// ---- Memory management
-- (void)didReceiveMemoryWarning {
-    // Releases the view if it doesn't have a superview.
-    [super didReceiveMemoryWarning];
-    
-    // Relinquish ownership any cached data, images, etc that aren't in use.
-}
-
-- (void)viewDidUnload {
-    // Relinquish ownership of anything that can be recreated in viewDidLoad or on demand.
-    // For example: self.myOutlet = nil;
-}
-
+//------------------------------------------------------------------------------------
+// Memory management
 - (void)dealloc {
     [addDatabaseButton release];
     [databaseFactory release];
     [super dealloc];
 }
 
-
-// ---- Database management (iPWSDatabaseFactoryDelegate protocol implementation)
+//------------------------------------------------------------------------------------
+// Database management (iPWSDatabaseFactoryDelegate protocol implementation)
 
 // Add a new database into the map of databases and synchronize this information with the user defaults
 - (void)iPWSDatabaseFactory:(iPWSDatabaseFactory *)databaseFactory didAddModelNamed:(NSString *)friendlyName {
@@ -338,8 +348,8 @@ enum {
     [self.tableView reloadData];
 }
 
-
-// ---- Private helper routines
+//------------------------------------------------------------------------------------
+// Private helper routines
 
 - (NSString *)friendlyNameAtIndex:(NSInteger)idx {
     return [[databaseFactory friendlyNames] objectAtIndex:idx];

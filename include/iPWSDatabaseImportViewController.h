@@ -29,6 +29,7 @@
 #import <UIKit/UIKit.h>
 #import "iPWSDatabaseFactory.h"
 
+//------------------------------------------------------------------------------------
 // Class: iPWSDatabaseImportViewController
 // Description:
 //  Represents a view and controller for importing a PasswordSafe database from an existing file

@@ -30,6 +30,7 @@
 #import "iPasswordSafeAppDelegate.h"
 #import "iPWSDatabasesViewController.h"
 
+//------------------------------------------------------------------------------------
 // Class iPasswordSafeAppDelegate
 // Description:
 //  The AppDelegate is the main point of control for the application.  It receives

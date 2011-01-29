@@ -32,6 +32,7 @@
 
 #import "iPWSDatabaseEntryModelDelegate.h"
 
+//------------------------------------------------------------------------------------
 // Class: iPWSDatabaseEntryModel
 // Description:
 //  Represents a single entry in the password safe database.  This is backed by the C-library version which
@@ -54,7 +55,8 @@
 @property (readonly) NSString* passwordExpiryTime;
 
 // Instance methods
-- (id)initWithData:(const CItemData *)theData delegate:(id<iPWSDatabaseEntryModelDelegate>)theDelegate;
+- (id)initWithData:(const CItemData *)theData 
+          delegate:(id<iPWSDatabaseEntryModelDelegate>)theDelegate;
 - (BOOL)writeToPWSfile:(PWSfile *)pwsFileHandle;
 
 @end

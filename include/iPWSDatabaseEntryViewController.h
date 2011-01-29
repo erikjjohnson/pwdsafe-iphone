@@ -30,6 +30,7 @@
 #import "iPWSDatabaseEntryModel.h"
 #import "iPWSDatabaseEntryViewControllerDelegate.h"
 
+//------------------------------------------------------------------------------------
 // Class iPWSDatabaseEntryViewController
 // Description
 //  The EntryViewController displays a single PasswordSafe entry.  Currently this displays

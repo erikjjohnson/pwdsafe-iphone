@@ -28,7 +28,8 @@
 #import "iPWSDatabaseImportViewController.h"
 #import "iPWSDatabaseModel.h"
 
-// ---- Private interface declaration
+//------------------------------------------------------------------------------------
+// Private interface declaration
 @interface iPWSDatabaseImportViewController ()
 - (UIBarButtonItem *)cancelButton;
 - (UIBarButtonItem *)doneButton;
@@ -39,13 +40,14 @@
 - (void)updateDoneButton;
 @end
 
-
+//------------------------------------------------------------------------------------
 // Class: iPWSDatabaseImportViewController
 // Description:
 //  Represents a view and controller for importing a PasswordSafe database from an existing file
 @implementation iPWSDatabaseImportViewController
 
-// ---- Public interface
+//------------------------------------------------------------------------------------
+// Public interface
 
 // Initialization
 - (id)initWithNibName:(NSString *)nibNameOrNil 
@@ -94,6 +96,7 @@
     [super dealloc];
 }
 
+//------------------------------------------------------------------------------------
 // Interface handling
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -118,8 +121,8 @@
     [self updateDoneButton];
 }
 
-
-// ---- UIPickerViewDataSource and UIPickerViewDelegate
+//------------------------------------------------------------------------------------
+// UIPickerViewDataSource and UIPickerViewDelegate
 - (NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView {
     return 1;
 }
@@ -136,8 +139,8 @@
     return [psafeFiles objectAtIndex:row];
 }
 
-
-// ---- Private interface 
+//------------------------------------------------------------------------------------
+// Private interface 
 
 // Lazily construct two buttons
 - (UIBarButtonItem *)cancelButton {
@@ -160,7 +163,7 @@
     return doneButton;
 }
 
-
+//------------------------------------------------------------------------------------
 // Event handling to enable/disable the done button
 - (void)updateDoneButton {
     BOOL isFormValid = ([friendlyName.text length] != 0) && ([passphrase.text length] != 0);

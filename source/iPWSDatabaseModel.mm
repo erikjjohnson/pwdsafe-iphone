@@ -25,7 +25,7 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
 // OF SUCH DAMAGE.
 
-
+//------------------------------------------------------------------------------------
 // Class: iPWSDatabaseModel
 // Description:
 //  Each iPWSDatabaseModel represents a single, password-validated PasswordSafe database.  The underlying file that
@@ -35,7 +35,8 @@
 
 #import "iPWSDatabaseModel.h"
 
-// ----- Private interface
+//------------------------------------------------------------------------------------
+// Private interface
 @interface iPWSDatabaseModel ()
 // ---- File management
 - (BOOL)openPWSfileForReading;
@@ -50,7 +51,7 @@
 - (void)setLastError:(NSError *)error;
 @end
 
-
+//------------------------------------------------------------------------------------
 // Class constants
 
 // Maps PWSfile::VERSION constants to a string
@@ -77,14 +78,17 @@ static NSDictionary *iPWSDatabaseModelErrorCodesMap =
   @"The database file is corrupt (end of file)", [[[NSNumber alloc] initWithInt: PWSfile::END_OF_FILE] retain],
   nil] retain];
 
-// ---- Class variables
+
+//------------------------------------------------------------------------------------
+// Class variables
 
 // The PWS C-library requires the session key to be initialized exactly once, this variable tracks that this is
 // done the once, when the first model is created
 static BOOL sessionKeyInitialized = NO;
 
 
-// ----- Model implementation
+//------------------------------------------------------------------------------------
+// Model implementation
 @implementation iPWSDatabaseModel
 
 @synthesize entries;
@@ -92,7 +96,8 @@ static BOOL sessionKeyInitialized = NO;
 @synthesize friendlyName;
 @synthesize delegate;
 
-// ---- Class methods
+//------------------------------------------------------------------------------------
+// Class methods
 + (NSString *)databaseVersionToString:(PWSfile::VERSION)version {
     return [iPWSDatabaseModelVersionMap objectForKey:[NSNumber numberWithInt:version]];
 }
@@ -100,9 +105,11 @@ static BOOL sessionKeyInitialized = NO;
 + (BOOL)isPasswordSafeFile:(NSString *)filePath {
     return (PWSfile::UNKNOWN_VERSION != PWSfile::ReadVersion([filePath UTF8String])); 
 }
-        
-// ---- Instance methdos
+   
+//------------------------------------------------------------------------------------
+// Instance methdos
 
+//------------------------------------------------------------------------------------
 // Accessors
 // Read the version of the model from the file (no passphrase required)
 - (PWSfile::VERSION) version {
@@ -114,6 +121,7 @@ static BOOL sessionKeyInitialized = NO;
     return &headerRecord;
 }
 
+//------------------------------------------------------------------------------------
 // Initialization - if the file does not exist, a new database is created.
 - (id)initNamed:(NSString *)theFriendlyName 
       fileNamed:(NSString *)theFileName 
@@ -172,6 +180,7 @@ static BOOL sessionKeyInitialized = NO;
     return self;
 }
 
+// Deallocation
 - (void)dealloc {
     self.lastError = nil;
     [passphrase release];
@@ -181,6 +190,7 @@ static BOOL sessionKeyInitialized = NO;
     [super dealloc];
 }
 
+//------------------------------------------------------------------------------------
 // Entry modifications (passphrase required)
 - (BOOL)addDatabaseEntry:(iPWSDatabaseEntryModel *)entry {
     [entries addObject:entry];
@@ -193,6 +203,7 @@ static BOOL sessionKeyInitialized = NO;
     return [self syncToFile];
 }
 
+//------------------------------------------------------------------------------------
 // Entry observer - called when the entry is changed
 - (void)iPWSDatabaseEntryModelChanged:(iPWSDatabaseEntryModel *)entryModel {
     [delegate iPWSDatabaseModel:self didChangeEntry:entryModel];
@@ -200,17 +211,23 @@ static BOOL sessionKeyInitialized = NO;
 }
 
 
-// ---- Private interface
+//------------------------------------------------------------------------------------
+// Private interface
 
+//------------------------------------------------------------------------------------
 // File management
+
+// Open a safe file in read mode
 - (BOOL)openPWSfileForReading {
     return [self openPWSfileUsingMode:PWSfile::Read];
 }
 
+// Open a safe file in write mode
 - (BOOL)openPWSfileForWriting {
     return [self openPWSfileUsingMode:PWSfile::Write];
 }
 
+// Generic routine for opening a file
 - (BOOL)openPWSfileUsingMode:(PWSfile::RWmode)mode {
     int status;
     
@@ -238,11 +255,12 @@ static BOOL sessionKeyInitialized = NO;
     return YES;
 }
 
-
+// Close a safe file
 - (void)closePWSfile {
     pwsFileHandle->Close();
 }
 
+// Synchronize the current in-memory model with the underlying file
 - (BOOL)syncToFile {
     BOOL success = NO;
     
@@ -283,17 +301,22 @@ static BOOL sessionKeyInitialized = NO;
 }
 
 
+//------------------------------------------------------------------------------------
 // Error handling
+
+// Construct an error object for the given status code
 - (NSError *)errorForStatus:(int)status {
     NSString *errorStr = [iPWSDatabaseModelErrorCodesMap objectForKey:[NSNumber numberWithInt:status]];
     NSDictionary *info = [NSDictionary dictionaryWithObject:errorStr forKey:NSLocalizedDescriptionKey];
     return [NSError errorWithDomain:@"iPWS" code:status userInfo:info];
 }
 
+// Fetch the last reported error
 - (NSError *)lastError {
     return lastError;
 }
 
+// Set the most recent error
 - (void)setLastError:(NSError *)error {
     [lastError release];
     lastError = [error retain];

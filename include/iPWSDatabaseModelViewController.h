@@ -31,6 +31,7 @@
 #import "iPWSDatabaseEntryViewControllerDelegate.h"
 #import "iPWSDatabaseModelDelegate.h"
 
+//------------------------------------------------------------------------------------
 // Class: iPWSDatabaseModelViewController
 // Description:
 //  Represents a simple table view controller displaying the entries of a database model.  When an entry is

@@ -31,6 +31,7 @@
 #import "iPWSDatabaseModel.h"
 #import "iPWSDatabaseFactoryDelegate.h"
 
+//------------------------------------------------------------------------------------
 // Class: iPWSDatabaseFactory
 // Description:
 //  The iPWSDatabaseFactory is represents the list of known PasswordSafe databases.
