@@ -34,6 +34,8 @@
 		30933F591251316F00622BFA /* iPWSDatabaseAddViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 30933F581251316F00622BFA /* iPWSDatabaseAddViewController.xib */; };
 		30DF134C1278C801005929AD /* lockbarbutton.png in Resources */ = {isa = PBXBuildFile; fileRef = 30DF134B1278C801005929AD /* lockbarbutton.png */; };
 		30E1070E1279F32E00649034 /* diceicon.png in Resources */ = {isa = PBXBuildFile; fileRef = 30E1070D1279F32E00649034 /* diceicon.png */; };
+		A10F649712F3CBCE00FFC851 /* SearchOverlayViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = A10F649612F3CBCE00FFC851 /* SearchOverlayViewController.xib */; };
+		A10F649912F3CBDF00FFC851 /* SearchOverlayViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = A10F649812F3CBDF00FFC851 /* SearchOverlayViewController.mm */; };
 		A1C6BD3512626D7700F192B9 /* lockicon.png in Resources */ = {isa = PBXBuildFile; fileRef = A1C6BD3412626D7700F192B9 /* lockicon.png */; };
 /* End PBXBuildFile section */
 
@@ -99,6 +101,9 @@
 		30B1F804125A3CE40036DDDA /* iPWSDatabaseEntryViewControllerDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = iPWSDatabaseEntryViewControllerDelegate.h; path = include/iPWSDatabaseEntryViewControllerDelegate.h; sourceTree = "<group>"; };
 		30DF134B1278C801005929AD /* lockbarbutton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = lockbarbutton.png; path = resources/lockbarbutton.png; sourceTree = "<group>"; };
 		30E1070D1279F32E00649034 /* diceicon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = diceicon.png; path = resources/diceicon.png; sourceTree = "<group>"; };
+		A10F649612F3CBCE00FFC851 /* SearchOverlayViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = SearchOverlayViewController.xib; path = resources/SearchOverlayViewController.xib; sourceTree = "<group>"; };
+		A10F649812F3CBDF00FFC851 /* SearchOverlayViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = SearchOverlayViewController.mm; path = source/SearchOverlayViewController.mm; sourceTree = "<group>"; };
+		A10F649A12F3CBEE00FFC851 /* SearchOverlayViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SearchOverlayViewController.h; path = include/SearchOverlayViewController.h; sourceTree = "<group>"; };
 		A1C6BD3412626D7700F192B9 /* lockicon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = lockicon.png; path = resources/lockicon.png; sourceTree = "<group>"; };
 		DB6E421B125BDC4700011FA3 /* iPasswordSafe-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "iPasswordSafe-Info.plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -154,6 +159,7 @@
 				304BB1401252956300702002 /* iPWSDatabaseDetailViewController.xib */,
 				303CC30E125688DB005E4970 /* iPWSDatabaseModelViewController.xib */,
 				303CC357125696D0005E4970 /* iPWSDatabaseEntryViewController.xib */,
+				A10F649612F3CBCE00FFC851 /* SearchOverlayViewController.xib */,
 				3013F255124A74E100C82647 /* MainWindow.xib */,
 			);
 			name = Resources;
@@ -183,6 +189,7 @@
 				303CC3521256969F005E4970 /* iPWSDatabaseEntryViewController.mm */,
 				30933F4712512E0A00622BFA /* PasswordAlertView.mm */,
 				3013F25F124A752200C82647 /* iPasswordSafeAppDelegate.mm */,
+				A10F649812F3CBDF00FFC851 /* SearchOverlayViewController.mm */,
 				3013F260124A752200C82647 /* main.mm */,
 			);
 			name = Sources;
@@ -205,6 +212,7 @@
 				303CC356125696C6005E4970 /* iPWSDatabaseEntryViewController.h */,
 				30B1F804125A3CE40036DDDA /* iPWSDatabaseEntryViewControllerDelegate.h */,
 				30933F4F12512E3E00622BFA /* PasswordAlertView.h */,
+				A10F649A12F3CBEE00FFC851 /* SearchOverlayViewController.h */,
 				3013F266124A753400C82647 /* iPasswordSafeAppDelegate.h */,
 				3013F270124A76E100C82647 /* iPasswordSafe_Prefix.pch */,
 			);
@@ -301,6 +309,7 @@
 				A1C6BD3512626D7700F192B9 /* lockicon.png in Resources */,
 				30DF134C1278C801005929AD /* lockbarbutton.png in Resources */,
 				30E1070E1279F32E00649034 /* diceicon.png in Resources */,
+				A10F649712F3CBCE00FFC851 /* SearchOverlayViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -323,6 +332,7 @@
 				304BB13D1252953500702002 /* iPWSDatabaseDetailViewController.mm in Sources */,
 				303CC30C125688B3005E4970 /* iPWSDatabaseModelViewController.mm in Sources */,
 				303CC3541256969F005E4970 /* iPWSDatabaseEntryViewController.mm in Sources */,
+				A10F649912F3CBDF00FFC851 /* SearchOverlayViewController.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -341,7 +351,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Don't Code Sign";
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -353,7 +362,6 @@
 					"\"$(SRCROOT)/thirdpartysource/PasswordSafe/build/Debug-iphonesimulator\"",
 				);
 				PRODUCT_NAME = PasswordSafes;
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 			};
 			name = Debug;
 		};
@@ -361,7 +369,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Don't Code Sign";
 				COPY_PHASE_STRIP = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = iPasswordSafe_Prefix.pch;
@@ -371,10 +378,44 @@
 					"\"$(SRCROOT)/thirdpartysource/PasswordSafe/build/Debug-iphonesimulator\"",
 				);
 				PRODUCT_NAME = PasswordSafes;
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
+		};
+		A166E75B126FDBAC00A8C66E /* Distribution */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				PREBINDING = NO;
+				REZ_SEARCH_PATHS = "";
+				SDKROOT = iphoneos;
+				USER_HEADER_SEARCH_PATHS = "include thirdpartysource/PasswordSafe";
+			};
+			name = Distribution;
+		};
+		A166E75C126FDBAC00A8C66E /* Distribution */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Erik Johnson";
+				COPY_PHASE_STRIP = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = iPasswordSafe_Prefix.pch;
+				INFOPLIST_FILE = "iPasswordSafe-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/thirdpartysource/PasswordSafe/build/Debug-iphonesimulator\"",
+				);
+				PRODUCT_NAME = PasswordSafes;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Distribution;
 		};
 		C01FCF4F08A954540054247B /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -417,6 +458,7 @@
 			buildConfigurations = (
 				1D6058940D05DD3E006BFB54 /* Debug */,
 				1D6058950D05DD3E006BFB54 /* Release */,
+				A166E75C126FDBAC00A8C66E /* Distribution */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -426,6 +468,7 @@
 			buildConfigurations = (
 				C01FCF4F08A954540054247B /* Debug */,
 				C01FCF5008A954540054247B /* Release */,
+				A166E75B126FDBAC00A8C66E /* Distribution */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

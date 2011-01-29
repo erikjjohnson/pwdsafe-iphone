@@ -25,32 +25,39 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
 // OF SUCH DAMAGE.
 
-
-#import <UIKit/UIKit.h>
-#import "iPWSDatabaseModel.h"
-#import "iPWSDatabaseEntryViewControllerDelegate.h"
-#import "iPWSDatabaseModelDelegate.h"
 #import "SearchOverlayViewController.h"
 
-//------------------------------------------------------------------------------------
-// Class: iPWSDatabaseModelViewController
-// Description:
-//  Represents a simple table view controller displaying the entries of a database model.  When an entry is
-//  selected push an EntryViewController to display that entry
-@interface iPWSDatabaseModelViewController : UITableViewController <iPWSDatabaseEntryViewControllerDelegate, 
-                                                                    iPWSDatabaseModelDelegate> {
-    iPWSDatabaseModel			*model;
-    NSMutableArray				*sectionData;
-    NSMutableArray				*searchResults;
-    UIBarButtonItem				*addButton;
-    UIBarButtonItem             *searchDoneButton;
-	SearchOverlayViewController *searchOverlayController;
-    IBOutlet UISearchBar		*searchBar;
-    BOOL						 isSearching;
-	BOOL						 showSearchResults;
-    BOOL						 isSelectable;
+
+@implementation SearchOverlayViewController
+
+// The designated initializer.  
+- (id) initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil target:(id)t selector:(SEL)s {
+    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
+    if (self) {
+        target   = [t retain];
+		selector = s;
+    }
+    return self;
+}
+ 
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+	if ([target respondsToSelector:selector]) {
+		[target performSelector:selector];
+	}
 }
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil model:(iPWSDatabaseModel *)theModel;
+/*
+// Override to allow orientations other than the default portrait orientation.
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
+    // Return YES for supported orientations.
+    return (interfaceOrientation == UIInterfaceOrientationPortrait);
+}
+*/
+
+- (void)dealloc {
+	[target release];
+    [super dealloc];
+}
+
 
 @end

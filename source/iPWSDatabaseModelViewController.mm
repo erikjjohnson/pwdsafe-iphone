@@ -37,12 +37,14 @@
 - (void)removeEntryFromSectionAtIndexPath:(NSIndexPath *)indexPath;
 - (void)removeEntryFromSection:(iPWSDatabaseEntryModel *)entry;
 - (iPWSDatabaseEntryModel *)entryAtIndexPath:(NSIndexPath *)indexPath;
+- (NSArray *)allEntriesInSection:(NSInteger)section;
 
 - (int)letterToSection:(char)c;
 - (char)sectionToLetter:(int)i;
 - (NSString *)sectionToString:(int)i;
 
 - (void)updateSearchResults;
+- (SearchOverlayViewController *)searchOverlayController;
 
 - (UIBarButtonItem *)addButton;
 - (UIBarButtonItem *)searchDoneButton;
@@ -106,7 +108,7 @@
                                                        nil];
         // Initialize the search results
         searchResults = [[NSMutableArray alloc] init];
-        isSearching  = NO;
+        isSearching   = showSearchResults = NO;
         [self updateSearchResults];
      }
     return self;
@@ -132,19 +134,19 @@
 
 // Number of sections (26 + 1) - the alphabet plus a catch-all
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return isSearching ? 1 : [sectionData count];
+    return showSearchResults ? 1 : [sectionData count];
 }
 
 // Number of entries per section
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     [self updateEditButton];
-    return isSearching ? [searchResults count] : [[sectionData objectAtIndex:section] count];
+    return [[self allEntriesInSection:section] count];
 }
 
 // Section headings - letters A - Z, or # for the catch-all
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-    if (isSearching) return nil;
-    if (![[sectionData objectAtIndex:section] count]) return nil;
+    if (showSearchResults) return nil;
+    if (![[self allEntriesInSection:section] count]) return nil;
     return [self sectionToString:section];
 }
 
@@ -181,8 +183,7 @@
                 autorelease];
     }
 
-    iPWSDatabaseEntryModel *entry = isSearching ? [searchResults objectAtIndex:indexPath.row] :
-                                                  [self entryAtIndexPath:indexPath];
+    iPWSDatabaseEntryModel *entry = [self entryAtIndexPath:indexPath];
     cell.textLabel.text = entry.title;
     
     return cell;
@@ -190,6 +191,27 @@
 
 //------------------------------------------------------------------------------------
 // Searching
+// Add a grey overlay to show the original list and allow for cancelling
+- (SearchOverlayViewController *)searchOverlayController {
+	if (!searchOverlayController) {
+		searchOverlayController = 
+			[[SearchOverlayViewController alloc] initWithNibName:@"SearchOverlayViewController" 
+														  bundle:[NSBundle mainBundle]
+														  target:self
+														selector:@selector(searchDoneButtonPressed)];
+		
+		CGFloat yaxis = self.navigationController.navigationBar.frame.size.height;
+		CGFloat width = self.view.frame.size.width;
+		CGFloat height = self.view.frame.size.height;
+		
+		CGRect frame = CGRectMake(0, yaxis, width, height);
+		searchOverlayController.view.frame = frame;
+		searchOverlayController.view.backgroundColor = [UIColor grayColor];
+		searchOverlayController.view.alpha = 0.5;
+	}
+	return searchOverlayController;
+}
+
 // Don't allow selecting of items until the search has some specific results
 - (void)searchBarTextDidBeginEditing:(UISearchBar *)theSearchBar {
     isSearching = YES;
@@ -200,10 +222,11 @@
 
 // Cancel the search
 - (void)searchDoneButtonPressed {
-    isSearching    = NO;
+    isSearching    = showSearchResults = NO;
     searchBar.text = @"";
     [searchBar resignFirstResponder];
     self.navigationItem.rightBarButtonItem = self.editButtonItem;
+	[[self searchOverlayController].view removeFromSuperview];
     [self updateSearchResults];
 }
 
@@ -220,21 +243,34 @@
 
 // Fill in the search data array with the list of entries matching the current search parameters
 - (void)updateSearchResults {    
-    NSString *searchText = searchBar.text;
-    [searchResults removeAllObjects];
+    NSString                 *searchText = searchBar.text;
+	SearchOverlayViewController *overlay = [self searchOverlayController];
 
-    isSelectable = !isSearching ? YES : ((searchText != nil) && ([searchText length] > 0));
+	// Show search results only if there is search text
+	showSearchResults = isSearching && (searchText != nil) && ([searchText length] > 0);
+    isSelectable      = !isSearching || showSearchResults; 
     self.tableView.scrollEnabled = isSelectable;
-    if (!isSearching || !isSelectable) return;
-    
-    for (iPWSDatabaseEntryModel *entry in model.entries)
-    {
-        NSString *title = entry.title;
-        NSRange r = [title rangeOfString:searchText options:NSCaseInsensitiveSearch];
-        if (NSNotFound != r.location) {
-            [searchResults addObject:entry];
-        }
-    }
+
+    [searchResults removeAllObjects];
+	
+	// If there are no search results and we are searching, use the overlay view
+	if (!showSearchResults && isSearching) {
+		[self.tableView insertSubview:overlay.view aboveSubview:self.parentViewController.view];
+		return;
+	}
+	
+	// If we are searching, remove the overlay and update the search data
+	if (isSearching) {
+		[overlay.view removeFromSuperview];    
+		for (iPWSDatabaseEntryModel *entry in model.entries)
+		{
+			NSString *title = entry.title;
+			NSRange r = [title rangeOfString:searchText options:NSCaseInsensitiveSearch];
+			if (NSNotFound != r.location) {
+				[searchResults addObject:entry];
+			}
+		}
+	}
 }
 
 
@@ -331,8 +367,7 @@
     iPWSDatabaseEntryViewController *vc = 
         [[iPWSDatabaseEntryViewController alloc] initWithNibName:@"iPWSDatabaseEntryViewController"
                                                           bundle:nil
-                                                           entry:isSearching ? [searchResults objectAtIndex:indexPath.row] :
-                                                                               [self entryAtIndexPath:indexPath]
+                                                           entry:[self entryAtIndexPath:indexPath]
                                                         delegate:nil];
     [self.navigationController pushViewController:vc animated:YES];
     [vc release];
@@ -348,6 +383,7 @@
     [searchDoneButton release];
     [model release];
     [sectionData release];
+	[searchOverlayController release];
     [super dealloc];
 }
 
@@ -399,7 +435,12 @@
 }
 
 - (iPWSDatabaseEntryModel *)entryAtIndexPath:(NSIndexPath *)indexPath {
-    return [[sectionData objectAtIndex:indexPath.section] objectAtIndex:indexPath.row];
+	return showSearchResults ? [searchResults objectAtIndex:indexPath.row] :
+							   [[sectionData objectAtIndex:indexPath.section] objectAtIndex:indexPath.row];
+}
+
+- (NSArray *)allEntriesInSection:(NSInteger)section {
+	return showSearchResults ? searchResults : [sectionData objectAtIndex:section];
 }
 
 

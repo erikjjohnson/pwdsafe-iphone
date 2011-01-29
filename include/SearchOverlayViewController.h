@@ -25,32 +25,13 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
 // OF SUCH DAMAGE.
 
-
 #import <UIKit/UIKit.h>
-#import "iPWSDatabaseModel.h"
-#import "iPWSDatabaseEntryViewControllerDelegate.h"
-#import "iPWSDatabaseModelDelegate.h"
-#import "SearchOverlayViewController.h"
 
-//------------------------------------------------------------------------------------
-// Class: iPWSDatabaseModelViewController
-// Description:
-//  Represents a simple table view controller displaying the entries of a database model.  When an entry is
-//  selected push an EntryViewController to display that entry
-@interface iPWSDatabaseModelViewController : UITableViewController <iPWSDatabaseEntryViewControllerDelegate, 
-                                                                    iPWSDatabaseModelDelegate> {
-    iPWSDatabaseModel			*model;
-    NSMutableArray				*sectionData;
-    NSMutableArray				*searchResults;
-    UIBarButtonItem				*addButton;
-    UIBarButtonItem             *searchDoneButton;
-	SearchOverlayViewController *searchOverlayController;
-    IBOutlet UISearchBar		*searchBar;
-    BOOL						 isSearching;
-	BOOL						 showSearchResults;
-    BOOL						 isSelectable;
+@interface SearchOverlayViewController : UIViewController {
+	id  target;
+	SEL selector;
 }
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil model:(iPWSDatabaseModel *)theModel;
+- (id) initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil target:(id)t selector:(SEL)s;
 
 @end
