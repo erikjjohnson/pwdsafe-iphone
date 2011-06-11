@@ -147,7 +147,7 @@ static NSString *OPEN_BUTTON_STR                     = @"Open URL";
     UITableViewCell *cell = nil;
     switch (indexPath.section) {
         case 0: // Title
-            self.userTextField.text = entry.title;
+            if (!editing) self.titleTextField.text = entry.title;
             [self.titleTextField setEnabled:NO];
             cell = titleCell;
             break;
@@ -155,24 +155,24 @@ static NSString *OPEN_BUTTON_STR                     = @"Open URL";
         case 1: // User, passphrase, url
             switch (indexPath.row) {
                 case 0: // User
-                    self.userTextField.text = entry.user;
+                    if (!editing) self.userTextField.text = entry.user;
                     [self.userTextField setEnabled:NO];
                     cell = userCell;
                     break;
                 case 1: // Passphrase
-                    self.passphraseTextField.text = entry.password;
+                    if (!editing) self.passphraseTextField.text = entry.password;
                     [self.passphraseTextField setEnabled:NO];
                     cell = passphraseCell;
                     break;
                 case 2:
-                    self.urlTextField.text = entry.url;
+                    if (!editing) self.urlTextField.text = entry.url;
                     [self.urlTextField setEnabled:NO];
                     cell = urlCell;
                     break;
             }
             break;
         case 2: // Notes
-            self.notesTextView.text = entry.notes;
+            if (!editing) self.notesTextView.text = entry.notes;
             // TextViews have a different default font than the text fields, so change that font here to
             // match the text fields in title, username, url, and password
             self.notesTextView.font = [UIFont fontWithName:self.titleTextField.font.fontName 
