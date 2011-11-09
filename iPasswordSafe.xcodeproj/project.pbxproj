@@ -29,7 +29,6 @@
 		30503845125B848200C55192 /* libPasswordSafe.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3013F2C2124A921400C82647 /* libPasswordSafe.a */; };
 		308F260A1253DD6200164146 /* iPWSDatabaseDetailEditableStyle2TableCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 308F26091253DD6200164146 /* iPWSDatabaseDetailEditableStyle2TableCell.xib */; };
 		30933E7C124C0A8800622BFA /* iPWSDatabaseEntryModel.mm in Sources */ = {isa = PBXBuildFile; fileRef = 30933E7B124C0A8800622BFA /* iPWSDatabaseEntryModel.mm */; };
-		30933F4812512E0A00622BFA /* PasswordAlertView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 30933F4712512E0A00622BFA /* PasswordAlertView.mm */; };
 		30933F551251314000622BFA /* iPWSDatabaseAddViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 30933F531251314000622BFA /* iPWSDatabaseAddViewController.mm */; };
 		30933F591251316F00622BFA /* iPWSDatabaseAddViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 30933F581251316F00622BFA /* iPWSDatabaseAddViewController.xib */; };
 		30DF134C1278C801005929AD /* lockbarbutton.png in Resources */ = {isa = PBXBuildFile; fileRef = 30DF134B1278C801005929AD /* lockbarbutton.png */; };
@@ -93,8 +92,6 @@
 		30933E7B124C0A8800622BFA /* iPWSDatabaseEntryModel.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = iPWSDatabaseEntryModel.mm; path = source/iPWSDatabaseEntryModel.mm; sourceTree = "<group>"; };
 		30933E7D124C0AA500622BFA /* iPWSDatabaseEntryModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = iPWSDatabaseEntryModel.h; path = include/iPWSDatabaseEntryModel.h; sourceTree = "<group>"; };
 		30933E80124C0E2F00622BFA /* iPWSDatabaseEntryModelDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = iPWSDatabaseEntryModelDelegate.h; path = include/iPWSDatabaseEntryModelDelegate.h; sourceTree = "<group>"; };
-		30933F4712512E0A00622BFA /* PasswordAlertView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = PasswordAlertView.mm; path = source/PasswordAlertView.mm; sourceTree = "<group>"; };
-		30933F4F12512E3E00622BFA /* PasswordAlertView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PasswordAlertView.h; path = include/PasswordAlertView.h; sourceTree = "<group>"; };
 		30933F531251314000622BFA /* iPWSDatabaseAddViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = iPWSDatabaseAddViewController.mm; path = source/iPWSDatabaseAddViewController.mm; sourceTree = "<group>"; };
 		30933F571251316400622BFA /* iPWSDatabaseAddViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = iPWSDatabaseAddViewController.h; path = include/iPWSDatabaseAddViewController.h; sourceTree = "<group>"; };
 		30933F581251316F00622BFA /* iPWSDatabaseAddViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = iPWSDatabaseAddViewController.xib; path = resources/iPWSDatabaseAddViewController.xib; sourceTree = "<group>"; };
@@ -187,7 +184,6 @@
 				304BB13B1252953500702002 /* iPWSDatabaseDetailViewController.mm */,
 				303CC30A125688B3005E4970 /* iPWSDatabaseModelViewController.mm */,
 				303CC3521256969F005E4970 /* iPWSDatabaseEntryViewController.mm */,
-				30933F4712512E0A00622BFA /* PasswordAlertView.mm */,
 				3013F25F124A752200C82647 /* iPasswordSafeAppDelegate.mm */,
 				A10F649812F3CBDF00FFC851 /* SearchOverlayViewController.mm */,
 				3013F260124A752200C82647 /* main.mm */,
@@ -211,7 +207,6 @@
 				303CC310125688E5005E4970 /* iPWSDatabaseModelViewController.h */,
 				303CC356125696C6005E4970 /* iPWSDatabaseEntryViewController.h */,
 				30B1F804125A3CE40036DDDA /* iPWSDatabaseEntryViewControllerDelegate.h */,
-				30933F4F12512E3E00622BFA /* PasswordAlertView.h */,
 				A10F649A12F3CBEE00FFC851 /* SearchOverlayViewController.h */,
 				3013F266124A753400C82647 /* iPasswordSafeAppDelegate.h */,
 				3013F270124A76E100C82647 /* iPasswordSafe_Prefix.pch */,
@@ -254,6 +249,7 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastUpgradeCheck = 0420;
 				ORGANIZATIONNAME = JasonJohnsonSoftware;
 			};
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "iPasswordSafe" */;
@@ -326,7 +322,6 @@
 				3013F38E124BB7FA00C82647 /* iPWSDatabaseFactory.mm in Sources */,
 				3013F3B9124BCB7E00C82647 /* iPWSDatabaseModel.mm in Sources */,
 				30933E7C124C0A8800622BFA /* iPWSDatabaseEntryModel.mm in Sources */,
-				30933F4812512E0A00622BFA /* PasswordAlertView.mm in Sources */,
 				30933F551251314000622BFA /* iPWSDatabaseAddViewController.mm in Sources */,
 				304BB07E1252831E00702002 /* iPWSDatabaseImportViewController.mm in Sources */,
 				304BB13D1252953500702002 /* iPWSDatabaseDetailViewController.mm in Sources */,
@@ -392,7 +387,6 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
-				PREBINDING = NO;
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "BB9A3F7C-EF8C-4AF4-870A-EAA333E0D0F0";
 				REZ_SEARCH_PATHS = "";
 				SDKROOT = iphoneos;
@@ -427,7 +421,6 @@
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				PREBINDING = NO;
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "A50789A0-1006-4D58-9FAD-3AA28A96A0B3";
 				REZ_SEARCH_PATHS = "";
 				SDKROOT = iphoneos;
@@ -445,7 +438,6 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
-				PREBINDING = NO;
 				REZ_SEARCH_PATHS = "";
 				SDKROOT = iphoneos;
 				USER_HEADER_SEARCH_PATHS = "include thirdpartysource/PasswordSafe";

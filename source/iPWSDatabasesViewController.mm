@@ -32,7 +32,6 @@
 #import "iPWSDatabaseImportViewController.h"
 #import "iPWSDatabaseDetailViewController.h"
 #import "iPWSDatabaseModelViewController.h"
-#import "PasswordAlertView.h"
 
 //------------------------------------------------------------------------------------
 // Private interface declaration
@@ -264,7 +263,7 @@ enum {
     
     // Import an existing database
     if ([buttonText isEqualToString:IMPORT_DATABASE_BUTTON_STR]) {
-        iPWSDatabaseAddViewController *vc = [[iPWSDatabaseImportViewController alloc]
+        iPWSDatabaseImportViewController *vc = [[iPWSDatabaseImportViewController alloc]
                                                 initWithNibName:@"iPWSDatabaseImportViewController"
                                                          bundle:nil
                                                 databaseFactory:databaseFactory];
@@ -283,20 +282,20 @@ enum {
     [passphrasePromptContext setObject:friendlyName forKey:kPassphrasePromptContextFriendlyName];
     
     // Display the alert view
-    PasswordAlertView *v = [[PasswordAlertView alloc] initWithTitle:@"Password entry"
-                                                            message:friendlyName
-                                                           delegate:self
-                                                  cancelButtonTitle:@"Cancel"
-                                                    doneButtonTitle:@"OK"];
+    UIAlertView *v = [[UIAlertView alloc] initWithTitle:@"Password entry" 
+                                                message:friendlyName 
+                                               delegate:self 
+                                      cancelButtonTitle:@"Cancel" 
+                                      otherButtonTitles:@"OK", nil];
     v.tag = tag;
+    v.alertViewStyle = UIAlertViewStyleSecureTextInput;
     [v show];
     [v release];
 }
 
 // Called when the passphrase entry view is completed. Either import or open a database or show the details view
 - (void)alertView:(UIAlertView *)theAlertView clickedButtonAtIndex:(NSInteger)buttonIndex {
-    PasswordAlertView *alertView = (PasswordAlertView *)theAlertView;
-    if (buttonIndex == alertView.cancelButtonIndex) return;
+    if (buttonIndex == theAlertView.cancelButtonIndex) return;
     
     // Extract the callback context
     NSString *friendlyName = [passphrasePromptContext objectForKey:kPassphrasePromptContextFriendlyName];
@@ -306,18 +305,18 @@ enum {
     NSError *errorMsg;
     if (![databaseFactory addDatabaseNamed:friendlyName
                              withFileNamed:[[databaseFactory databasePathForName:friendlyName] lastPathComponent]
-                                passphrase:alertView.passwordTextField.text
+                                passphrase:[theAlertView textFieldAtIndex:0].text
                                   errorMsg:&errorMsg]) {
         [self alertForError:errorMsg];
         return;
     }
     
     // Do any final special processing    
-    if (PASSPHRASE_PROMPT_OPEN_DATABASE_TAG == alertView.tag) {
+    if (PASSPHRASE_PROMPT_OPEN_DATABASE_TAG == theAlertView.tag) {
         [self showDatabaseModel:[databaseFactory databaseModelNamed:friendlyName errorMsg:NULL]];
     }
     
-    if (PASSPHRASE_PROMPT_SHOW_DATABASE_DETAILS_TAG == alertView.tag) {
+    if (PASSPHRASE_PROMPT_SHOW_DATABASE_DETAILS_TAG == theAlertView.tag) {
         [self showDatabaseDetailsForModel:[databaseFactory databaseModelNamed:friendlyName errorMsg:NULL]];
     }
 }

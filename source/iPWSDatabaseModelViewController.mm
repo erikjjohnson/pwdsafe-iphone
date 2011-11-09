@@ -200,16 +200,18 @@
 														  target:self
 														selector:@selector(searchDoneButtonPressed)];
 		
-		CGFloat yaxis = self.navigationController.navigationBar.frame.size.height;
-		CGFloat width = self.view.frame.size.width;
-		CGFloat height = self.view.frame.size.height;
-		
-		CGRect frame = CGRectMake(0, yaxis, width, height);
-		searchOverlayController.view.frame = frame;
-		searchOverlayController.view.backgroundColor = [UIColor grayColor];
-		searchOverlayController.view.alpha = 0.5;
 	}
-	return searchOverlayController;
+
+    CGFloat yaxis = self.navigationController.navigationBar.frame.size.height;
+    CGFloat width = self.view.frame.size.width;
+    CGFloat height = self.view.frame.size.height;
+    
+    CGRect frame = CGRectMake(0, yaxis, width, height);
+    searchOverlayController.view.frame = frame;
+    searchOverlayController.view.backgroundColor = [UIColor grayColor];
+    searchOverlayController.view.alpha = 0.5;
+	
+    return searchOverlayController;
 }
 
 // Don't allow selecting of items until the search has some specific results
@@ -244,7 +246,6 @@
 // Fill in the search data array with the list of entries matching the current search parameters
 - (void)updateSearchResults {    
     NSString                 *searchText = searchBar.text;
-	SearchOverlayViewController *overlay = [self searchOverlayController];
 
 	// Show search results only if there is search text
 	showSearchResults = isSearching && (searchText != nil) && ([searchText length] > 0);
@@ -252,8 +253,11 @@
     self.tableView.scrollEnabled = isSelectable;
 
     [searchResults removeAllObjects];
-	
+    
+    if (!isSearching) return;
+    
 	// If there are no search results and we are searching, use the overlay view
+	SearchOverlayViewController *overlay = [self searchOverlayController];
 	if (!showSearchResults && isSearching) {
 		[self.tableView insertSubview:overlay.view aboveSubview:self.parentViewController.view];
 		return;
