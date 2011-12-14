@@ -32,6 +32,7 @@
 #import "iPWSDatabaseImportViewController.h"
 #import "iPWSDatabaseDetailViewController.h"
 #import "iPWSDatabaseModelViewController.h"
+#import "PasswordAlertView.h"
 
 //------------------------------------------------------------------------------------
 // Private interface declaration
@@ -282,20 +283,21 @@ enum {
     [passphrasePromptContext setObject:friendlyName forKey:kPassphrasePromptContextFriendlyName];
     
     // Display the alert view
-    UIAlertView *v = [[UIAlertView alloc] initWithTitle:@"Password entry" 
-                                                message:friendlyName 
-                                               delegate:self 
-                                      cancelButtonTitle:@"Cancel" 
-                                      otherButtonTitles:@"OK", nil];
+    PasswordAlertView *v = [[PasswordAlertView alloc] initWithTitle:@"Password entry" 
+                                                            message:friendlyName 
+                                                           delegate:self 
+                                                  cancelButtonTitle:@"Cancel" 
+                                                  doneButtonTitle:@"OK"];
     v.tag = tag;
-    v.alertViewStyle = UIAlertViewStyleSecureTextInput;
+//    v.alertViewStyle = UIAlertViewStyleSecureTextInput;
     [v show];
     [v release];
 }
 
 // Called when the passphrase entry view is completed. Either import or open a database or show the details view
 - (void)alertView:(UIAlertView *)theAlertView clickedButtonAtIndex:(NSInteger)buttonIndex {
-    if (buttonIndex == theAlertView.cancelButtonIndex) return;
+    PasswordAlertView *alertView = (PasswordAlertView *)theAlertView;
+    if (buttonIndex == alertView.cancelButtonIndex) return;
     
     // Extract the callback context
     NSString *friendlyName = [passphrasePromptContext objectForKey:kPassphrasePromptContextFriendlyName];
@@ -305,7 +307,7 @@ enum {
     NSError *errorMsg;
     if (![databaseFactory addDatabaseNamed:friendlyName
                              withFileNamed:[[databaseFactory databasePathForName:friendlyName] lastPathComponent]
-                                passphrase:[theAlertView textFieldAtIndex:0].text
+                                passphrase:alertView.passwordTextField.text
                                   errorMsg:&errorMsg]) {
         [self alertForError:errorMsg];
         return;
