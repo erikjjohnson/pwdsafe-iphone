@@ -41,8 +41,6 @@
 - (void)updatePassphraseMismatchWarning;
 
 - (BOOL)isPassphraseValid;
-
-- (NSString *)createUniqueFilenameWithPrefix: (NSString *)prefix;
 @end
 
 //------------------------------------------------------------------------------------
@@ -174,7 +172,7 @@
 
     NSError *errorMsg;
     if (![databaseFactory addDatabaseNamed:friendlyName.text
-                             withFileNamed:[self createUniqueFilenameWithPrefix:friendlyName.text]
+                             withFileNamed:[databaseFactory createUniqueFilenameWithPrefix:friendlyName.text]
                                 passphrase:passphrase.text
                                   errorMsg:&errorMsg]) {
         UIAlertView *v = [[UIAlertView alloc] initWithTitle:@"Add safe failed"
@@ -187,32 +185,4 @@
     }
 }
      
-//------------------------------------------------------------------------------------
-// Construct a unique filename within the documents directory
-- (NSString *)createUniqueFilenameWithPrefix: (NSString *)prefix {
-    // First strip all of the non-alpha/digit characters from the prefix
-    NSMutableString *cleanPrefix = [NSMutableString string];
-    int prefixLen = [prefix length];
-    for (int i = 0; i < prefixLen; ++i) {
-        char c = [prefix characterAtIndex:i];
-        if (isalnum(c)) {
-            [cleanPrefix appendFormat:@"%c", c];
-        }
-    }
-    
-    // Find the documents directories
-    NSString *docDir = databaseFactory.documentsDirectory;
-    
-    // Check whether the filename is already unique
-    NSString *tmpPath = [NSString stringWithFormat:@"%@/%@.psafe3", docDir, cleanPrefix];
-    if ([[NSFileManager defaultManager] fileExistsAtPath:tmpPath]) {
-        // Construct a temporary filename
-        char *tmp = tempnam([docDir UTF8String], [cleanPrefix UTF8String]);
-        tmpPath = [NSString stringWithFormat:@"%s", tmp];
-        free(tmp);
-    }
-    return [tmpPath lastPathComponent];
-}
-
-
 @end

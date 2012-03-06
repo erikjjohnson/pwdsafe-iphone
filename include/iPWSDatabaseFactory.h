@@ -61,6 +61,7 @@
 - (BOOL)doesFriendlyNameExist:(NSString *)friendlyName;
 - (BOOL)isFileNameMapped:(NSString *)fileName;
 - (NSString *)databasePathForName:(NSString *)friendlyName;
+- (NSString *)createUniqueFilenameWithPrefix:(NSString *)prefix;
 
 // Accessing the database models
 - (iPWSDatabaseModel *)databaseModelNamed:(NSString *)friendlyName errorMsg:(NSError **)errorMsg;
@@ -77,5 +78,8 @@
                    errorMsg:(NSError **)errorMsg;
 - (BOOL)removeDatabaseNamed:(NSString *)friendlyName
                    errorMsg:(NSError **)errorMsg;
+- (BOOL)duplicateDatabaseNamed:(NSString *)origFriendlyName
+                     toNewName:(NSString *)newFriendlyName
+                      errorMsg:(NSError **)errorMsg;
 
 @end

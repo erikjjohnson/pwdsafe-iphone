@@ -52,6 +52,7 @@
 - (void)addButtonPressed;
 - (void)searchDoneButtonPressed;
 - (void)updateEditButton;
+
 @end
 
 
@@ -333,7 +334,7 @@
 // is done editing it will call iPWSDatabaseEntryViewController:didFinishEditingEntry:
 - (void)addButtonPressed {
     CItemData data;
-    iPWSDatabaseEntryModel *entry = [[iPWSDatabaseEntryModel alloc] initWithData:&data delegate:nil];
+    iPWSDatabaseEntryModel *entry = [[[iPWSDatabaseEntryModel alloc] initWithData:&data delegate:nil] autorelease];
     iPWSDatabaseEntryViewController *vc = 
         [[iPWSDatabaseEntryViewController alloc] initWithNibName:@"iPWSDatabaseEntryViewController"
                                                           bundle:nil
@@ -387,6 +388,7 @@
     [searchDoneButton release];
     [model release];
     [sectionData release];
+    [searchResults release];
 	[searchOverlayController release];
     [super dealloc];
 }
@@ -402,8 +404,7 @@
     int numSections = 'Z' - 'A' + 2;
     sectionData = [[NSMutableArray alloc] initWithCapacity:numSections];
     for (int s = 0; s < numSections; ++s) {
-        [sectionData insertObject:[[NSMutableArray alloc] initWithCapacity:0]
-                          atIndex:s];
+        [sectionData insertObject:[NSMutableArray arrayWithCapacity:0] atIndex:s];
     }
     
     // Now iterate the model entries and add them

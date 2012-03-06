@@ -34,11 +34,13 @@
 //
 
 #import "iPWSDatabaseModel.h"
+#import "corelib/PWScore.h"
 
 //------------------------------------------------------------------------------------
 // Private interface
 @interface iPWSDatabaseModel ()
 // ---- File management
++ (PWScore *)pwsCore;
 - (BOOL)openPWSfileForReading;
 - (BOOL)openPWSfileForWriting;
 - (BOOL)openPWSfileUsingMode:(PWSfile::RWmode)mode;
@@ -49,6 +51,9 @@
 - (NSError *)errorForStatus:(int)status;
 - (NSError *)lastError;
 - (void)setLastError:(NSError *)error;
+
+- (PWSfile *)pwsFileHandle;
+- (void)setPwsFileHandle:(PWSfile *)handle;
 @end
 
 //------------------------------------------------------------------------------------
@@ -82,11 +87,6 @@ static NSDictionary *iPWSDatabaseModelErrorCodesMap =
 //------------------------------------------------------------------------------------
 // Class variables
 
-// The PWS C-library requires the session key to be initialized exactly once, this variable tracks that this is
-// done the once, when the first model is created
-static BOOL sessionKeyInitialized = NO;
-
-
 //------------------------------------------------------------------------------------
 // Model implementation
 @implementation iPWSDatabaseModel
@@ -105,6 +105,26 @@ static BOOL sessionKeyInitialized = NO;
 + (BOOL)isPasswordSafeFile:(NSString *)filePath {
     return (PWSfile::UNKNOWN_VERSION != PWSfile::ReadVersion([filePath UTF8String])); 
 }
+
++ (PWScore *)pwsCore {
+    static PWScore* core = NULL;
+    static BOOL sessionKeyInitialized = NO;
+
+    @synchronized(self) {
+        if (!sessionKeyInitialized) {
+            try {
+                core = new PWScore();
+            } catch(...) {
+                // Once, and only once, the PasswordSafe engine needs to be established
+                if (!sessionKeyInitialized) {
+                    CItemData::SetSessionKey();
+                }
+            }
+            sessionKeyInitialized = YES;
+        }
+    }
+    return core;
+}
    
 //------------------------------------------------------------------------------------
 // Instance methdos
@@ -121,6 +141,51 @@ static BOOL sessionKeyInitialized = NO;
     return &headerRecord;
 }
 
+// Read and set the passphrase
+- (NSString *)passphrase {
+    return passphrase;
+}
+
+// Setting the passphrase (private accessor only)
+- (void)setPassphrase:(NSString *)thePassphrase {
+    if (passphrase != thePassphrase) {
+        [passphrase release];
+        passphrase = [thePassphrase copy];
+    }
+}
+
+// Changing the passphrase (public)
+- (BOOL)changePassphrase:(NSString *)newPassphrase {
+    if (passphrase != newPassphrase) {
+        try {
+            PWScore *core = [[self class] pwsCore];
+            if (NULL == core) return NO;
+            core->SetCurFile([fileName UTF8String]);
+            core->SetPassKey([newPassphrase UTF8String]);
+            core->WriteCurFile();
+        } catch (...) {
+            return NO;
+        }
+        self.passphrase = newPassphrase;
+    }
+    return YES;
+}
+
+// Setting the internal file handle
+- (PWSfile *)pwsFileHandle {
+    return pwsFileHandle;
+}
+
+- (void)setPwsFileHandle:(PWSfile *)handle {
+    if (pwsFileHandle != handle) {
+        if (NULL != pwsFileHandle) {
+            [self closePWSfile];
+            delete pwsFileHandle;
+        }
+        pwsFileHandle = handle;
+    }
+}
+
 //------------------------------------------------------------------------------------
 // Initialization - if the file does not exist, a new database is created.
 - (id)initNamed:(NSString *)theFriendlyName 
@@ -128,11 +193,8 @@ static BOOL sessionKeyInitialized = NO;
      passphrase:(NSString *)thePassphrase
        errorMsg:(NSError **)errorMsg {
     
-    // Once, and only once, the PasswordSafe engine needs to be established
-    if (!sessionKeyInitialized) {
-        CItemData::SetSessionKey();
-        sessionKeyInitialized = YES;
-    }
+    // Ensure the password safe library is initialized
+    [[self class] pwsCore];
     
     // Sanity checks on the name, file name, and passphrase
     if (!theFriendlyName || ![theFriendlyName length] || !theFileName || ![theFileName length]) {
@@ -146,29 +208,29 @@ static BOOL sessionKeyInitialized = NO;
     
     // Initialize the instance by either creating a new file or opening an existing one
     if (self = [super init]) {
-        entries       = [[NSMutableArray alloc] init];
-        fileName      = [theFileName retain];
-        friendlyName  = [theFriendlyName retain];
-        passphrase    = [thePassphrase retain];
+        entries         = [[NSMutableArray alloc] init];
+        fileName        = [theFileName retain];
+        friendlyName    = [theFriendlyName retain];
+        self.passphrase = thePassphrase;
         
         BOOL exists = [[NSFileManager defaultManager] fileExistsAtPath:fileName];
         if (exists) {
             // The file exists, open it and read all of the entries
             if (![self openPWSfileForReading]) {
-                if (errorMsg && *errorMsg) *errorMsg = [self.lastError copy];
+                if (errorMsg && *errorMsg) *errorMsg = [[self.lastError copy] autorelease];
                 [self release];
                 return nil;
             }
 
             CItemData item;
-            while (pwsFileHandle->ReadRecord(item) == PWSfile::SUCCESS) {
-                [entries addObject:[[iPWSDatabaseEntryModel alloc] initWithData:&item delegate:self]];
+            while (self.pwsFileHandle->ReadRecord(item) == PWSfile::SUCCESS) {
+                [entries addObject:[[[iPWSDatabaseEntryModel alloc] initWithData:&item delegate:self] autorelease]];
                 item = CItemData(); // The C model does not clear all fields, so do so here
             }
         } else { 
             // The file will be newly created. 
             if (![self openPWSfileForWriting]) {
-                if (errorMsg && *errorMsg) *errorMsg = [self.lastError copy];
+                if (errorMsg && *errorMsg) *errorMsg = [[self.lastError copy] autorelease];
                 [self release];
                 return nil;
             }
@@ -182,8 +244,9 @@ static BOOL sessionKeyInitialized = NO;
 
 // Deallocation
 - (void)dealloc {
-    self.lastError = nil;
-    [passphrase release];
+    self.lastError  = nil;
+    self.passphrase = nil;
+    self.pwsFileHandle = NULL;
     [friendlyName release];
     [fileName release];
     [entries release];
@@ -238,26 +301,26 @@ static BOOL sessionKeyInitialized = NO;
         v = PWSfile::VCURRENT;
     }
     
-    pwsFileHandle = PWSfile::MakePWSfile([fileName UTF8String], v, mode, status, NULL, NULL);
-    if ((NULL == pwsFileHandle) || (PWSfile::SUCCESS != status)) {
+    self.pwsFileHandle = PWSfile::MakePWSfile([fileName UTF8String], v, mode, status, NULL, NULL);
+    if ((NULL == self.pwsFileHandle) || (PWSfile::SUCCESS != status)) {
         self.lastError = [self errorForStatus:status];
         return NO;
     }
     
     // Open the file
-    if (PWSfile::SUCCESS != pwsFileHandle->Open([passphrase UTF8String])) {
+    if (PWSfile::SUCCESS != self.pwsFileHandle->Open([self.passphrase UTF8String])) {
         self.lastError = [self errorForStatus:PWSfile::WRONG_PASSWORD];
         return NO;
     }
     
     // Read in and cache the header
-    headerRecord = pwsFileHandle->GetHeader();
+    headerRecord = self.pwsFileHandle->GetHeader();
     return YES;
 }
 
 // Close a safe file
 - (void)closePWSfile {
-    pwsFileHandle->Close();
+    self.pwsFileHandle->Close();
 }
 
 // Synchronize the current in-memory model with the underlying file
@@ -284,11 +347,11 @@ static BOOL sessionKeyInitialized = NO;
         NSEnumerator *etr = [entries objectEnumerator];
         iPWSDatabaseEntryModel *entry;
         while (entry = (iPWSDatabaseEntryModel *)[etr nextObject]) {
-            success &= [entry writeToPWSfile:pwsFileHandle];
+            success &= [entry writeToPWSfile:self.pwsFileHandle];
         }
         
         // Read in and cache the header
-        headerRecord = pwsFileHandle->GetHeader();
+        headerRecord = self.pwsFileHandle->GetHeader();
         
         [self closePWSfile];
     }
@@ -318,8 +381,10 @@ static BOOL sessionKeyInitialized = NO;
 
 // Set the most recent error
 - (void)setLastError:(NSError *)error {
-    [lastError release];
-    lastError = [error retain];
+    if (lastError != error) {
+        [lastError release];
+        lastError = [error retain];
+    }
 }
 
 @end

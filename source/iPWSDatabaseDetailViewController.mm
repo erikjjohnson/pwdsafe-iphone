@@ -33,6 +33,7 @@
 // Private interface
 @interface iPWSDatabaseDetailViewController ()
 - (NSString *)modelFriendlyName;
+- (NSString *)modelPassphrase;
 - (NSString *)modelNumberOfEntries;
 - (NSString *)modelVersion;
 - (NSString *)modelFilePath;
@@ -40,16 +41,17 @@
 - (NSString *)modelLastSavedBy;
 - (NSString *)modelLastSavedOn;
 
-- (UIBarButtonItem *)renameButton;
-- (UIBarButtonItem *)doneRenameButton;
-- (UIBarButtonItem *)cancelRenameButton;
+- (UIBarButtonItem *)editButton;
+- (UIBarButtonItem *)doneEditButton;
+- (UIBarButtonItem *)cancelEditButton;
 
-- (BOOL)renaming;
-- (void)setRenaming:(BOOL)isRenaming;
-- (void)renameButtonPressed;
-- (void)doneRenameButtonPressed;
-- (void)cancelRenameButtonPressed;
-- (void)modelNameChanged:(id)sender;
+- (BOOL)editing;
+- (void)setEditing:(BOOL)isEditing;
+- (void)editButtonPressed;
+- (void)doneEditButtonPressed;
+- (void)cancelEditButtonPressed;
+
+- (void)duplicationAlertWithDescription:(NSString *)description success:(BOOL)success;
 @end
 
 //------------------------------------------------------------------------------------
@@ -59,36 +61,6 @@
 //  the number of entries in the file, the version of the file, the creation date and creation machine.  In addition,
 //  the filename is displayed allowing for iTunes file sharing management.
 @implementation iPWSDatabaseDetailViewController
-
-// The following strucutres define the sections and fields of the table view
-typedef struct CellMapStruct {
-    NSString*   name;
-    SEL         selector;
-} CellMap;
-
-static CellMap placeholderSectionFields[] = {};
-
-static CellMap generalSectionFields[] = {
-    { @"# entries", @selector(modelNumberOfEntries) },
-    { @"Version", @selector(modelVersion) },
-    { @"File", @selector(modelFilePath) }
-};
-
-static CellMap modificationDetailsSectionFields [] = {
-    { @"Last saved", @selector(modelWhenLastSaved) },
-    { @"Saved by", @selector(modelLastSavedBy) },
-    { @"Saved on", @selector(modelLastSavedOn) }
-};
-
-static struct CellMapArray {
-    CellMap *cells;
-    size_t   size;
-    BOOL     canEdit;
-} CellMappings[] = {
-    { placeholderSectionFields,         sizeof(placeholderSectionFields)/sizeof(placeholderSectionFields[0]), YES },
-    { generalSectionFields,             sizeof(generalSectionFields)/sizeof(generalSectionFields[0]), NO },
-    { modificationDetailsSectionFields, sizeof(modificationDetailsSectionFields)/sizeof(modificationDetailsSectionFields[0]), NO }
-};
 
 //------------------------------------------------------------------------------------
 // Public interface
@@ -104,7 +76,7 @@ static struct CellMapArray {
         databaseFactory           = [theDatabaseFactory retain];
         model                     = [theModel retain];
         self.navigationItem.title = @"Details";
-        renaming = NO;
+        editing = NO;
     }
     return self;
 }
@@ -113,9 +85,9 @@ static struct CellMapArray {
 - (void)dealloc {
     [databaseFactory release];
     [model release];
-    [renameButton release];
-    [doneRenameButton release];
-    [cancelRenameButton release];
+    [editButton release];
+    [doneEditButton release];
+    [cancelEditButton release];
     [super dealloc];
 }
 
@@ -123,7 +95,20 @@ static struct CellMapArray {
 // Interface handlers
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.navigationItem.rightBarButtonItem = self.renameButton;
+    self.navigationItem.rightBarButtonItem = self.editButton;
+    
+    modelNameTextField.text    = [self modelFriendlyName];
+    modelNameTextField.enabled = NO;
+    
+    passphraseTextField.text    = [self modelPassphrase];
+    passphraseTextField.enabled = NO;
+    
+    numberOfEntriesTextField.text = [self modelNumberOfEntries];
+    versionTextField.text         = [self modelVersion];
+    filenameTextField.text        = [self modelFilePath];
+    lastSavedTextField.text       = [self modelWhenLastSaved];
+    savedByTextField.text         = [self modelLastSavedBy];
+    savedOnTextField.text         = [self modelLastSavedOn];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -131,67 +116,54 @@ static struct CellMapArray {
     self.navigationController.toolbarHidden = YES;    
 }
 
+
 //------------------------------------------------------------------------------------
-// Table data source 
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return (sizeof(CellMappings)/sizeof(CellMappings[0]));
-}
-
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return (0 == section) ? 1 : CellMappings[section].size;
-}
-
-// Return the cell for a given section and row
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    NSString *CellIdentifier = (0 == indexPath.section) ? @"iPWSDatabaseEditableStyle2TableCell" : @"StandardCell";
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-
-    if (nil == cell) {
-        // Return the custom cell for section 0
-        if (0 == indexPath.section) {
-            [[NSBundle mainBundle] loadNibNamed:@"iPWSDatabaseDetailEditableStyle2TableCell" owner:self options:nil];
-            cell = modelnameTableViewCell;
-            modelnameTableViewCell = nil;
-        } else {
-            // Otherwise, return standard cell
-            cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue2 
-                                           reuseIdentifier:CellIdentifier] autorelease];
-        }
-    }
-
-    if (0 == indexPath.section) {
-        modelNameTextField      = (UITextField *)[cell viewWithTag:1];
-        modelNameTextField.text = [self modelFriendlyName];
-        [modelNameTextField addTarget:self 
-                               action:@selector(modelNameChanged:) 
-                     forControlEvents:UIControlEventEditingChanged];
-        [modelNameTextField setEnabled:NO];
-        
-        UILabel *l = (UILabel *)[cell viewWithTag:2];
-        l.text = @"Name";
-    } else {
-        CellMap *cm               = &(CellMappings[indexPath.section].cells[indexPath.row]);
-        cell.textLabel.text       = cm->name;
-        cell.detailTextLabel.text = [self performSelector:cm->selector];            
-    }
-    cell.selectionStyle = UITableViewCellSelectionStyleNone;
+// Editable buttons
+- (IBAction)duplicateButtonPressed {
+    // Get the current friendly name and append - copy (x) until we find an unused name
+    NSString *newFriendlyName = [NSString stringWithFormat:@"%@ - copy", [self modelFriendlyName]];
     
-    return cell;
-}
-
-//------------------------------------------------------------------------------------
-// Table view delgate
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (0 != indexPath.section) {
-        [modelNameTextField resignFirstResponder];
+    int cnt = 2;
+    while ((cnt < 10) && [databaseFactory doesFriendlyNameExist:newFriendlyName]) {
+        newFriendlyName = [NSString stringWithFormat:@"%@ - copy(%d)", [self modelFriendlyName], cnt++];
     }
+    
+    if ([databaseFactory doesFriendlyNameExist:newFriendlyName]) {
+        [self duplicationAlertWithDescription:@"Too many copies already exist." success:NO];
+        return;
+    }
+    
+    if (![databaseFactory duplicateDatabaseNamed:[self modelFriendlyName]
+                                       toNewName:newFriendlyName
+                                        errorMsg:NULL]) {
+        NSString *msg = @"An internal error prevented a duplicate file from being created";
+        [self duplicationAlertWithDescription:msg success:NO];
+        return;
+    }
+    
+    NSString *msg = [NSString stringWithFormat:@"The new safe is named \"%@\"", newFriendlyName];
+    [self duplicationAlertWithDescription:msg success:YES];
 }
 
+- (void)duplicationAlertWithDescription:(NSString *)description success:(BOOL)success {
+    NSString *title = success ? @"Safe was duplicated" : @"Failed to duplicate safe";
+    UIAlertView* alertView = [[UIAlertView alloc] initWithTitle:title
+                                                        message:description
+                                                       delegate:nil
+                                              cancelButtonTitle:@"Dismiss"
+                                              otherButtonTitles:nil];
+    [alertView show];
+    [alertView release];
+}
 
 //------------------------------------------------------------------------------------
 // Private interface 
 - (NSString *)modelFriendlyName {
     return model.friendlyName;
+}
+
+- (NSString *)modelPassphrase {
+    return model.passphrase;
 }
 
 - (NSString *)modelNumberOfEntries {
@@ -221,67 +193,70 @@ static struct CellMapArray {
 
 //------------------------------------------------------------------------------------
 // Navigation buttons
-- (UIBarButtonItem *)renameButton {
-    if (!renameButton) {
-        renameButton = [[UIBarButtonItem alloc] initWithTitle:@"Rename"
-                                                        style:UIBarButtonItemStylePlain
-                                                       target:self
-                                                       action:@selector(renameButtonPressed)];
+- (UIBarButtonItem *)editButton {
+    if (!editButton) {
+        editButton = [[UIBarButtonItem alloc] initWithTitle:@"Edit"
+                                                      style:UIBarButtonItemStylePlain
+                                                     target:self
+                                                     action:@selector(editButtonPressed)];
     }
-    return renameButton;
+    return editButton;
 }
 
-- (UIBarButtonItem *)doneRenameButton {
-    if (!doneRenameButton) {
-        doneRenameButton = [[UIBarButtonItem alloc] initWithTitle:@"Done"
-                                                            style:UIBarButtonItemStyleDone
+- (UIBarButtonItem *)doneEditButton {
+    if (!doneEditButton) {
+        doneEditButton = [[UIBarButtonItem alloc] initWithTitle:@"Done"
+                                                          style:UIBarButtonItemStyleDone
+                                                         target:self
+                                                         action:@selector(doneEditButtonPressed)];
+    }
+    return doneEditButton;
+}
+
+- (UIBarButtonItem *)cancelEditButton {
+    if (!cancelEditButton) {
+        cancelEditButton = [[UIBarButtonItem alloc] initWithTitle:@"Cancel"
+                                                            style:UIBarButtonItemStylePlain
                                                            target:self
-                                                           action:@selector(doneRenameButtonPressed)];
+                                                           action:@selector(cancelEditButtonPressed)];
     }
-    return doneRenameButton;
-}
-
-- (UIBarButtonItem *)cancelRenameButton {
-    if (!cancelRenameButton) {
-        cancelRenameButton = [[UIBarButtonItem alloc] initWithTitle:@"Cancel"
-                                                              style:UIBarButtonItemStylePlain
-                                                             target:self
-                                                             action:@selector(cancelRenameButtonPressed)];
-    }
-    return cancelRenameButton;
+    return cancelEditButton;
 }
 
 
 //------------------------------------------------------------------------------------
-// Handle renaming modes
-- (BOOL)renaming {
-    return renaming;
+// Handle editing modes
+- (BOOL)editing {
+    return editing;
 }
 
-- (void)setRenaming:(BOOL)isRenaming {
-    renaming = isRenaming;
-    if (renaming) {
+- (void)setEditing:(BOOL)isEditing {
+    editing = isEditing;
+    if (editing) {
         [modelNameTextField setEnabled:YES];
-        [modelNameTextField becomeFirstResponder];
-        self.navigationItem.leftBarButtonItem  = self.cancelRenameButton;
-        self.navigationItem.rightBarButtonItem = self.doneRenameButton;        
+        [passphraseTextField setEnabled:YES];
+        self.navigationItem.leftBarButtonItem  = self.cancelEditButton;
+        self.navigationItem.rightBarButtonItem = self.doneEditButton;        
     } else {
         [modelNameTextField resignFirstResponder];
+        [passphraseTextField resignFirstResponder];
         [modelNameTextField setEnabled:NO];
-        modelNameTextField.text = [self modelFriendlyName];
+        [passphraseTextField setEnabled:NO];
+        modelNameTextField.text  = [self modelFriendlyName];
+        passphraseTextField.text = [self modelPassphrase];
         self.navigationItem.leftBarButtonItem  = nil;
-        self.navigationItem.rightBarButtonItem = self.renameButton;        
+        self.navigationItem.rightBarButtonItem = self.editButton;        
     }
 }
 
-- (void) renameButtonPressed {
-    self.renaming = YES;
+- (void) editButtonPressed {
+    self.editing = YES;
 }
 
-- (void)doneRenameButtonPressed {
+- (void)doneEditButtonPressed {
+    // Check for renaming
     NSString *origName = model.friendlyName;
-    NSString *newName = modelNameTextField.text;
-    
+    NSString *newName  = modelNameTextField.text;
     if (![origName isEqualToString:newName]) {
         NSError *errorMsg;
         if (![databaseFactory renameDatabaseNamed:origName toNewName:newName errorMsg:&errorMsg]) {
@@ -294,16 +269,38 @@ static struct CellMapArray {
             [v release];
         }
     }
-    self.renaming = NO;
+    
+    // Check for new passphrase
+    NSString *origPassphrase = model.passphrase;
+    NSString *newPassphrase  = passphraseTextField.text;
+    if (![origPassphrase isEqualToString:newPassphrase]) {
+        if (![model changePassphrase:newPassphrase]) {
+            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Failed to change passphrase"
+                                                                message:@"An unexpected error prevent the passphrase from changing"
+                                                               delegate:nil
+                                                      cancelButtonTitle:@"Dismiss"
+                                                      otherButtonTitles:nil];
+            [alertView show];
+            [alertView release];
+        }
+    }
+    
+    self.editing = NO;
 }
 
-- (void)cancelRenameButtonPressed {
-    self.renaming = NO;
+- (void)cancelEditButtonPressed {
+    self.editing = NO;
 }
 
-- (void)modelNameChanged:(id)sender {
-    if (self.renaming) {
+- (IBAction)modelNameChanged {
+    if (editing) {
         [self.navigationItem.rightBarButtonItem setEnabled: (0 != [modelNameTextField.text length])];
+    }
+}
+
+- (IBAction)passphraseChanged {
+    if (editing) {
+        [self.navigationItem.rightBarButtonItem setEnabled: (0 != [passphraseTextField.text length])];
     }
 }
 

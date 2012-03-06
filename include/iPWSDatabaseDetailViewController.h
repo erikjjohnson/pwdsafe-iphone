@@ -35,24 +35,34 @@
 // Description
 //  The DatabaseDetailViewController displays the header information about the given PasswordSafe model.  This includes
 //  the number of entries in the file, the version of the file, the creation date and creation machine.  In addition,
-//  the filename is displayed allowing for iTunes file sharing management.
-@interface iPWSDatabaseDetailViewController : UITableViewController {
+//  the filename is displayed allowing for iTunes file sharing management.  Editing of the name, passphrase, and 
+//  duplication is handled by this controller as well.
+@interface iPWSDatabaseDetailViewController : UIViewController {
     iPWSDatabaseModel   *model;
     iPWSDatabaseFactory *databaseFactory;
     
-    // Custom cell in section 0
-    IBOutlet UITableViewCell *modelnameTableViewCell;
-    IBOutlet UITextField     *modelNameTextField;   
+    IBOutlet UITextField     *modelNameTextField;
+    IBOutlet UITextField     *passphraseTextField;
+    IBOutlet UITextField     *numberOfEntriesTextField;
+    IBOutlet UITextField     *versionTextField;
+    IBOutlet UITextField     *filenameTextField;
+    IBOutlet UITextField     *lastSavedTextField;
+    IBOutlet UITextField     *savedByTextField;
+    IBOutlet UITextField     *savedOnTextField;
     
-    BOOL                      renaming;
-    UIBarButtonItem          *renameButton;
-    UIBarButtonItem          *doneRenameButton;
-    UIBarButtonItem          *cancelRenameButton;
+    BOOL                      editing;
+    UIBarButtonItem          *editButton;
+    UIBarButtonItem          *doneEditButton;
+    UIBarButtonItem          *cancelEditButton;
 }
 
 - (id)initWithNibName:(NSString *)nibNameOrNil 
                bundle:(NSBundle *)nibBundleOrNil
       databaseFactory:(iPWSDatabaseFactory *)theDatabaseFactory
                 model:(iPWSDatabaseModel *)model;
+
+- (IBAction)duplicateButtonPressed;
+- (IBAction)passphraseChanged;
+- (IBAction)modelNameChanged;
 
 @end

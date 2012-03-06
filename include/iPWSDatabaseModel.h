@@ -62,6 +62,7 @@
 @property (copy)     NSString                      *friendlyName;
 @property (readonly) PWSfile::VERSION              version;
 @property (readonly) const PWSfile::HeaderRecord   *headerRecord;
+@property (readonly) NSString                      *passphrase;
 
 // Initialization - if the file does not exist, a new database is created.
 - (id)initNamed:(NSString *)theFriendlyName 
@@ -72,5 +73,8 @@
 // Entry modifications (passphrase required)
 - (BOOL)addDatabaseEntry:(iPWSDatabaseEntryModel *)entry;
 - (BOOL)removeDatabaseEntry:(iPWSDatabaseEntryModel *)entry;
+
+// Passphrase changes
+- (BOOL)changePassphrase:(NSString *)newPassphrase;
 
 @end

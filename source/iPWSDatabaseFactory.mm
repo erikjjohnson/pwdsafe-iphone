@@ -142,6 +142,34 @@ static NSString *kiPWSDatabaseFactoryUserDefaults = @"kiPWSDatabaseFactoryUserDe
 }
 
 //------------------------------------------------------------------------------------
+// Construct a unique filename within the documents directory
+- (NSString *)createUniqueFilenameWithPrefix: (NSString *)prefix {
+    // First strip all of the non-alpha/digit characters from the prefix
+    NSMutableString *cleanPrefix = [NSMutableString string];
+    int prefixLen = [prefix length];
+    for (int i = 0; i < prefixLen; ++i) {
+        char c = [prefix characterAtIndex:i];
+        if (isalnum(c)) {
+            [cleanPrefix appendFormat:@"%c", c];
+        }
+    }
+    
+    // Find the documents directories
+    NSString *docDir = self.documentsDirectory;
+    
+    // Check whether the filename is already unique
+    NSString *tmpPath = [NSString stringWithFormat:@"%@/%@.psafe3", docDir, cleanPrefix];
+    if ([[NSFileManager defaultManager] fileExistsAtPath:tmpPath]) {
+        // Construct a temporary filename
+        char *tmp = tempnam([docDir UTF8String], [cleanPrefix UTF8String]);
+        tmpPath = [NSString stringWithFormat:@"%s", tmp];
+        free(tmp);
+    }
+    return [tmpPath lastPathComponent];
+}
+
+
+//------------------------------------------------------------------------------------
 // Accessing the database models
 
 // The database for a given name.  The friendlyName may exists, but the database not exist if either
@@ -192,10 +220,10 @@ static NSString *kiPWSDatabaseFactoryUserDefaults = @"kiPWSDatabaseFactoryUserDe
     }
     
     // Construct a new model
-    iPWSDatabaseModel *model = [[iPWSDatabaseModel alloc] initNamed:friendlyName
+    iPWSDatabaseModel *model = [[[iPWSDatabaseModel alloc] initNamed:friendlyName
                                                           fileNamed:[documentsDirectory stringByAppendingPathComponent:fileName]
                                                          passphrase:passphrase
-                                                           errorMsg:errorMsg];
+                                                           errorMsg:errorMsg] autorelease];
     if (!model) {
         return NO;
     }
@@ -274,6 +302,38 @@ static NSString *kiPWSDatabaseFactoryUserDefaults = @"kiPWSDatabaseFactoryUserDe
     [delegate iPWSDatabaseFactory:self didRemoveModelNamed:friendlyName];
     return YES;
 }
+
+// Duplicate the given database
+- (BOOL)duplicateDatabaseNamed:(NSString *)origFriendlyName
+                     toNewName:(NSString *)newFriendlyName
+                      errorMsg:(NSError **)errorMsg {
+    // Sanity checks
+    if ([self doesFriendlyNameExist:newFriendlyName]) {
+        if (errorMsg) {
+            *errorMsg = [self errorWithStr:[NSString stringWithFormat:@"Database \"%@\" already exists"]];
+        }
+        return NO;
+    }
+    
+    // Get the original database model
+    iPWSDatabaseModel *origModel = [self databaseModelNamed:origFriendlyName errorMsg:errorMsg];
+    if (!origModel) return NO;
+    
+    // Copy the database file
+    NSString* newFileName = [self createUniqueFilenameWithPrefix:newFriendlyName];
+    if (![[NSFileManager defaultManager] copyItemAtPath:[self databasePathForName:origFriendlyName]
+                                                 toPath:[documentsDirectory stringByAppendingPathComponent:newFileName] 
+                                                  error:errorMsg]) {
+        return NO;
+    }
+    
+    // Add the new database into our map
+    return [self addDatabaseNamed:newFriendlyName 
+                    withFileNamed:newFileName 
+                       passphrase:origModel.passphrase
+                         errorMsg:errorMsg];
+}
+
 
 //------------------------------------------------------------------------------------
 // Private interface
