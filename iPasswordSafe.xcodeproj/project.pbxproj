@@ -354,7 +354,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = iPasswordSafe_Prefix.pch;
 				INFOPLIST_FILE = "iPasswordSafe-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 4.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/thirdpartysource/PasswordSafe/build/Debug-iphonesimulator\"",
@@ -371,7 +371,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = iPasswordSafe_Prefix.pch;
 				INFOPLIST_FILE = "iPasswordSafe-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 4.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/thirdpartysource/PasswordSafe/build/Debug-iphonesimulator\"",
@@ -408,7 +408,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = iPasswordSafe_Prefix.pch;
 				INFOPLIST_FILE = "iPasswordSafe-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 4.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/thirdpartysource/PasswordSafe/build/Debug-iphonesimulator\"",
