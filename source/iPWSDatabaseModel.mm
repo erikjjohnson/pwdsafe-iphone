@@ -34,13 +34,12 @@
 //
 
 #import "iPWSDatabaseModel.h"
-#import "corelib/PWScore.h"
+#import "iPWSMacros.h"
 
 //------------------------------------------------------------------------------------
 // Private interface
 @interface iPWSDatabaseModel ()
 // ---- File management
-+ (PWScore *)pwsCore;
 - (BOOL)openPWSfileForReading;
 - (BOOL)openPWSfileForWriting;
 - (BOOL)openPWSfileUsingMode:(PWSfile::RWmode)mode;
@@ -52,6 +51,7 @@
 - (NSError *)lastError;
 - (void)setLastError:(NSError *)error;
 
+// ---- PWS library interfacing
 - (PWSfile *)pwsFileHandle;
 - (void)setPwsFileHandle:(PWSfile *)handle;
 @end
@@ -75,7 +75,7 @@ static NSDictionary *iPWSDatabaseModelErrorCodesMap =
 [[[NSDictionary alloc] initWithObjectsAndKeys:
   @"Failed to initialize the database model", [[[NSNumber alloc] initWithInt: PWSfile::FAILURE] retain],
   @"Failed to open the database", [[[NSNumber alloc] initWithInt: PWSfile::CANT_OPEN_FILE] retain],
-  @"The version of the database is not supported", [[[NSNumber alloc] initWithInt: PWSfile::UNSUPPORTED_VERSION] retain],
+  @"The version of the database is not supported",[[[NSNumber alloc] initWithInt: PWSfile::UNSUPPORTED_VERSION] retain],
   @"The version of the database is not correct", [[[NSNumber alloc] initWithInt: PWSfile::WRONG_VERSION] retain],
   @"The provided file is not a PasswordSafe v3 file", [[[NSNumber alloc] initWithInt: PWSfile::NOT_PWS3_FILE] retain],
   @"The passphrase is incorrect", [[[NSNumber alloc] initWithInt: PWSfile::WRONG_PASSWORD] retain],
@@ -86,6 +86,7 @@ static NSDictionary *iPWSDatabaseModelErrorCodesMap =
 
 //------------------------------------------------------------------------------------
 // Class variables
+static BOOL sessionKeyInitialized = NO;
 
 //------------------------------------------------------------------------------------
 // Model implementation
@@ -106,24 +107,14 @@ static NSDictionary *iPWSDatabaseModelErrorCodesMap =
     return (PWSfile::UNKNOWN_VERSION != PWSfile::ReadVersion([filePath UTF8String])); 
 }
 
-+ (PWScore *)pwsCore {
-    static PWScore* core = NULL;
-    static BOOL sessionKeyInitialized = NO;
-
-    @synchronized(self) {
-        if (!sessionKeyInitialized) {
-            try {
-                core = new PWScore();
-            } catch(...) {
-                // Once, and only once, the PasswordSafe engine needs to be established
-                if (!sessionKeyInitialized) {
-                    CItemData::SetSessionKey();
-                }
-            }
-            sessionKeyInitialized = YES;
-        }
-    }
-    return core;
++ (id)databaseModelNamed:(NSString *)theFriendlyName 
+               fileNamed:(NSString *)theFileName 
+              passphrase:(NSString *)thePassphrase
+                errorMsg:(NSError **)errorMsg {
+    return [[[self alloc] initNamed:theFriendlyName
+                         fileNamed:theFileName
+                        passphrase:thePassphrase
+                           errorMsg:errorMsg] autorelease];
 }
    
 //------------------------------------------------------------------------------------
@@ -157,18 +148,23 @@ static NSDictionary *iPWSDatabaseModelErrorCodesMap =
 // Changing the passphrase (public)
 - (BOOL)changePassphrase:(NSString *)newPassphrase {
     if (passphrase != newPassphrase) {
-        try {
-            PWScore *core = [[self class] pwsCore];
-            if (NULL == core) return NO;
-            core->SetCurFile([fileName UTF8String]);
-            core->SetPassKey([newPassphrase UTF8String]);
-            core->WriteCurFile();
-        } catch (...) {
-            return NO;
-        }
         self.passphrase = newPassphrase;
+        return [self syncToFile];
     }
     return YES;
+}
+
+// Fetch the last reported error
+- (NSError *)lastError {
+    return [[lastError copy] autorelease];
+}
+
+// Set the most recent error
+- (void)setLastError:(NSError *)error {
+    if (lastError != error) {
+        [lastError release];
+        lastError = [error retain];
+    }
 }
 
 // Setting the internal file handle
@@ -194,60 +190,60 @@ static NSDictionary *iPWSDatabaseModelErrorCodesMap =
        errorMsg:(NSError **)errorMsg {
     
     // Ensure the password safe library is initialized
-    [[self class] pwsCore];
+    if (!sessionKeyInitialized) {
+        CItemData::SetSessionKey();
+        sessionKeyInitialized = YES;
+    }
     
     // Sanity checks on the name, file name, and passphrase
     if (!theFriendlyName || ![theFriendlyName length] || !theFileName || ![theFileName length]) {
-        if (errorMsg && *errorMsg) *errorMsg = [self errorForStatus:PWSfile::FAILURE];
+        SET_ERROR(errorMsg, [self errorForStatus:PWSfile::FAILURE]);
         return nil;
     }
     if (!thePassphrase || ![thePassphrase length]) {
-        if (errorMsg && *errorMsg) *errorMsg = [self errorForStatus:PWSfile::WRONG_PASSWORD];
+        SET_ERROR(errorMsg, [self errorForStatus:PWSfile::WRONG_PASSWORD]);
         return nil;
     }
     
     // Initialize the instance by either creating a new file or opening an existing one
     if (self = [super init]) {
-        entries         = [[NSMutableArray alloc] init];
-        fileName        = [theFileName retain];
-        friendlyName    = [theFriendlyName retain];
-        self.passphrase = thePassphrase;
+        entries           = [[NSMutableArray alloc] init];
+        fileName          = [theFileName retain];
+        self.friendlyName = theFriendlyName;
+        self.passphrase   = thePassphrase;
         
         BOOL exists = [[NSFileManager defaultManager] fileExistsAtPath:fileName];
         if (exists) {
             // The file exists, open it and read all of the entries
-            if (![self openPWSfileForReading]) {
-                if (errorMsg && *errorMsg) *errorMsg = [[self.lastError copy] autorelease];
-                [self release];
-                return nil;
-            }
+            if (![self openPWSfileForReading]) goto last_error;
 
             CItemData item;
             while (self.pwsFileHandle->ReadRecord(item) == PWSfile::SUCCESS) {
-                [entries addObject:[[[iPWSDatabaseEntryModel alloc] initWithData:&item delegate:self] autorelease]];
+                [entries addObject:[iPWSDatabaseEntryModel entryModelWithData:&item delegate:self]];
                 item = CItemData(); // The C model does not clear all fields, so do so here
             }
         } else { 
             // The file will be newly created. 
-            if (![self openPWSfileForWriting]) {
-                if (errorMsg && *errorMsg) *errorMsg = [[self.lastError copy] autorelease];
-                [self release];
-                return nil;
-            }
+            if (![self openPWSfileForWriting]) goto last_error;
         }
         
         [self closePWSfile];
     }
-    if (!self && errorMsg && *errorMsg) *errorMsg = [self errorForStatus:PWSfile::FAILURE];
+    if (!self) SET_ERROR(errorMsg, [self errorForStatus:PWSfile::FAILURE]);
     return self;
+    
+last_error:
+    SET_ERROR(errorMsg, self.lastError);
+    [self release];
+    return nil;
 }
 
 // Deallocation
 - (void)dealloc {
-    self.lastError  = nil;
-    self.passphrase = nil;
+    self.lastError     = nil;
+    self.passphrase    = nil;
     self.pwsFileHandle = NULL;
-    [friendlyName release];
+    self.friendlyName  = nil;
     [fileName release];
     [entries release];
     [super dealloc];
@@ -372,19 +368,6 @@ static NSDictionary *iPWSDatabaseModelErrorCodesMap =
     NSString *errorStr = [iPWSDatabaseModelErrorCodesMap objectForKey:[NSNumber numberWithInt:status]];
     NSDictionary *info = [NSDictionary dictionaryWithObject:errorStr forKey:NSLocalizedDescriptionKey];
     return [NSError errorWithDomain:@"iPWS" code:status userInfo:info];
-}
-
-// Fetch the last reported error
-- (NSError *)lastError {
-    return lastError;
-}
-
-// Set the most recent error
-- (void)setLastError:(NSError *)error {
-    if (lastError != error) {
-        [lastError release];
-        lastError = [error retain];
-    }
 }
 
 @end

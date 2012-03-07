@@ -35,6 +35,7 @@
 		A10F649712F3CBCE00FFC851 /* SearchOverlayViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = A10F649612F3CBCE00FFC851 /* SearchOverlayViewController.xib */; };
 		A10F649912F3CBDF00FFC851 /* SearchOverlayViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = A10F649812F3CBDF00FFC851 /* SearchOverlayViewController.mm */; };
 		A14CF8D71499171900D53605 /* PasswordAlertView.mm in Sources */ = {isa = PBXBuildFile; fileRef = A14CF8D61499171900D53605 /* PasswordAlertView.mm */; };
+		A16BF23A1507088F0035960A /* DismissAlertView.mm in Sources */ = {isa = PBXBuildFile; fileRef = A16BF2391507088F0035960A /* DismissAlertView.mm */; };
 		A1C6BD3512626D7700F192B9 /* lockicon.png in Resources */ = {isa = PBXBuildFile; fileRef = A1C6BD3412626D7700F192B9 /* lockicon.png */; };
 /* End PBXBuildFile section */
 
@@ -102,6 +103,9 @@
 		A10F649A12F3CBEE00FFC851 /* SearchOverlayViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SearchOverlayViewController.h; path = include/SearchOverlayViewController.h; sourceTree = "<group>"; };
 		A14CF8D51499170200D53605 /* PasswordAlertView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PasswordAlertView.h; path = include/PasswordAlertView.h; sourceTree = "<group>"; };
 		A14CF8D61499171900D53605 /* PasswordAlertView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = PasswordAlertView.mm; path = source/PasswordAlertView.mm; sourceTree = "<group>"; };
+		A16BF2381507087A0035960A /* DismissAlertView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DismissAlertView.h; path = include/DismissAlertView.h; sourceTree = "<group>"; };
+		A16BF2391507088F0035960A /* DismissAlertView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = DismissAlertView.mm; path = source/DismissAlertView.mm; sourceTree = "<group>"; };
+		A16BF23B15070DA50035960A /* iPWSMacros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = iPWSMacros.h; path = include/iPWSMacros.h; sourceTree = "<group>"; };
 		A1C6BD3412626D7700F192B9 /* lockicon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = lockicon.png; path = resources/lockicon.png; sourceTree = "<group>"; };
 		DB6E421B125BDC4700011FA3 /* iPasswordSafe-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "iPasswordSafe-Info.plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -175,6 +179,7 @@
 		3013F25A124A74FD00C82647 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
+				A16BF2391507088F0035960A /* DismissAlertView.mm */,
 				30933E7B124C0A8800622BFA /* iPWSDatabaseEntryModel.mm */,
 				3013F3B8124BCB7E00C82647 /* iPWSDatabaseModel.mm */,
 				3013F38D124BB7FA00C82647 /* iPWSDatabaseFactory.mm */,
@@ -195,6 +200,7 @@
 		3013F25B124A750500C82647 /* Headers */ = {
 			isa = PBXGroup;
 			children = (
+				A16BF2381507087A0035960A /* DismissAlertView.h */,
 				30933E7D124C0AA500622BFA /* iPWSDatabaseEntryModel.h */,
 				30933E80124C0E2F00622BFA /* iPWSDatabaseEntryModelDelegate.h */,
 				304BB1391252950E00702002 /* iPWSDatabaseModel.h */,
@@ -208,6 +214,7 @@
 				303CC310125688E5005E4970 /* iPWSDatabaseModelViewController.h */,
 				303CC356125696C6005E4970 /* iPWSDatabaseEntryViewController.h */,
 				30B1F804125A3CE40036DDDA /* iPWSDatabaseEntryViewControllerDelegate.h */,
+				A16BF23B15070DA50035960A /* iPWSMacros.h */,
 				3013F266124A753400C82647 /* iPasswordSafeAppDelegate.h */,
 				3013F270124A76E100C82647 /* iPasswordSafe_Prefix.pch */,
 				A10F649A12F3CBEE00FFC851 /* SearchOverlayViewController.h */,
@@ -330,6 +337,7 @@
 				303CC3541256969F005E4970 /* iPWSDatabaseEntryViewController.mm in Sources */,
 				A10F649912F3CBDF00FFC851 /* SearchOverlayViewController.mm in Sources */,
 				A14CF8D71499171900D53605 /* PasswordAlertView.mm in Sources */,
+				A16BF23A1507088F0035960A /* DismissAlertView.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

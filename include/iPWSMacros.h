@@ -25,41 +25,4 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
 // OF SUCH DAMAGE.
 
-#import <Foundation/Foundation.h>
-
-#import "corelib/ItemData.h"
-#import "corelib/PWSfile.h"
-
-#import "iPWSDatabaseEntryModelDelegate.h"
-
-//------------------------------------------------------------------------------------
-// Class: iPWSDatabaseEntryModel
-// Description:
-//  Represents a single entry in the password safe database.  This is backed by the C-library version which
-//  stores the data encrypted in memory
-
-@interface iPWSDatabaseEntryModel : NSObject {
-    CItemData                          data;
-    id<iPWSDatabaseEntryModelDelegate> delegate;
-}
-
-// Accessors
-@property (assign)   id<iPWSDatabaseEntryModelDelegate> delegate;
-@property (copy)     NSString* title;
-@property (copy)     NSString* user;
-@property (copy)     NSString* password;
-@property (copy)     NSString* url;
-@property (copy)     NSString* notes;
-@property (readonly) NSString* accessTime;
-@property (readonly) NSString* creationTime;
-@property (readonly) NSString* passwordExpiryTime;
-
-// Class methods
-+ (id)entryModelWithData:(const CItemData *)theData delegate:(id<iPWSDatabaseEntryModelDelegate>)theDelegate;
-
-// Instance methods
-- (id)initWithData:(const CItemData *)theData delegate:(id<iPWSDatabaseEntryModelDelegate>)theDelegate;
-
-- (BOOL)writeToPWSfile:(PWSfile *)pwsFileHandle;
-
-@end
+#define SET_ERROR(pe, e) if ((pe)) { (*(pe)) = (e); }

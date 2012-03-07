@@ -28,6 +28,8 @@
 
 #import "iPWSDatabaseFactory.h"
 #import "corelib/ItemData.h"
+#import "DismissAlertView.h"
+#import "iPWSMacros.h"
 
 //------------------------------------------------------------------------------------
 // Class: iPWSDatabaseFactory
@@ -55,6 +57,9 @@
 
 // The key placed in the UserDefaults to retrieve the allDatabasesInfo
 static NSString *kiPWSDatabaseFactoryUserDefaults = @"kiPWSDatabaseFactoryUserDefaults";
+static NSString *PWSDatabaseFactoryMissingSafesMessage = 
+@"The location of the safes is missing.  Try backing up safes with iTunes file sharing then reinstall the application.";
+
 
 
 //------------------------------------------------------------------------------------
@@ -89,14 +94,7 @@ static NSString *kiPWSDatabaseFactoryUserDefaults = @"kiPWSDatabaseFactoryUserDe
         // Find the documents directories and use the first one
         NSArray *docDirs = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, true);
         if (![docDirs count]) {
-            return nil;
-            UIAlertView *v = [[UIAlertView alloc] initWithTitle:@"Unable to find safes"
-                                                        message:@"The location of the safes is missing.  Try backing up safes with iTunes file sharing then reinstall the application."
-                                                       delegate:nil
-                                              cancelButtonTitle:@"Dismiss"
-                                              otherButtonTitles:nil];
-            [v show];
-            [v release];
+            ShowDismissAlertView(@"Unable to find safes", PWSDatabaseFactoryMissingSafesMessage);
             documentsDirectory = @"";
         } else {
             documentsDirectory = [[docDirs objectAtIndex:0] retain];
@@ -177,18 +175,16 @@ static NSString *kiPWSDatabaseFactoryUserDefaults = @"kiPWSDatabaseFactoryUserDe
 - (iPWSDatabaseModel *)databaseModelNamed:(NSString *)friendlyName errorMsg:(NSError **)errorMsg {
     // Check that the friendlyName exists
     if (![self doesFriendlyNameExist:friendlyName]) {
-        if (errorMsg) {
-            *errorMsg = [self errorWithStr:[NSString stringWithFormat:@"Database named %@ does not exist",friendlyName]];
-        }
+        SET_ERROR(errorMsg, 
+                  ([self errorWithStr:[NSString stringWithFormat:@"Database named %@ does not exist",friendlyName]]));
         return nil;
     }
     
     // Get the model, if it exists
     iPWSDatabaseModel *model = [databases objectForKey:friendlyName];
     if (!model) {
-        if (errorMsg) {
-            *errorMsg = [self errorWithStr:[NSString stringWithFormat:@"Problem accessing \"%@\"", friendlyName]];
-        }
+        SET_ERROR(errorMsg,
+                  ([self errorWithStr:[NSString stringWithFormat:@"Problem accessing \"%@\"", friendlyName]]));
     }
     return model;
 }
@@ -212,18 +208,19 @@ static NSString *kiPWSDatabaseFactoryUserDefaults = @"kiPWSDatabaseFactoryUserDe
               passphrase:(NSString *)passphrase
                 errorMsg:(NSError **)errorMsg {
     // Sanity checks
-    if ([self databaseModelNamed:friendlyName errorMsg:NULL]) {
-        if (errorMsg) {
-            *errorMsg = [self errorWithStr:[NSString stringWithFormat:@"Database \"%@\" already exists", friendlyName]];
-        }
+    if ([self doesFriendlyNameExist:friendlyName] && 
+        ![fileName isEqualToString:[databaseFileNames objectForKey:friendlyName]]) {
+        SET_ERROR(errorMsg, 
+                  ([self errorWithStr:[NSString stringWithFormat:@"Database \"%@\" already exists", friendlyName]]));
         return NO;
     }
     
     // Construct a new model
-    iPWSDatabaseModel *model = [[[iPWSDatabaseModel alloc] initNamed:friendlyName
-                                                          fileNamed:[documentsDirectory stringByAppendingPathComponent:fileName]
-                                                         passphrase:passphrase
-                                                           errorMsg:errorMsg] autorelease];
+    iPWSDatabaseModel *model = 
+        [iPWSDatabaseModel databaseModelNamed:friendlyName
+                                    fileNamed:[documentsDirectory stringByAppendingPathComponent:fileName]
+                                   passphrase:passphrase
+                                     errorMsg:errorMsg];
     if (!model) {
         return NO;
     }
@@ -244,20 +241,18 @@ static NSString *kiPWSDatabaseFactoryUserDefaults = @"kiPWSDatabaseFactoryUserDe
                    errorMsg:(NSError **)errorMsg {
     // Sanity checks
     if ([self doesFriendlyNameExist:newFriendlyName]) {
-        if (errorMsg) {
-            *errorMsg = [self errorWithStr:[NSString stringWithFormat:@"Database \"%@\" already exists", newFriendlyName]];
-        }
+        SET_ERROR(errorMsg,
+                  ([self errorWithStr:[NSString stringWithFormat:@"Database \"%@\" already exists", newFriendlyName]]));
         return NO;
     }
     if (![self doesFriendlyNameExist:origFriendlyName]) {
-        if (errorMsg) {
-            *errorMsg = [self errorWithStr:[NSString stringWithFormat:@"Database \"%@\" does not exist", origFriendlyName]];
-        }
+        SET_ERROR(errorMsg, 
+                ([self errorWithStr:[NSString stringWithFormat:@"Database \"%@\" does not exist", origFriendlyName]]));
         return NO;
     }
     
     // Copy the filePath data from old name to new name
-    NSString *filePath = [self databasePathForName:origFriendlyName];
+    NSString *filePath = [databaseFileNames objectForKey:origFriendlyName];
     if (filePath) {
         [databaseFileNames setObject:filePath forKey:newFriendlyName];
         [databaseFileNames removeObjectForKey:origFriendlyName];
@@ -283,9 +278,7 @@ static NSString *kiPWSDatabaseFactoryUserDefaults = @"kiPWSDatabaseFactoryUserDe
 - (BOOL)removeDatabaseNamed:(NSString *)friendlyName errorMsg:(NSError **)errorMsg {
     // Sanity checks
     if (![self doesFriendlyNameExist:friendlyName]) {
-        if (errorMsg) {
-            *errorMsg = [self errorWithStr:[NSString stringWithFormat:@"Database \"%@\" does not exist"]];
-        }
+        SET_ERROR(errorMsg, ([self errorWithStr:[NSString stringWithFormat:@"Database \"%@\" does not exist"]]));
         return NO;
     }
 
@@ -309,9 +302,7 @@ static NSString *kiPWSDatabaseFactoryUserDefaults = @"kiPWSDatabaseFactoryUserDe
                       errorMsg:(NSError **)errorMsg {
     // Sanity checks
     if ([self doesFriendlyNameExist:newFriendlyName]) {
-        if (errorMsg) {
-            *errorMsg = [self errorWithStr:[NSString stringWithFormat:@"Database \"%@\" already exists"]];
-        }
+        SET_ERROR(errorMsg, ([self errorWithStr:[NSString stringWithFormat:@"Database \"%@\" already exists"]]));
         return NO;
     }
     

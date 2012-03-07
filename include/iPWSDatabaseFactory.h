@@ -57,7 +57,7 @@
 @property (readonly) NSArray  *friendlyNames; 
 @property (readonly) NSString *documentsDirectory;
 
-// Helper methdos to check the existance of a friendlyName or mapped file name
+// Helper methods to check the existance of a friendlyName or mapped file name
 - (BOOL)doesFriendlyNameExist:(NSString *)friendlyName;
 - (BOOL)isFileNameMapped:(NSString *)fileName;
 - (NSString *)databasePathForName:(NSString *)friendlyName;

@@ -52,6 +52,11 @@
 
 @synthesize delegate;
 
+// Autoreleased initializer
++ (id)entryModelWithData:(const CItemData *)theData delegate:(id<iPWSDatabaseEntryModelDelegate>)theDelegate {
+    return [[[self alloc] initWithData:theData delegate:theDelegate] autorelease];
+}
+
 // Canonical initializer
 - (id)initWithData:(const CItemData *)theData delegate:(id<iPWSDatabaseEntryModelDelegate>)theDelegate {
     if (self = [super init]) {

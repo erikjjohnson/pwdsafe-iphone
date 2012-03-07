@@ -121,6 +121,7 @@
 	[navigationController release];
 	[window release];
     [lockAllDatabasesButton release];
+    [flexibleSpaceButton release];
 	[super dealloc];
 }
 

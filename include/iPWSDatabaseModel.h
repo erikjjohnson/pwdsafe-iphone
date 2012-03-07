@@ -65,6 +65,11 @@
 @property (readonly) NSString                      *passphrase;
 
 // Initialization - if the file does not exist, a new database is created.
++ (id)databaseModelNamed:(NSString *)theFriendlyName
+               fileNamed:(NSString *)theFileName
+              passphrase:(NSString *)thePassphrase
+                errorMsg:(NSError **)errorMsg;
+
 - (id)initNamed:(NSString *)theFriendlyName 
       fileNamed:(NSString *)theFileName
      passphrase:(NSString *)thePassphrase
