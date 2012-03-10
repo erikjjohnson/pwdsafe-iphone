@@ -47,6 +47,7 @@
     IBOutlet UITextField     *lastSavedTextField;
     IBOutlet UITextField     *savedByTextField;
     IBOutlet UITextField     *savedOnTextField;
+    IBOutlet UISwitch        *syncWithDropBoxSwitch;
     
     BOOL                      editing;
     UIBarButtonItem          *editButton;
@@ -61,5 +62,6 @@
 - (IBAction)duplicateButtonPressed;
 - (IBAction)passphraseChanged;
 - (IBAction)modelNameChanged;
+- (IBAction)syncWithDropBoxChanged;
 
 @end

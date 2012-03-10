@@ -31,6 +31,13 @@
 #import "iPWSDatabasesViewController.h"
 #import "iPWSDatabaseFactory.h"
 
+// DropBoxKeys.h is not open source, it contains the DropBox app key and secret
+// To create your own version of this file:
+// #define DROPBOX_APP_KEY_PLIST     YOUR_KEY
+// #define DROPBOX_APP_KEY         @"YOUR_KEY"
+// #define DROPBOX_APP_SECRET      @"YOUR_SECRET"
+
+#import "DropBoxKeys.h" 
 #import "DropboxSDK/DropboxSDK.h"
 
 
@@ -75,7 +82,26 @@
     [window addSubview:navigationController.view];
     [window makeKeyAndVisible];
     
+    
+    // TODO FIX
+    DBSession* dbSession = [[[DBSession alloc] initWithAppKey:DROPBOX_APP_KEY
+                                                    appSecret:DROPBOX_APP_SECRET
+                                                         root:kDBRootAppFolder] autorelease];
+    [DBSession setSharedSession:dbSession];
+    
     return YES;
+}
+
+- (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url {
+    if ([[DBSession sharedSession] handleOpenURL:url]) {
+        if ([[DBSession sharedSession] isLinked]) {
+            NSLog(@"App linked successfully!");
+            // At this point you can start making API calls
+        }
+        return YES;
+    }
+    // Add whatever other url handling code your app requires here
+    return NO;
 }
 
 // Remove all databases from memory and display the top-level screen

@@ -28,7 +28,16 @@
 
 #import <UIKit/UIKit.h>
 #import "iPWSDatabaseEntryModel.h"
-#import "iPWSDatabaseEntryViewControllerDelegate.h"
+
+//------------------------------------------------------------------------------------
+// Notifications
+//  iPWSDatabaseEntryViewControllerEditingCompleteNotification
+//     When an iPWSDatabaseEntryViewController finishes editing an entry, a notification to the default 
+//     notification center is posted with the name iPWSDatabaseEntryViewControllerEditingCompleteNotification, 
+//     the object is the instance of the view controller that was performing the editing and the user info 
+//     dictionary contains a single key of the name iPWSDatabaseEntryViewControllerEntryUserInfoKey
+extern NSString* iPWSDatabaseEntryViewControllerEditingCompleteNotification;
+extern NSString* iPWSDatabaseEntryViewControllerEntryUserInfoKey;
 
 //------------------------------------------------------------------------------------
 // Class iPWSDatabaseEntryViewController
@@ -41,9 +50,8 @@
 //  Finally, this controller also implements a toolbar with a "copy and launch URL" operation
 //  that first copies the password (or username) and the launches safari with the given URL
 @interface iPWSDatabaseEntryViewController : UITableViewController <UIActionSheetDelegate> {
-    iPWSDatabaseEntryModel                      *entry;
-    id<iPWSDatabaseEntryViewControllerDelegate>  delegate;
-    BOOL                                         editing;
+    iPWSDatabaseEntryModel  *entry;
+    BOOL                    editing;
     
     // Connected to the cells using Interface Builder
     IBOutlet UITableViewCell *titleCell;
@@ -70,7 +78,6 @@
 }
 
 // Accessors
-@property (assign) id<iPWSDatabaseEntryViewControllerDelegate> delegate;
 @property BOOL editing;
 
 @property (readonly) UITextField *titleTextField;
@@ -82,8 +89,7 @@
 // Initialization
 - (id)initWithNibName:(NSString *)nibNameOrNil 
                bundle:(NSBundle *)nibBundleOrNil 
-                entry:(iPWSDatabaseEntryModel *)theEntry
-             delegate:(id<iPWSDatabaseEntryViewControllerDelegate>)theDelegate;
+                entry:(iPWSDatabaseEntryModel *)theEntry;
 
 // Editing notifications
 - (IBAction)titleTextChanged;

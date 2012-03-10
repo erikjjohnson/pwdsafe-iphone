@@ -94,7 +94,6 @@
 		30933F531251314000622BFA /* iPWSDatabaseAddViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = iPWSDatabaseAddViewController.mm; path = source/iPWSDatabaseAddViewController.mm; sourceTree = "<group>"; };
 		30933F571251316400622BFA /* iPWSDatabaseAddViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = iPWSDatabaseAddViewController.h; path = include/iPWSDatabaseAddViewController.h; sourceTree = "<group>"; };
 		30933F581251316F00622BFA /* iPWSDatabaseAddViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = iPWSDatabaseAddViewController.xib; path = resources/iPWSDatabaseAddViewController.xib; sourceTree = "<group>"; };
-		30B1F804125A3CE40036DDDA /* iPWSDatabaseEntryViewControllerDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = iPWSDatabaseEntryViewControllerDelegate.h; path = include/iPWSDatabaseEntryViewControllerDelegate.h; sourceTree = "<group>"; };
 		30DF134B1278C801005929AD /* lockbarbutton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = lockbarbutton.png; path = resources/lockbarbutton.png; sourceTree = "<group>"; };
 		30E1070D1279F32E00649034 /* diceicon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = diceicon.png; path = resources/diceicon.png; sourceTree = "<group>"; };
 		A10F649612F3CBCE00FFC851 /* SearchOverlayViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = SearchOverlayViewController.xib; path = resources/SearchOverlayViewController.xib; sourceTree = "<group>"; };
@@ -108,6 +107,7 @@
 		A1C6BD3412626D7700F192B9 /* lockicon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = lockicon.png; path = resources/lockicon.png; sourceTree = "<group>"; };
 		A1CB19A21509A2880006DD14 /* DropboxSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DropboxSDK.framework; path = thirdpartysource/DropboxSDK.framework; sourceTree = "<group>"; };
 		A1CB19A41509A2B60006DD14 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		A1F18B65150AFFB200DA947E /* DropBoxKeys.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DropBoxKeys.h; path = include/DropBoxKeys.h; sourceTree = "<group>"; };
 		DB6E421B125BDC4700011FA3 /* iPasswordSafe-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "iPasswordSafe-Info.plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -199,6 +199,7 @@
 				A1CB19A61509A53B0006DD14 /* Models */,
 				A1CB19A71509A5590006DD14 /* Controllers */,
 				A1CB19A81509A56E0006DD14 /* Views */,
+				A1F18B65150AFFB200DA947E /* DropBoxKeys.h */,
 				A16BF23B15070DA50035960A /* iPWSMacros.h */,
 				3013F266124A753400C82647 /* iPasswordSafeAppDelegate.h */,
 				3013F270124A76E100C82647 /* iPasswordSafe_Prefix.pch */,
@@ -233,7 +234,6 @@
 				304BB13F1252955A00702002 /* iPWSDatabaseDetailViewController.h */,
 				303CC310125688E5005E4970 /* iPWSDatabaseModelViewController.h */,
 				303CC356125696C6005E4970 /* iPWSDatabaseEntryViewController.h */,
-				30B1F804125A3CE40036DDDA /* iPWSDatabaseEntryViewControllerDelegate.h */,
 				A10F649A12F3CBEE00FFC851 /* SearchOverlayViewController.h */,
 			);
 			name = Controllers;
@@ -416,6 +416,8 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = iPasswordSafe_Prefix.pch;
 				INFOPLIST_FILE = "iPasswordSafe-Info.plist";
+				INFOPLIST_PREFIX_HEADER = include/DropBoxKeys.h;
+				INFOPLIST_PREPROCESS = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -437,6 +439,8 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = iPasswordSafe_Prefix.pch;
 				INFOPLIST_FILE = "iPasswordSafe-Info.plist";
+				INFOPLIST_PREFIX_HEADER = include/DropBoxKeys.h;
+				INFOPLIST_PREPROCESS = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -478,6 +482,8 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = iPasswordSafe_Prefix.pch;
 				INFOPLIST_FILE = "iPasswordSafe-Info.plist";
+				INFOPLIST_PREFIX_HEADER = include/DropBoxKeys.h;
+				INFOPLIST_PREPROCESS = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",

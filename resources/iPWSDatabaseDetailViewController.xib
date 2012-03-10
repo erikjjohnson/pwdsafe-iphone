@@ -12,12 +12,13 @@
 		</object>
 		<object class="NSArray" key="IBDocument.IntegratedClassDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
+			<string>IBUIView</string>
+			<string>IBProxyObject</string>
 			<string>IBUILabel</string>
 			<string>IBUIViewController</string>
-			<string>IBUIButton</string>
-			<string>IBUIView</string>
+			<string>IBUISwitch</string>
 			<string>IBUITextField</string>
-			<string>IBProxyObject</string>
+			<string>IBUIButton</string>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -152,7 +153,7 @@
 						<object class="IBUIButton" id="54182802">
 							<reference key="NSNextResponder" ref="988482686"/>
 							<int key="NSvFlags">292</int>
-							<string key="NSFrame">{{20, 359}, {280, 37}}</string>
+							<string key="NSFrame">{{20, 352}, {280, 37}}</string>
 							<reference key="NSSuperview" ref="988482686"/>
 							<reference key="NSWindow"/>
 							<string key="NSReuseIdentifierKey">_NS:9</string>
@@ -269,7 +270,7 @@
 							<string key="NSFrame">{{124, 130}, {176, 31}}</string>
 							<reference key="NSSuperview" ref="988482686"/>
 							<reference key="NSWindow"/>
-							<reference key="NSNextKeyView" ref="54182802"/>
+							<reference key="NSNextKeyView" ref="391263555"/>
 							<string key="NSReuseIdentifierKey">_NS:9</string>
 							<bool key="IBUIOpaque">NO</bool>
 							<bool key="IBUIClipsSubviews">YES</bool>
@@ -319,6 +320,7 @@
 							<string key="NSFrame">{{124, 164}, {176, 31}}</string>
 							<reference key="NSSuperview" ref="988482686"/>
 							<reference key="NSWindow"/>
+							<reference key="NSNextKeyView" ref="266300136"/>
 							<string key="NSReuseIdentifierKey">_NS:9</string>
 							<bool key="IBUIOpaque">NO</bool>
 							<bool key="IBUIClipsSubviews">YES</bool>
@@ -368,6 +370,7 @@
 							<string key="NSFrame">{{124, 210}, {176, 31}}</string>
 							<reference key="NSSuperview" ref="988482686"/>
 							<reference key="NSWindow"/>
+							<reference key="NSNextKeyView" ref="756211491"/>
 							<string key="NSReuseIdentifierKey">_NS:9</string>
 							<bool key="IBUIOpaque">NO</bool>
 							<bool key="IBUIClipsSubviews">YES</bool>
@@ -417,6 +420,7 @@
 							<string key="NSFrame">{{124, 244}, {176, 31}}</string>
 							<reference key="NSSuperview" ref="988482686"/>
 							<reference key="NSWindow"/>
+							<reference key="NSNextKeyView" ref="1020819328"/>
 							<string key="NSReuseIdentifierKey">_NS:9</string>
 							<bool key="IBUIOpaque">NO</bool>
 							<bool key="IBUIClipsSubviews">YES</bool>
@@ -460,12 +464,34 @@
 							<reference key="IBUIFontDescription" ref="419490760"/>
 							<reference key="IBUIFont" ref="447750256"/>
 						</object>
+						<object class="IBUILabel" id="771703751">
+							<reference key="NSNextResponder" ref="988482686"/>
+							<int key="NSvFlags">292</int>
+							<string key="NSFrame">{{20, 320}, {166, 24}}</string>
+							<reference key="NSSuperview" ref="988482686"/>
+							<reference key="NSWindow"/>
+							<string key="NSReuseIdentifierKey">_NS:9</string>
+							<bool key="IBUIOpaque">NO</bool>
+							<bool key="IBUIClipsSubviews">YES</bool>
+							<int key="IBUIContentMode">7</int>
+							<bool key="IBUIUserInteractionEnabled">NO</bool>
+							<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
+							<string key="IBUIText">Synchronize with DropBox</string>
+							<reference key="IBUITextColor" ref="140840494"/>
+							<nil key="IBUIHighlightedColor"/>
+							<int key="IBUIBaselineAdjustment">0</int>
+							<float key="IBUIMinimumFontSize">10</float>
+							<int key="IBUITextAlignment">2</int>
+							<reference key="IBUIFontDescription" ref="419490760"/>
+							<reference key="IBUIFont" ref="447750256"/>
+						</object>
 						<object class="IBUITextField" id="705806824">
 							<reference key="NSNextResponder" ref="988482686"/>
 							<int key="NSvFlags">292</int>
 							<string key="NSFrame">{{124, 278}, {176, 31}}</string>
 							<reference key="NSSuperview" ref="988482686"/>
 							<reference key="NSWindow"/>
+							<reference key="NSNextKeyView" ref="54182802"/>
 							<string key="NSReuseIdentifierKey">_NS:9</string>
 							<bool key="IBUIOpaque">NO</bool>
 							<bool key="IBUIClipsSubviews">YES</bool>
@@ -486,6 +512,18 @@
 							</object>
 							<reference key="IBUIFontDescription" ref="419490760"/>
 							<reference key="IBUIFont" ref="447750256"/>
+						</object>
+						<object class="IBUISwitch" id="745271572">
+							<reference key="NSNextResponder" ref="988482686"/>
+							<int key="NSvFlags">292</int>
+							<string key="NSFrame">{{206, 317}, {94, 27}}</string>
+							<reference key="NSSuperview" ref="988482686"/>
+							<reference key="NSWindow"/>
+							<string key="NSReuseIdentifierKey">_NS:9</string>
+							<bool key="IBUIOpaque">NO</bool>
+							<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
+							<int key="IBUIContentHorizontalAlignment">0</int>
+							<int key="IBUIContentVerticalAlignment">0</int>
 						</object>
 					</object>
 					<string key="NSFrame">{{0, 64}, {320, 416}}</string>
@@ -588,6 +626,14 @@
 					<int key="connectionID">72</int>
 				</object>
 				<object class="IBConnectionRecord">
+					<object class="IBCocoaTouchOutletConnection" key="connection">
+						<string key="label">syncWithDropBoxSwitch</string>
+						<reference key="source" ref="372490531"/>
+						<reference key="destination" ref="745271572"/>
+					</object>
+					<int key="connectionID">75</int>
+				</object>
+				<object class="IBConnectionRecord">
 					<object class="IBCocoaTouchEventConnection" key="connection">
 						<string key="label">modelNameChanged</string>
 						<reference key="source" ref="108838068"/>
@@ -613,6 +659,15 @@
 						<int key="IBEventType">18</int>
 					</object>
 					<int key="connectionID">64</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBCocoaTouchEventConnection" key="connection">
+						<string key="label">syncWithDropBoxChanged</string>
+						<reference key="source" ref="745271572"/>
+						<reference key="destination" ref="372490531"/>
+						<int key="IBEventType">13</int>
+					</object>
+					<int key="connectionID">76</int>
 				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -651,7 +706,6 @@
 						<reference key="object" ref="988482686"/>
 						<object class="NSMutableArray" key="children">
 							<bool key="EncodedWithXMLCoder">YES</bool>
-							<reference ref="54182802"/>
 							<reference ref="263730656"/>
 							<reference ref="108838068"/>
 							<reference ref="210504812"/>
@@ -668,6 +722,9 @@
 							<reference ref="452532452"/>
 							<reference ref="1020819328"/>
 							<reference ref="705806824"/>
+							<reference ref="745271572"/>
+							<reference ref="54182802"/>
+							<reference ref="771703751"/>
 						</object>
 						<reference key="parent" ref="57839227"/>
 					</object>
@@ -756,6 +813,16 @@
 						<reference key="object" ref="705806824"/>
 						<reference key="parent" ref="988482686"/>
 					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">73</int>
+						<reference key="object" ref="745271572"/>
+						<reference key="parent" ref="988482686"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">74</int>
+						<reference key="object" ref="771703751"/>
+						<reference key="parent" ref="988482686"/>
+					</object>
 				</object>
 			</object>
 			<object class="NSMutableDictionary" key="flattenedProperties">
@@ -785,12 +852,16 @@
 					<string>61.IBPluginDependency</string>
 					<string>62.IBPluginDependency</string>
 					<string>63.IBPluginDependency</string>
+					<string>73.IBPluginDependency</string>
+					<string>74.IBPluginDependency</string>
 				</object>
 				<object class="NSArray" key="dict.values">
 					<bool key="EncodedWithXMLCoder">YES</bool>
 					<string>iPWSDatabaseDetailViewController</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>UIResponder</string>
+					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
+					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
@@ -825,7 +896,7 @@
 				<reference key="dict.values" ref="0"/>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">72</int>
+			<int key="maxID">76</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -840,9 +911,13 @@
 							<string>duplicateButtonPressed</string>
 							<string>modelNameChanged</string>
 							<string>passphraseChanged</string>
+							<string>syncWithDropBoxChanged</string>
+							<string>syncWithDropBoxChanged:</string>
 						</object>
 						<object class="NSArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>id</string>
+							<string>id</string>
 							<string>id</string>
 							<string>id</string>
 							<string>id</string>
@@ -855,6 +930,8 @@
 							<string>duplicateButtonPressed</string>
 							<string>modelNameChanged</string>
 							<string>passphraseChanged</string>
+							<string>syncWithDropBoxChanged</string>
+							<string>syncWithDropBoxChanged:</string>
 						</object>
 						<object class="NSArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
@@ -870,6 +947,14 @@
 								<string key="name">passphraseChanged</string>
 								<string key="candidateClassName">id</string>
 							</object>
+							<object class="IBActionInfo">
+								<string key="name">syncWithDropBoxChanged</string>
+								<string key="candidateClassName">id</string>
+							</object>
+							<object class="IBActionInfo">
+								<string key="name">syncWithDropBoxChanged:</string>
+								<string key="candidateClassName">id</string>
+							</object>
 						</object>
 					</object>
 					<object class="NSMutableDictionary" key="outlets">
@@ -883,6 +968,7 @@
 							<string>passphraseTextField</string>
 							<string>savedByTextField</string>
 							<string>savedOnTextField</string>
+							<string>syncWithDropBoxSwitch</string>
 							<string>versionTextField</string>
 						</object>
 						<object class="NSArray" key="dict.values">
@@ -894,6 +980,7 @@
 							<string>UITextField</string>
 							<string>UITextField</string>
 							<string>UITextField</string>
+							<string>UISwitch</string>
 							<string>UITextField</string>
 						</object>
 					</object>
@@ -908,6 +995,7 @@
 							<string>passphraseTextField</string>
 							<string>savedByTextField</string>
 							<string>savedOnTextField</string>
+							<string>syncWithDropBoxSwitch</string>
 							<string>versionTextField</string>
 						</object>
 						<object class="NSArray" key="dict.values">
@@ -939,6 +1027,10 @@
 							<object class="IBToOneOutletInfo">
 								<string key="name">savedOnTextField</string>
 								<string key="candidateClassName">UITextField</string>
+							</object>
+							<object class="IBToOneOutletInfo">
+								<string key="name">syncWithDropBoxSwitch</string>
+								<string key="candidateClassName">UISwitch</string>
 							</object>
 							<object class="IBToOneOutletInfo">
 								<string key="name">versionTextField</string>

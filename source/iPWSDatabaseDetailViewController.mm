@@ -29,6 +29,7 @@
 #import "iPWSDatabaseDetailViewController.h"
 #import "iPWSDatabaseFactory.h"
 #import "DismissAlertView.h"
+#import "DropboxSDK/DropboxSDK.h"
 
 //------------------------------------------------------------------------------------
 // Private interface
@@ -144,6 +145,12 @@
 
 - (void)duplicationAlertWithDescription:(NSString *)description success:(BOOL)success {
     ShowDismissAlertView(success ? @"Safe was duplicated" : @"Failed to duplicate safe", description);
+}
+
+- (void)syncWithDropBoxChanged {
+    if (![[DBSession sharedSession] isLinked]) {
+        [[DBSession sharedSession] link];
+    }
 }
 
 //------------------------------------------------------------------------------------

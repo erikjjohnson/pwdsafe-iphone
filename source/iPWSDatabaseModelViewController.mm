@@ -54,6 +54,7 @@
 - (void)updateEditButton;
 
 - (void)modelChangedNotification:(NSNotification *)notification;
+- (void)entryAddedNotification:(NSNotification *)notification;
 @end
 
 
@@ -344,8 +345,14 @@
     iPWSDatabaseEntryViewController *vc = 
         [[iPWSDatabaseEntryViewController alloc] initWithNibName:@"iPWSDatabaseEntryViewController"
                                                           bundle:nil
-                                                           entry:entry
-                                                        delegate:self];
+                                                           entry:entry];
+    
+    // Listen for when editing is complete
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(entryAddedNotification:) 
+                                                 name:iPWSDatabaseEntryViewControllerEditingCompleteNotification
+                                               object:vc];
+    
     vc.editing = YES;
     [self.navigationController pushViewController:vc animated:YES];
     [vc release];
@@ -353,11 +360,14 @@
 
 // Called after Add entry is complete.  Add the entry to the model and remove ourselves as a listener on the
 // entry since it is now managed by the model
-- (void)iPWSDatabaseEntryViewController:(iPWSDatabaseEntryViewController *)entryViewController 
-                  didFinishEditingEntry:(iPWSDatabaseEntryModel *)entry {
+- (void)entryAddedNotification:(NSNotification *)notification {
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:iPWSDatabaseEntryViewControllerEditingCompleteNotification
+                                                  object:notification.object];
+    iPWSDatabaseEntryModel *entry = 
+        [notification.userInfo objectForKey:iPWSDatabaseEntryViewControllerEntryUserInfoKey];
     [model addDatabaseEntry:entry];
     [self addEntryToSection:entry];
-    entryViewController.delegate = nil;
     [self.tableView reloadData];
 }
 
@@ -380,8 +390,7 @@
     iPWSDatabaseEntryViewController *vc = 
         [[iPWSDatabaseEntryViewController alloc] initWithNibName:@"iPWSDatabaseEntryViewController"
                                                           bundle:nil
-                                                           entry:[self entryAtIndexPath:indexPath]
-                                                        delegate:nil];
+                                                           entry:[self entryAtIndexPath:indexPath]];
     [self.navigationController pushViewController:vc animated:YES];
     [vc release];
 }

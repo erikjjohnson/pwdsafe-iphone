@@ -30,6 +30,7 @@
 #import "iPasswordSafeAppDelegate.h"
 #import "corelib/PWPolicy.h"
 #import "corelib/PWSprefs.h"
+#import "DismissAlertView.h"
 
 //------------------------------------------------------------------------------------
 // Private implementation
@@ -57,6 +58,11 @@ static NSString *COPY_PASSPHRASE_AND_OPEN_BUTTON_STR = @"Copy passphrase & Open"
 static NSString *COPY_USERNAME_AND_OPEN_BUTTON_STR   = @"Copy username & Open";
 static NSString *OPEN_BUTTON_STR                     = @"Open URL";
 
+NSString* iPWSDatabaseEntryViewControllerEditingCompleteNotification = 
+    @"iPWSDatabaseEntryViewControllerEditingCompleteNotification";
+NSString* iPWSDatabaseEntryViewControllerEntryUserInfoKey = 
+    @"iPWSDatabaseEntryViewControllerEntryUserInfoKey";
+
 
 //------------------------------------------------------------------------------------
 // Class iPWSDatabaseEntryViewController
@@ -75,7 +81,6 @@ static NSString *OPEN_BUTTON_STR                     = @"Open URL";
 
 //------------------------------------------------------------------------------------
 // Accessors
-@synthesize delegate;
 @synthesize titleTextField;
 @synthesize userTextField;
 @synthesize passphraseTextField;
@@ -86,12 +91,10 @@ static NSString *OPEN_BUTTON_STR                     = @"Open URL";
 // Initializer
 - (id)initWithNibName:(NSString *)nibNameOrNil 
                bundle:(NSBundle *)nibBundleOrNil
-                entry:(iPWSDatabaseEntryModel *)theEntry 
-             delegate:(id<iPWSDatabaseEntryViewControllerDelegate>)theDelegate {
+                entry:(iPWSDatabaseEntryModel *)theEntry {
     if (!theEntry) return nil;
     if (self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil]) {
         entry                     = [theEntry retain];
-        self.delegate             = theDelegate;    
         self.navigationItem.title = @"Entry";
          
         // Add the toolbar
@@ -211,15 +214,8 @@ static NSString *OPEN_BUTTON_STR                     = @"Open URL";
     
     [self copySelectedIndexPathToPasteboard:indexPath];
     
-    BOOL showPopup = [[NSUserDefaults standardUserDefaults] boolForKey:@"show_popup_on_copy"];
-    if (showPopup) {
-        UIAlertView *v = [[UIAlertView alloc] initWithTitle:@"Copied to pasteboard"
-                                                    message:@"Disable these messages in the Settings application"
-                                                   delegate:nil
-                                          cancelButtonTitle:@"Dismiss"
-                                          otherButtonTitles:nil];
-        [v show];
-        [v release];
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"show_popup_on_copy"]) {
+        ShowDismissAlertView(@"Copied to pasteboard", @"Disable these messages in the Settings application");
     }
 }
 
@@ -405,7 +401,13 @@ static NSString *OPEN_BUTTON_STR                     = @"Open URL";
     entry.notes    = self.notesTextView.text;
     
     self.editing = NO;
-    [delegate iPWSDatabaseEntryViewController:self didFinishEditingEntry:entry];
+
+    // Notify editing is complete
+    [[NSNotificationCenter defaultCenter] 
+        postNotificationName:iPWSDatabaseEntryViewControllerEditingCompleteNotification 
+                      object:self
+                    userInfo:[NSDictionary dictionaryWithObject:entry 
+                                                         forKey:iPWSDatabaseEntryViewControllerEntryUserInfoKey]];
 }
 
 - (void)cancelButtonPressed {

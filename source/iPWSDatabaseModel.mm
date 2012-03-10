@@ -226,7 +226,9 @@ static BOOL sessionKeyInitialized = NO;
 
             CItemData item;
             while (self.pwsFileHandle->ReadRecord(item) == PWSfile::SUCCESS) {
-                [entries addObject:[iPWSDatabaseEntryModel entryModelWithItemData:&item]];
+                iPWSDatabaseEntryModel *entry = [iPWSDatabaseEntryModel entryModelWithItemData:&item];
+                [entries addObject:entry];
+                [self watchEntryForNotifications:entry];
                 item = CItemData(); // The C model does not clear all fields, so do so here
             }
         } else { 

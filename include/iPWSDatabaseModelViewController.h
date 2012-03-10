@@ -28,7 +28,6 @@
 
 #import <UIKit/UIKit.h>
 #import "iPWSDatabaseModel.h"
-#import "iPWSDatabaseEntryViewControllerDelegate.h"
 #import "SearchOverlayViewController.h"
 
 //------------------------------------------------------------------------------------
@@ -36,7 +35,7 @@
 // Description:
 //  Represents a simple table view controller displaying the entries of a database model.  When an entry is
 //  selected push an EntryViewController to display that entry
-@interface iPWSDatabaseModelViewController : UITableViewController <iPWSDatabaseEntryViewControllerDelegate> {
+@interface iPWSDatabaseModelViewController : UITableViewController {
     iPWSDatabaseModel			*model;
     NSMutableArray				*sectionData;
     NSMutableArray				*searchResults;
