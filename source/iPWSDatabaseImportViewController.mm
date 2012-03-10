@@ -26,7 +26,9 @@
 // OF SUCH DAMAGE.
 
 #import "iPWSDatabaseImportViewController.h"
+#import "iPWSDatabaseFactory.h"
 #import "iPWSDatabaseModel.h"
+#import "DismissAlertView.h"
 
 //------------------------------------------------------------------------------------
 // Private interface declaration
@@ -51,15 +53,12 @@
 
 // Initialization
 - (id)initWithNibName:(NSString *)nibNameOrNil 
-               bundle:(NSBundle *)nibBundleOrNil
-      databaseFactory:(iPWSDatabaseFactory *)theDatabaseFactory {
-    
-    if (nil == theDatabaseFactory) return nil;
+               bundle:(NSBundle *)nibBundleOrNil {
     if ((self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil])) {
-        databaseFactory           = [theDatabaseFactory retain];
         self.navigationItem.title = @"Import safe";
         
         // Fill in the list of known passwordsafe file names
+        iPWSDatabaseFactory *databaseFactory = [iPWSDatabaseFactory sharedDatabaseFactory];
         selectedImportFileIdx = 0;
         psafeFiles            = [[NSMutableArray array] retain];
         NSString *docDir      = databaseFactory.documentsDirectory;
@@ -72,13 +71,8 @@
 
         // If there are no files to import, display a warning and return nil
         if (![psafeFiles count]) {
-            UIAlertView *warning = [[UIAlertView alloc] initWithTitle:@"No safes to import"
-                                                              message:@"No unmapped safes were found.  Use iTunes file sharing to import an existing PasswordSafe file."
-                                                             delegate:nil
-                                                    cancelButtonTitle:@"Dismiss"
-                                                    otherButtonTitles:nil];
-            [warning show];
-            [self release];
+            ShowDismissAlertView(@"No safes to import", 
+                                 @"No unmapped safes were found.  Use iTunes file sharing to import an existing PasswordSafe file.");
             return nil;
         }      
         
@@ -89,7 +83,6 @@
 
 // Deallocation
 - (void)dealloc {
-    [databaseFactory release];
     [cancelButton release];
     [doneButton release];
     [psafeFiles release];
@@ -179,19 +172,14 @@
     [passphrase resignFirstResponder];
 
     NSError *errorMsg;
+    iPWSDatabaseFactory *databaseFactory = [iPWSDatabaseFactory sharedDatabaseFactory];
     if (![databaseFactory addDatabaseNamed:friendlyName.text
                              withFileNamed:[psafeFiles objectAtIndex:selectedImportFileIdx]
                                 passphrase:passphrase.text 
                                   errorMsg:&errorMsg]) {
         passphrase.text = @"";
         [passphrase becomeFirstResponder];
-        UIAlertView *v = [[UIAlertView alloc] initWithTitle:@"Import failed"
-                                                    message:[errorMsg localizedDescription]
-                                                   delegate:nil
-                                          cancelButtonTitle:@"Dismiss"
-                                          otherButtonTitles:nil];
-        [v show];
-        [v release];
+        ShowDismissAlertView(@"Import failed", [errorMsg localizedDescription]);
     } else {
         [self.navigationController popViewControllerAnimated:NO];
     }

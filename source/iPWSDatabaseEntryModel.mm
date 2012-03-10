@@ -28,6 +28,8 @@
 
 #import "iPWSDatabaseEntryModel.h"
 
+NSString *iPWSDatabaseEntryModelChangedNotification = @"iPWSDatabaseEntryModelChangedNotification";
+
 //------------------------------------------------------------------------------------
 // Class: iPWSDatabaseEntryModel
 // Description:
@@ -50,18 +52,15 @@
 // Entry implementation
 @implementation iPWSDatabaseEntryModel
 
-@synthesize delegate;
-
 // Autoreleased initializer
-+ (id)entryModelWithData:(const CItemData *)theData delegate:(id<iPWSDatabaseEntryModelDelegate>)theDelegate {
-    return [[[self alloc] initWithData:theData delegate:theDelegate] autorelease];
++ (id)entryModelWithItemData:(const CItemData *)theData {
+    return [[[self alloc] initWithItemData:theData] autorelease];
 }
 
 // Canonical initializer
-- (id)initWithData:(const CItemData *)theData delegate:(id<iPWSDatabaseEntryModelDelegate>)theDelegate {
+- (id)initWithItemData:(const CItemData *)theData {
     if (self = [super init]) {
         data = *theData;
-        self.delegate = theDelegate;
     }
     
     return self;
@@ -69,7 +68,6 @@
 
 // Destructor
 - (void)dealloc {
-    self.delegate = nil;
     [super dealloc];
 }
 
@@ -102,7 +100,8 @@
 //------------------------------------------------------------------------------------
 // Private interface
 - (void)changed {
-    [self.delegate iPWSDatabaseEntryModelChanged:self];
+    [[NSNotificationCenter defaultCenter] postNotificationName:iPWSDatabaseEntryModelChangedNotification
+                                                        object:self];
 }
 
 - (NSString *)stringForStringX:(const StringX&)stringX {

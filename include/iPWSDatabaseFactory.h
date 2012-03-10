@@ -29,7 +29,33 @@
 #import <Foundation/Foundation.h>
 #import "corelib/PWSfile.h"
 #import "iPWSDatabaseModel.h"
-#import "iPWSDatabaseFactoryDelegate.h"
+
+//------------------------------------------------------------------------------------
+// Notifications
+//   iPWSDatabaseFactoryModelAddedNotification
+//     When a new database is added to the factory a notification on the default notification center
+//     is posted with the name iPWSDatabaseFactoryModelAddedNotification with the object being the database factory
+//     and the user info dictionary containing a single key of value iPWSDatabaseFactoryModelNameUserInfoKey with 
+//     an NSString with the friendly name of the model added
+//   
+//   iPWSDatabaseFactoryModelRenamedNotification
+//     When a database is rename to the factory a notification on the default notification center
+//     is posted with the name iPWSDatabaseFactoryModelRenamedNotification with the object being the database factory
+//     and the user info dictionary containing a keys iPWSDatabaseFactoryOldModelNameUserInfoKey and 
+//     iPWSDatabaseFactoryNewModelNameUserInfoKey both of which are NSStrings with the suggested values
+//
+//   iPWSDatabaseFactoryModelRemovedNotification
+//     When a database is rename to the factory a notification on the default notification center
+//     is posted with the name iPWSDatabaseFactoryModelRemovedNotification with the object being the database factory
+//     and the user info dictionary containing a single key of value iPWSDatabaseFactoryModelNameUserInfoKey with 
+//     an NSString with the friendly name of the model removed
+extern NSString* iPWSDatabaseFactoryModelAddedNotification;
+extern NSString* iPWSDatabaseFactoryModelRenamedNotification;
+extern NSString* iPWSDatabaseFactoryModelRemovedNotification;
+extern NSString* iPWSDatabaseFactoryModelNameUserInfoKey;
+extern NSString* iPWSDatabaseFactoryOldModelNameUserInfoKey;
+extern NSString* iPWSDatabaseFactoryNewModelNameUserInfoKey;
+
 
 //------------------------------------------------------------------------------------
 // Class: iPWSDatabaseFactory
@@ -44,14 +70,13 @@
 //
 
 @interface iPWSDatabaseFactory : NSObject {
-    id<iPWSDatabaseFactoryDelegate> delegate;
     NSString                       *documentsDirectory;
-    NSMutableDictionary            *databaseFileNames; // { friendlyName -> fileName}
-    NSMutableDictionary            *databases;         // { friendlyName -> iPWSDatabaseModel }
+    NSMutableDictionary            *friendlyNameToFilename; // { friendlyName -> fileName}
+    NSMutableDictionary            *openDatabaseModels;     // { friendlyName -> iPWSDatabaseModel }
 }
 
-// ---- Instance methods
-- (id)initWithDelegate:(id<iPWSDatabaseFactoryDelegate>)theDelegate;
+// Access the singleton
++ (iPWSDatabaseFactory *)sharedDatabaseFactory;
 
 // Accessors
 @property (readonly) NSArray  *friendlyNames; 
@@ -64,9 +89,13 @@
 - (NSString *)createUniqueFilenameWithPrefix:(NSString *)prefix;
 
 // Accessing the database models
-- (iPWSDatabaseModel *)databaseModelNamed:(NSString *)friendlyName errorMsg:(NSError **)errorMsg;
-- (void)removeDatabaseModelNamed:(NSString *)friendlyName;
-- (void)removeAllDatabaseModels;
+- (iPWSDatabaseModel *)openDatabaseModelNamed:(NSString *)friendlyName 
+                                   passphrase:(NSString *)passphrase
+                                     errorMsg:(NSError **)errorMsg;
+- (iPWSDatabaseModel *)getOpenedDatabaseModelNamed:(NSString *)friendlyName 
+                                          errorMsg:(NSError **)errorMsg;
+- (void)closeDatabaseModelNamed:(NSString *)friendlyName;
+- (void)closeAllDatabaseModels;
 
 // Modifing the known databases
 - (BOOL)addDatabaseNamed:(NSString *)friendlyName 

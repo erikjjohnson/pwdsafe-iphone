@@ -28,7 +28,6 @@
 
 #import <UIKit/UIKit.h>
 #import "iPWSDatabaseModel.h"
-#import "iPWSDatabaseFactory.h"
 
 //------------------------------------------------------------------------------------
 // Class iPWSDatabaseDetailViewController
@@ -39,7 +38,6 @@
 //  duplication is handled by this controller as well.
 @interface iPWSDatabaseDetailViewController : UIViewController {
     iPWSDatabaseModel   *model;
-    iPWSDatabaseFactory *databaseFactory;
     
     IBOutlet UITextField     *modelNameTextField;
     IBOutlet UITextField     *passphraseTextField;
@@ -58,7 +56,6 @@
 
 - (id)initWithNibName:(NSString *)nibNameOrNil 
                bundle:(NSBundle *)nibBundleOrNil
-      databaseFactory:(iPWSDatabaseFactory *)theDatabaseFactory
                 model:(iPWSDatabaseModel *)model;
 
 - (IBAction)duplicateButtonPressed;

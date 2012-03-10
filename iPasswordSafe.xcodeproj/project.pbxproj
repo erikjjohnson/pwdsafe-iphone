@@ -37,6 +37,8 @@
 		A14CF8D71499171900D53605 /* PasswordAlertView.mm in Sources */ = {isa = PBXBuildFile; fileRef = A14CF8D61499171900D53605 /* PasswordAlertView.mm */; };
 		A16BF23A1507088F0035960A /* DismissAlertView.mm in Sources */ = {isa = PBXBuildFile; fileRef = A16BF2391507088F0035960A /* DismissAlertView.mm */; };
 		A1C6BD3512626D7700F192B9 /* lockicon.png in Resources */ = {isa = PBXBuildFile; fileRef = A1C6BD3412626D7700F192B9 /* lockicon.png */; };
+		A1CB19A31509A2880006DD14 /* DropboxSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A1CB19A21509A2880006DD14 /* DropboxSDK.framework */; };
+		A1CB19A51509A2B60006DD14 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A1CB19A41509A2B60006DD14 /* Security.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -74,7 +76,6 @@
 		3013F38F124BB84100C82647 /* iPWSDatabaseFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = iPWSDatabaseFactory.h; path = include/iPWSDatabaseFactory.h; sourceTree = "<group>"; };
 		3013F3B8124BCB7E00C82647 /* iPWSDatabaseModel.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = iPWSDatabaseModel.mm; path = source/iPWSDatabaseModel.mm; sourceTree = "<group>"; };
 		3020EDC7125FB18900DCDDB0 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
-		303CC1BA1255061F005E4970 /* iPWSDatabaseFactoryDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = iPWSDatabaseFactoryDelegate.h; path = include/iPWSDatabaseFactoryDelegate.h; sourceTree = "<group>"; };
 		303CC30A125688B3005E4970 /* iPWSDatabaseModelViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = iPWSDatabaseModelViewController.mm; path = source/iPWSDatabaseModelViewController.mm; sourceTree = "<group>"; };
 		303CC30E125688DB005E4970 /* iPWSDatabaseModelViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = iPWSDatabaseModelViewController.xib; path = resources/iPWSDatabaseModelViewController.xib; sourceTree = "<group>"; };
 		303CC310125688E5005E4970 /* iPWSDatabaseModelViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = iPWSDatabaseModelViewController.h; path = include/iPWSDatabaseModelViewController.h; sourceTree = "<group>"; };
@@ -88,10 +89,8 @@
 		304BB13B1252953500702002 /* iPWSDatabaseDetailViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = iPWSDatabaseDetailViewController.mm; path = source/iPWSDatabaseDetailViewController.mm; sourceTree = "<group>"; };
 		304BB13F1252955A00702002 /* iPWSDatabaseDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = iPWSDatabaseDetailViewController.h; path = include/iPWSDatabaseDetailViewController.h; sourceTree = "<group>"; };
 		304BB1401252956300702002 /* iPWSDatabaseDetailViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = iPWSDatabaseDetailViewController.xib; path = resources/iPWSDatabaseDetailViewController.xib; sourceTree = "<group>"; };
-		305037BF125A937B00C55192 /* iPWSDatabaseModelDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = iPWSDatabaseModelDelegate.h; path = include/iPWSDatabaseModelDelegate.h; sourceTree = "<group>"; };
 		30933E7B124C0A8800622BFA /* iPWSDatabaseEntryModel.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = iPWSDatabaseEntryModel.mm; path = source/iPWSDatabaseEntryModel.mm; sourceTree = "<group>"; };
 		30933E7D124C0AA500622BFA /* iPWSDatabaseEntryModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = iPWSDatabaseEntryModel.h; path = include/iPWSDatabaseEntryModel.h; sourceTree = "<group>"; };
-		30933E80124C0E2F00622BFA /* iPWSDatabaseEntryModelDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = iPWSDatabaseEntryModelDelegate.h; path = include/iPWSDatabaseEntryModelDelegate.h; sourceTree = "<group>"; };
 		30933F531251314000622BFA /* iPWSDatabaseAddViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = iPWSDatabaseAddViewController.mm; path = source/iPWSDatabaseAddViewController.mm; sourceTree = "<group>"; };
 		30933F571251316400622BFA /* iPWSDatabaseAddViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = iPWSDatabaseAddViewController.h; path = include/iPWSDatabaseAddViewController.h; sourceTree = "<group>"; };
 		30933F581251316F00622BFA /* iPWSDatabaseAddViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = iPWSDatabaseAddViewController.xib; path = resources/iPWSDatabaseAddViewController.xib; sourceTree = "<group>"; };
@@ -107,6 +106,8 @@
 		A16BF2391507088F0035960A /* DismissAlertView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = DismissAlertView.mm; path = source/DismissAlertView.mm; sourceTree = "<group>"; };
 		A16BF23B15070DA50035960A /* iPWSMacros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = iPWSMacros.h; path = include/iPWSMacros.h; sourceTree = "<group>"; };
 		A1C6BD3412626D7700F192B9 /* lockicon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = lockicon.png; path = resources/lockicon.png; sourceTree = "<group>"; };
+		A1CB19A21509A2880006DD14 /* DropboxSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DropboxSDK.framework; path = thirdpartysource/DropboxSDK.framework; sourceTree = "<group>"; };
+		A1CB19A41509A2B60006DD14 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		DB6E421B125BDC4700011FA3 /* iPasswordSafe-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "iPasswordSafe-Info.plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -115,10 +116,12 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A1CB19A51509A2B60006DD14 /* Security.framework in Frameworks */,
 				30503845125B848200C55192 /* libPasswordSafe.a in Frameworks */,
 				1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */,
 				1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */,
 				2892E4100DC94CBA00A64D0F /* CoreGraphics.framework in Frameworks */,
+				A1CB19A31509A2880006DD14 /* DropboxSDK.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -136,6 +139,7 @@
 		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
 			isa = PBXGroup;
 			children = (
+				A1CB19A41509A2B60006DD14 /* Security.framework */,
 				3013F2BA124A921400C82647 /* PasswordSafe.xcodeproj */,
 				3013F25B124A750500C82647 /* Headers */,
 				3013F25A124A74FD00C82647 /* Sources */,
@@ -169,6 +173,7 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				A1CB19A21509A2880006DD14 /* DropboxSDK.framework */,
 				1DF5F4DF0D08C38300B7A737 /* UIKit.framework */,
 				1D30AB110D05D00D00671497 /* Foundation.framework */,
 				2892E40F0DC94CBA00A64D0F /* CoreGraphics.framework */,
@@ -179,19 +184,10 @@
 		3013F25A124A74FD00C82647 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
-				A16BF2391507088F0035960A /* DismissAlertView.mm */,
-				30933E7B124C0A8800622BFA /* iPWSDatabaseEntryModel.mm */,
-				3013F3B8124BCB7E00C82647 /* iPWSDatabaseModel.mm */,
-				3013F38D124BB7FA00C82647 /* iPWSDatabaseFactory.mm */,
-				3013F261124A752200C82647 /* iPWSDatabasesViewController.mm */,
-				30933F531251314000622BFA /* iPWSDatabaseAddViewController.mm */,
-				304BB07C1252831E00702002 /* iPWSDatabaseImportViewController.mm */,
-				304BB13B1252953500702002 /* iPWSDatabaseDetailViewController.mm */,
-				303CC30A125688B3005E4970 /* iPWSDatabaseModelViewController.mm */,
-				303CC3521256969F005E4970 /* iPWSDatabaseEntryViewController.mm */,
+				A1CB19AB1509A5910006DD14 /* Models */,
+				A1CB19AA1509A58C0006DD14 /* Controllers */,
+				A1CB19A91509A5840006DD14 /* Views */,
 				3013F25F124A752200C82647 /* iPasswordSafeAppDelegate.mm */,
-				A10F649812F3CBDF00FFC851 /* SearchOverlayViewController.mm */,
-				A14CF8D61499171900D53605 /* PasswordAlertView.mm */,
 				3013F260124A752200C82647 /* main.mm */,
 			);
 			name = Sources;
@@ -200,25 +196,12 @@
 		3013F25B124A750500C82647 /* Headers */ = {
 			isa = PBXGroup;
 			children = (
-				A16BF2381507087A0035960A /* DismissAlertView.h */,
-				30933E7D124C0AA500622BFA /* iPWSDatabaseEntryModel.h */,
-				30933E80124C0E2F00622BFA /* iPWSDatabaseEntryModelDelegate.h */,
-				304BB1391252950E00702002 /* iPWSDatabaseModel.h */,
-				305037BF125A937B00C55192 /* iPWSDatabaseModelDelegate.h */,
-				3013F38F124BB84100C82647 /* iPWSDatabaseFactory.h */,
-				303CC1BA1255061F005E4970 /* iPWSDatabaseFactoryDelegate.h */,
-				3013F267124A753400C82647 /* iPWSDatabasesViewController.h */,
-				30933F571251316400622BFA /* iPWSDatabaseAddViewController.h */,
-				304BB0821252836600702002 /* iPWSDatabaseImportViewController.h */,
-				304BB13F1252955A00702002 /* iPWSDatabaseDetailViewController.h */,
-				303CC310125688E5005E4970 /* iPWSDatabaseModelViewController.h */,
-				303CC356125696C6005E4970 /* iPWSDatabaseEntryViewController.h */,
-				30B1F804125A3CE40036DDDA /* iPWSDatabaseEntryViewControllerDelegate.h */,
+				A1CB19A61509A53B0006DD14 /* Models */,
+				A1CB19A71509A5590006DD14 /* Controllers */,
+				A1CB19A81509A56E0006DD14 /* Views */,
 				A16BF23B15070DA50035960A /* iPWSMacros.h */,
 				3013F266124A753400C82647 /* iPasswordSafeAppDelegate.h */,
 				3013F270124A76E100C82647 /* iPasswordSafe_Prefix.pch */,
-				A10F649A12F3CBEE00FFC851 /* SearchOverlayViewController.h */,
-				A14CF8D51499170200D53605 /* PasswordAlertView.h */,
 			);
 			name = Headers;
 			sourceTree = "<group>";
@@ -229,6 +212,73 @@
 				3013F2C2124A921400C82647 /* libPasswordSafe.a */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		A1CB19A61509A53B0006DD14 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				30933E7D124C0AA500622BFA /* iPWSDatabaseEntryModel.h */,
+				3013F38F124BB84100C82647 /* iPWSDatabaseFactory.h */,
+				304BB1391252950E00702002 /* iPWSDatabaseModel.h */,
+			);
+			name = Models;
+			sourceTree = "<group>";
+		};
+		A1CB19A71509A5590006DD14 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				3013F267124A753400C82647 /* iPWSDatabasesViewController.h */,
+				30933F571251316400622BFA /* iPWSDatabaseAddViewController.h */,
+				304BB0821252836600702002 /* iPWSDatabaseImportViewController.h */,
+				304BB13F1252955A00702002 /* iPWSDatabaseDetailViewController.h */,
+				303CC310125688E5005E4970 /* iPWSDatabaseModelViewController.h */,
+				303CC356125696C6005E4970 /* iPWSDatabaseEntryViewController.h */,
+				30B1F804125A3CE40036DDDA /* iPWSDatabaseEntryViewControllerDelegate.h */,
+				A10F649A12F3CBEE00FFC851 /* SearchOverlayViewController.h */,
+			);
+			name = Controllers;
+			sourceTree = "<group>";
+		};
+		A1CB19A81509A56E0006DD14 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				A16BF2381507087A0035960A /* DismissAlertView.h */,
+				A14CF8D51499170200D53605 /* PasswordAlertView.h */,
+			);
+			name = Views;
+			sourceTree = "<group>";
+		};
+		A1CB19A91509A5840006DD14 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				A16BF2391507088F0035960A /* DismissAlertView.mm */,
+				A14CF8D61499171900D53605 /* PasswordAlertView.mm */,
+			);
+			name = Views;
+			sourceTree = "<group>";
+		};
+		A1CB19AA1509A58C0006DD14 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				3013F261124A752200C82647 /* iPWSDatabasesViewController.mm */,
+				30933F531251314000622BFA /* iPWSDatabaseAddViewController.mm */,
+				304BB07C1252831E00702002 /* iPWSDatabaseImportViewController.mm */,
+				304BB13B1252953500702002 /* iPWSDatabaseDetailViewController.mm */,
+				303CC30A125688B3005E4970 /* iPWSDatabaseModelViewController.mm */,
+				303CC3521256969F005E4970 /* iPWSDatabaseEntryViewController.mm */,
+				A10F649812F3CBDF00FFC851 /* SearchOverlayViewController.mm */,
+			);
+			name = Controllers;
+			sourceTree = "<group>";
+		};
+		A1CB19AB1509A5910006DD14 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				30933E7B124C0A8800622BFA /* iPWSDatabaseEntryModel.mm */,
+				3013F3B8124BCB7E00C82647 /* iPWSDatabaseModel.mm */,
+				3013F38D124BB7FA00C82647 /* iPWSDatabaseFactory.mm */,
+			);
+			name = Models;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -357,6 +407,10 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/thirdpartysource\"",
+				);
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -376,6 +430,10 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/thirdpartysource\"",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = iPasswordSafe_Prefix.pch;
 				INFOPLIST_FILE = "iPasswordSafe-Info.plist";
@@ -413,6 +471,10 @@
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Erik Johnson";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Erik Johnson";
 				COPY_PHASE_STRIP = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/thirdpartysource\"",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = iPasswordSafe_Prefix.pch;
 				INFOPLIST_FILE = "iPasswordSafe-Info.plist";

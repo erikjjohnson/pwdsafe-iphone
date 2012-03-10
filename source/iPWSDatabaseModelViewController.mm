@@ -53,6 +53,7 @@
 - (void)searchDoneButtonPressed;
 - (void)updateEditButton;
 
+- (void)modelChangedNotification:(NSNotification *)notification;
 @end
 
 
@@ -95,8 +96,13 @@
     if (!theModel) return nil;
     if (self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil]) {
         model                     = [theModel retain];
-        model.delegate            = self;
         self.navigationItem.title = @"Safe entries";
+
+        // Watch for changes in the model
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(modelChangedNotification:)
+                                                     name:iPWSDatabaseModelChangedNotification 
+                                                   object:model];
 
         // Map the model to the section data
         [self initSectionDataWithModel:model];
@@ -334,7 +340,7 @@
 // is done editing it will call iPWSDatabaseEntryViewController:didFinishEditingEntry:
 - (void)addButtonPressed {
     CItemData data;
-    iPWSDatabaseEntryModel *entry = [[[iPWSDatabaseEntryModel alloc] initWithData:&data delegate:nil] autorelease];
+    iPWSDatabaseEntryModel *entry = [[[iPWSDatabaseEntryModel alloc] initWithItemData:&data] autorelease];
     iPWSDatabaseEntryViewController *vc = 
         [[iPWSDatabaseEntryViewController alloc] initWithNibName:@"iPWSDatabaseEntryViewController"
                                                           bundle:nil
@@ -355,7 +361,9 @@
     [self.tableView reloadData];
 }
 
-- (void)iPWSDatabaseModel:(iPWSDatabaseModel *)model didChangeEntry:(iPWSDatabaseEntryModel *)entry {
+- (void)modelChangedNotification:(NSNotification *)notification {
+    iPWSDatabaseEntryModel *entry = [notification.userInfo objectForKey:iPWSDatabaseModelChangedEntryUserInfoKey];
+    if (!entry) return;
     [self removeEntryFromSection:entry];
     [self addEntryToSection:entry];
     [self updateSearchResults];
@@ -384,6 +392,7 @@
 #pragma mark Memory management
 
 - (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
     [addButton release];
     [searchDoneButton release];
     [model release];

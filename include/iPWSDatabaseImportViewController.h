@@ -27,14 +27,12 @@
 
 
 #import <UIKit/UIKit.h>
-#import "iPWSDatabaseFactory.h"
 
 //------------------------------------------------------------------------------------
 // Class: iPWSDatabaseImportViewController
 // Description:
 //  Represents a view and controller for importing a PasswordSafe database from an existing file
 @interface iPWSDatabaseImportViewController : UIViewController <UIPickerViewDelegate, UIPickerViewDataSource> {
-    iPWSDatabaseFactory   *databaseFactory;
     UIBarButtonItem       *cancelButton;
     UIBarButtonItem       *doneButton;
     NSMutableArray        *psafeFiles;
@@ -45,11 +43,6 @@
     IBOutlet UIPickerView *importFilePicker;
 	IBOutlet UIScrollView *scrollView;
 }
-
-// Instance methods
-- (id)initWithNibName:(NSString *)nibNameOrNil
-               bundle:(NSBundle *)nibBundleOrNil 
-      databaseFactory:(iPWSDatabaseFactory *)theDatabaseFactory;
 
 // Interface builder connections
 - (IBAction)friendlyNameChanged:(id)sender;

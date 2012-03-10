@@ -28,10 +28,16 @@
 #import <Foundation/Foundation.h>
 
 #import "corelib/PWSfile.h"
-
-#import "iPWSDatabaseEntryModelDelegate.h"
 #import "iPWSDatabaseEntryModel.h"
-#import "iPWSDatabaseModelDelegate.h"
+
+//------------------------------------------------------------------------------------
+// Notifications
+//  iPWSDatabaseModelChangedNotification
+//     When an iPWSDatabaseModel changes, a notification to the default notification center is posted with
+//     the name iPWSDatabaseModelChangedNotification, the object is the instance of the model that changed
+//     and the user info dictionary contains a single key of the name iPWSDatabaseModelChangedEntryUserInfoKey
+extern NSString* iPWSDatabaseModelChangedNotification;
+extern NSString* iPWSDatabaseModelChangedEntryUserInfoKey;
 
 //------------------------------------------------------------------------------------
 // Class: iPWSDatabaseModel
@@ -40,15 +46,14 @@
 //  stores the database is opened, completely re-written, and closed each time a change is made to the database
 //  due to the API exposed by the underlying C model, but that is not reflected in this class.
 //
-@interface iPWSDatabaseModel : NSObject <iPWSDatabaseEntryModelDelegate> {
-    NSMutableArray                    *entries;
-    id<iPWSDatabaseModelDelegate>      delegate;
-    NSString                          *fileName;
-    NSString                          *friendlyName;
-    NSString                          *passphrase;
-    PWSfile::HeaderRecord              headerRecord;
-    PWSfile                           *pwsFileHandle;
-    NSError                           *lastError;
+@interface iPWSDatabaseModel : NSObject {
+    NSMutableArray        *entries;
+    NSString              *fileName;
+    NSString              *friendlyName;
+    NSString              *passphrase;
+    PWSfile::HeaderRecord  headerRecord;
+    PWSfile               *pwsFileHandle;
+    NSError               *lastError;
 }
 
 // Class methods
@@ -57,7 +62,6 @@
 
 // Accessors 
 @property (readonly) NSArray                       *entries;
-@property (assign)   id<iPWSDatabaseModelDelegate>  delegate;
 @property (readonly) NSString                      *fileName;
 @property (copy)     NSString                      *friendlyName;
 @property (readonly) PWSfile::VERSION              version;

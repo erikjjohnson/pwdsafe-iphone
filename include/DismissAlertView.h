@@ -30,7 +30,7 @@
 
 //------------------------------------------------------------------------------------
 // Function DismissAlertView
-// Description
+// Description:
 //  Displays an alert view dialog box with a single dismiss button and a simple error message.
 //  This functionality was so common in the code as to simply it here.
 void ShowDismissAlertView(NSString *title, NSString *message);

@@ -28,7 +28,6 @@
 
 #import <UIKit/UIKit.h>
 #import "iPWSDatabaseFactory.h"
-#import "iPWSDatabaseFactoryDelegate.h"
 
 //------------------------------------------------------------------------------------
 // Class: DatabasesViewController
@@ -39,14 +38,12 @@
 //  The map is persisted using the UserDefaults (i.e., "preferences") file stored with
 //  the application.
 
-@interface iPWSDatabasesViewController : UITableViewController <UIActionSheetDelegate, iPWSDatabaseFactoryDelegate> {
-    iPWSDatabaseFactory *databaseFactory;
+@interface iPWSDatabasesViewController : UITableViewController <UIActionSheetDelegate> {
     UIBarButtonItem     *addDatabaseButton;
     NSMutableDictionary *passphrasePromptContext;
 }
 
 // Accessors
-@property (readonly) iPWSDatabaseFactory *databaseFactory;
 @property (readonly) UIBarButtonItem *addDatabaseButton;
 
 @end

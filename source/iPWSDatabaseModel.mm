@@ -54,10 +54,18 @@
 // ---- PWS library interfacing
 - (PWSfile *)pwsFileHandle;
 - (void)setPwsFileHandle:(PWSfile *)handle;
+
+// ---- Change management
+- (void)entryChanged:(NSNotification *)notification;
+- (void)watchEntryForNotifications:(iPWSDatabaseEntryModel *)entry;
+- (void)stopWatchingEntryForNotifications:(iPWSDatabaseEntryModel *)entry;
 @end
 
 //------------------------------------------------------------------------------------
 // Class constants
+
+NSString* iPWSDatabaseModelChangedNotification     = @"iPWSDatabaseModelChangedNotification";
+NSString* iPWSDatabaseModelChangedEntryUserInfoKey = @"iPWSDatabaseModelChangedEntryUserInfoKey";
 
 // Maps PWSfile::VERSION constants to a string
 static NSDictionary *iPWSDatabaseModelVersionMap =
@@ -95,7 +103,6 @@ static BOOL sessionKeyInitialized = NO;
 @synthesize entries;
 @synthesize fileName;
 @synthesize friendlyName;
-@synthesize delegate;
 
 //------------------------------------------------------------------------------------
 // Class methods
@@ -118,7 +125,7 @@ static BOOL sessionKeyInitialized = NO;
 }
    
 //------------------------------------------------------------------------------------
-// Instance methdos
+// Instance methods
 
 //------------------------------------------------------------------------------------
 // Accessors
@@ -219,7 +226,7 @@ static BOOL sessionKeyInitialized = NO;
 
             CItemData item;
             while (self.pwsFileHandle->ReadRecord(item) == PWSfile::SUCCESS) {
-                [entries addObject:[iPWSDatabaseEntryModel entryModelWithData:&item delegate:self]];
+                [entries addObject:[iPWSDatabaseEntryModel entryModelWithItemData:&item]];
                 item = CItemData(); // The C model does not clear all fields, so do so here
             }
         } else { 
@@ -240,6 +247,8 @@ last_error:
 
 // Deallocation
 - (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    
     self.lastError     = nil;
     self.passphrase    = nil;
     self.pwsFileHandle = NULL;
@@ -253,25 +262,43 @@ last_error:
 // Entry modifications (passphrase required)
 - (BOOL)addDatabaseEntry:(iPWSDatabaseEntryModel *)entry {
     [entries addObject:entry];
-    entry.delegate = self;
+    [self watchEntryForNotifications:entry];
     return [self syncToFile];
 }
 
 - (BOOL)removeDatabaseEntry:(iPWSDatabaseEntryModel *)entry {
     [entries removeObjectIdenticalTo:entry];    
+    [self stopWatchingEntryForNotifications:entry];
     return [self syncToFile];
 }
 
 //------------------------------------------------------------------------------------
-// Entry observer - called when the entry is changed
-- (void)iPWSDatabaseEntryModelChanged:(iPWSDatabaseEntryModel *)entryModel {
-    [delegate iPWSDatabaseModel:self didChangeEntry:entryModel];
-    [self syncToFile]; 
-}
+// Private interface
 
 
 //------------------------------------------------------------------------------------
-// Private interface
+// Entry observer - called when the entry is changed
+- (void)entryChanged:(NSNotification *)notification {
+    NSDictionary *userInfo = [NSDictionary dictionaryWithObject:notification.object 
+                                                         forKey:iPWSDatabaseModelChangedEntryUserInfoKey];
+    [[NSNotificationCenter defaultCenter] postNotificationName:iPWSDatabaseModelChangedNotification
+                                                        object:self
+                                                      userInfo:userInfo];
+    [self syncToFile]; 
+}
+
+- (void)watchEntryForNotifications:(iPWSDatabaseEntryModel *)entry {
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(entryChanged:)
+                                                 name:iPWSDatabaseEntryModelChangedNotification
+                                               object:entry];
+}
+
+- (void)stopWatchingEntryForNotifications:(iPWSDatabaseEntryModel *)entry {
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:iPWSDatabaseEntryModelChangedNotification
+                                                  object:entry];
+}
 
 //------------------------------------------------------------------------------------
 // File management

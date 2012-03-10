@@ -27,6 +27,8 @@
 
 
 #import "iPWSDatabaseAddViewController.h"
+#import "iPWSDatabaseFactory.h"
+#import "DismissAlertView.h"
 
 //------------------------------------------------------------------------------------
 // Private interface declaration 
@@ -55,13 +57,9 @@
 //------------------------------------------------------------------------------------
 // Initialization
 - (id)initWithNibName:(NSString *)nibNameOrNil 
-               bundle:(NSBundle *)nibBundleOrNil 
-      databaseFactory:(iPWSDatabaseFactory *)theDatabaseFactory {
-    
-    if (nil == theDatabaseFactory) return nil;
+               bundle:(NSBundle *)nibBundleOrNil {
     
     if ((self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil])) {
-        databaseFactory           = [theDatabaseFactory retain];
         self.navigationItem.title = @"Add safe";
     }
     return self;
@@ -69,7 +67,6 @@
 
 // Deallocation
 - (void)dealloc {
-    [databaseFactory release];
     [cancelButton release];
     [doneButton release];
     [super dealloc];
@@ -171,17 +168,12 @@
     [self.navigationController popViewControllerAnimated:NO];
 
     NSError *errorMsg;
+    iPWSDatabaseFactory *databaseFactory = [iPWSDatabaseFactory sharedDatabaseFactory];
     if (![databaseFactory addDatabaseNamed:friendlyName.text
                              withFileNamed:[databaseFactory createUniqueFilenameWithPrefix:friendlyName.text]
                                 passphrase:passphrase.text
                                   errorMsg:&errorMsg]) {
-        UIAlertView *v = [[UIAlertView alloc] initWithTitle:@"Add safe failed"
-                                                    message:[errorMsg localizedDescription]
-                                                   delegate:nil
-                                          cancelButtonTitle:@"Dismiss"
-                                          otherButtonTitles:nil];
-        [v show];
-        [v release];
+        ShowDismissAlertView(@"Add safe failed", [errorMsg localizedDescription]);
     }
 }
      

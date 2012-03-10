@@ -33,14 +33,19 @@
 #import "iPWSDatabaseDetailViewController.h"
 #import "iPWSDatabaseModelViewController.h"
 #import "PasswordAlertView.h"
+#import "DismissAlertView.h"
 
 //------------------------------------------------------------------------------------
 // Private interface declaration
 @interface iPWSDatabasesViewController ()
+- (iPWSDatabaseFactory *)databaseFactory;
+
 - (void)addDatabaseButtonPressed;
 - (void)updateEditButton;
 
 - (NSString *)friendlyNameAtIndex:(NSInteger)idx;
+- (iPWSDatabaseModel *)modelForFriendlyName:(NSString *)friendlyName;
+- (iPWSDatabaseModel *)modelForFriendlyNameAtIndex:(NSInteger)idx;
 
 - (void)showDatabaseDetailsForModel:(iPWSDatabaseModel *)model;
 - (void)showDatabaseModel:(iPWSDatabaseModel *)model;
@@ -48,6 +53,8 @@
 - (void)promptForPassphraseForName:(NSString *)friendlyName tag:(NSInteger)tag;
 
 - (void)alertForError:(NSError *)errorMsg;
+
+- (void)databasesChangedNotification:(NSNotification *)notification;
 @end
 
 
@@ -77,8 +84,6 @@ enum {
 
 //------------------------------------------------------------------------------------
 // Accessors
-@synthesize databaseFactory;
-
 - (UIBarButtonItem *)addDatabaseButton {
     // Lazy initialize a "plus" button
     if (!addDatabaseButton) {
@@ -89,6 +94,10 @@ enum {
     return addDatabaseButton;
 }
 
+- (iPWSDatabaseFactory *)databaseFactory {
+    return [iPWSDatabaseFactory sharedDatabaseFactory];
+}
+
 //------------------------------------------------------------------------------------
 // Interface handlers
 
@@ -96,8 +105,7 @@ enum {
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    if (!passphrasePromptContext) passphrasePromptContext = [[[NSMutableDictionary alloc] init] retain];
-    if (!databaseFactory)         databaseFactory         = [[iPWSDatabaseFactory alloc] initWithDelegate:self];
+    if (!passphrasePromptContext) passphrasePromptContext = [[NSMutableDictionary alloc] init];
     
     self.navigationItem.title = @"Safes";
     self.navigationItem.rightBarButtonItem = self.editButtonItem;
@@ -108,6 +116,20 @@ enum {
                                                    appDelegate.flexibleSpaceButton,
                                                    appDelegate.lockAllDatabasesButton, 
                                                    nil];
+    
+    // Listen for database factory changes
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(databasesChangedNotification:)
+                                                 name:iPWSDatabaseFactoryModelAddedNotification
+                                               object:self.databaseFactory];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(databasesChangedNotification:)
+                                                 name:iPWSDatabaseFactoryModelRenamedNotification
+                                               object:self.databaseFactory];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(databasesChangedNotification:)
+                                                 name:iPWSDatabaseFactoryModelRemovedNotification
+                                               object:self.databaseFactory];
 }
 
 // Unhide the toolbar
@@ -118,7 +140,6 @@ enum {
 
 // Override to allow orientations other than the default portrait orientation.
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
-    // Return YES for supported orientations
     return ((interfaceOrientation == UIInterfaceOrientationPortrait) ||
             (interfaceOrientation == UIInterfaceOrientationLandscapeLeft) ||
             (interfaceOrientation == UIInterfaceOrientationLandscapeRight));
@@ -130,7 +151,7 @@ enum {
 
 // Only enable the edit button if there is at least one database
 - (void)updateEditButton {
-    NSInteger count = [databaseFactory.friendlyNames count];
+    NSInteger count = [self.databaseFactory.friendlyNames count];
     if (!count) {
         self.editing = NO;
     }    
@@ -145,7 +166,7 @@ enum {
 // The number of databases known to us
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     [self updateEditButton];
-    return [databaseFactory.friendlyNames count];
+    return [self.databaseFactory.friendlyNames count];
 }
 
 // Each cell is simply the friendly name of the database
@@ -175,9 +196,8 @@ enum {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         // Delete the row from the data source.
         NSError *errorMsg;
-        if (![databaseFactory removeDatabaseNamed:[self friendlyNameAtIndex:indexPath.row] errorMsg:&errorMsg]) {
+        if (![self.databaseFactory removeDatabaseNamed:[self friendlyNameAtIndex:indexPath.row] errorMsg:&errorMsg]) {
             [self alertForError:errorMsg];
-            return;
         }
     }   
     else if (editingStyle == UITableViewCellEditingStyleInsert) {
@@ -191,10 +211,8 @@ enum {
 
 // When a database is selected, prompt for the passphrase and then navigate to the model
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    NSString *friendlyName = [self friendlyNameAtIndex: indexPath.row];
-    iPWSDatabaseModel *model = [databaseFactory databaseModelNamed:friendlyName errorMsg:NULL];
-    
-    // If the model exists, open the view. Otherwise, ask for the password and open it later
+    NSString *friendlyName   = [self friendlyNameAtIndex:indexPath.row];
+    iPWSDatabaseModel *model = [self modelForFriendlyName:friendlyName];
     if (model) {
         [self showDatabaseModel:model];
     } else {
@@ -202,6 +220,18 @@ enum {
                                      tag:PASSPHRASE_PROMPT_OPEN_DATABASE_TAG];
     }    
     
+}
+
+// Called when a detailed view of a database is requested (i.e., edit the database friendly name)
+- (void)tableView: (UITableView *)tableView accessoryButtonTappedForRowWithIndexPath: (NSIndexPath *)indexPath {
+    NSString *friendlyName    = [self friendlyNameAtIndex:indexPath.row];
+    iPWSDatabaseModel *model = [self modelForFriendlyName:friendlyName];    
+    if (model) {
+        [self showDatabaseDetailsForModel:model];
+    } else {
+        [self promptForPassphraseForName:friendlyName
+                                     tag:PASSPHRASE_PROMPT_SHOW_DATABASE_DETAILS_TAG];
+    }    
 }
 
 // Navigate to the given database model
@@ -212,25 +242,6 @@ enum {
                                                      model:model];
     [self.navigationController pushViewController:vc animated:YES];
     [vc release];
-    
-}
-
-
-//------------------------------------------------------------------------------------
-// Custom actions
-
-// Called when a detailed view of a database is requested (i.e., edit the database friendly name)
-- (void)tableView: (UITableView *)tableView accessoryButtonTappedForRowWithIndexPath: (NSIndexPath *)indexPath {
-    NSString *friendlyName = [self friendlyNameAtIndex: indexPath.row];
-    iPWSDatabaseModel *model = [databaseFactory databaseModelNamed:friendlyName errorMsg:NULL];
-    
-    // If the model exists, open the details view. Otherwise, ask for the password and open it later
-    if (model) {
-        [self showDatabaseDetailsForModel:model];
-    } else {
-        [self promptForPassphraseForName:friendlyName
-                                     tag:PASSPHRASE_PROMPT_SHOW_DATABASE_DETAILS_TAG];
-    }    
 }
 
 
@@ -243,7 +254,8 @@ enum {
                                                              delegate:self 
                                                     cancelButtonTitle:@"Cancel"
                                                destructiveButtonTitle:nil
-                                                    otherButtonTitles:CREATE_DATABASE_BUTTON_STR, IMPORT_DATABASE_BUTTON_STR, nil];
+                                                    otherButtonTitles:CREATE_DATABASE_BUTTON_STR, 
+                                                                      IMPORT_DATABASE_BUTTON_STR, nil];
     [actionSheet showInView:[self view]];    
 }
 
@@ -256,8 +268,7 @@ enum {
     if ([buttonText isEqualToString:CREATE_DATABASE_BUTTON_STR]) {
         iPWSDatabaseAddViewController *vc = [[iPWSDatabaseAddViewController alloc] 
                                                 initWithNibName:@"iPWSDatabaseAddViewController"
-                                                         bundle:nil
-                                                databaseFactory:databaseFactory];
+                                                         bundle:nil];
         [self.navigationController pushViewController:vc animated:YES];
         [vc release];
     }
@@ -266,8 +277,7 @@ enum {
     if ([buttonText isEqualToString:IMPORT_DATABASE_BUTTON_STR]) {
         iPWSDatabaseImportViewController *vc = [[iPWSDatabaseImportViewController alloc]
                                                 initWithNibName:@"iPWSDatabaseImportViewController"
-                                                         bundle:nil
-                                                databaseFactory:databaseFactory];
+                                                         bundle:nil];
         [self.navigationController pushViewController:vc animated:YES];
         [vc release];
     }
@@ -287,9 +297,8 @@ enum {
                                                             message:friendlyName 
                                                            delegate:self 
                                                   cancelButtonTitle:@"Cancel" 
-                                                  doneButtonTitle:@"OK"];
+                                                    doneButtonTitle:@"OK"];
     v.tag = tag;
-//    v.alertViewStyle = UIAlertViewStyleSecureTextInput;
     [v show];
     [v release];
 }
@@ -305,47 +314,35 @@ enum {
 
     // Add the database model
     NSError *errorMsg;
-    if (![databaseFactory addDatabaseNamed:friendlyName
-                             withFileNamed:[[databaseFactory databasePathForName:friendlyName] lastPathComponent]
-                                passphrase:alertView.passwordTextField.text
-                                  errorMsg:&errorMsg]) {
+    iPWSDatabaseModel *model = [self.databaseFactory openDatabaseModelNamed:friendlyName
+                                                                 passphrase:alertView.passwordTextField.text
+                                                                   errorMsg:&errorMsg];
+    if (!model) {
         [self alertForError:errorMsg];
         return;
     }
     
-    // Do any final special processing    
+    // Do any final special processing   
     if (PASSPHRASE_PROMPT_OPEN_DATABASE_TAG == theAlertView.tag) {
-        [self showDatabaseModel:[databaseFactory databaseModelNamed:friendlyName errorMsg:NULL]];
+        [self showDatabaseModel:model];
     }
     
     if (PASSPHRASE_PROMPT_SHOW_DATABASE_DETAILS_TAG == theAlertView.tag) {
-        [self showDatabaseDetailsForModel:[databaseFactory databaseModelNamed:friendlyName errorMsg:NULL]];
+        [self showDatabaseDetailsForModel:model];
     }
 }
 
 //------------------------------------------------------------------------------------
 // Memory management
 - (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
     [addDatabaseButton release];
-    [databaseFactory release];
     [super dealloc];
 }
 
 //------------------------------------------------------------------------------------
-// Database management (iPWSDatabaseFactoryDelegate protocol implementation)
-
-// Add a new database into the map of databases and synchronize this information with the user defaults
-- (void)iPWSDatabaseFactory:(iPWSDatabaseFactory *)databaseFactory didAddModelNamed:(NSString *)friendlyName {
-    [self.tableView reloadData];
-}
-
-- (void)iPWSDatabaseFactory:(iPWSDatabaseFactory *)databaseFactory 
-        didRenameModelNamed:(NSString *)origFriendlyName 
-                  toNewName:(NSString *)newFriendlyName {
-    [self.tableView reloadData];
-}
-
-- (void)iPWSDatabaseFactory:(iPWSDatabaseFactory *)databaseFactory didRemoveModelNamed:(NSString *)friendlyName {
+// Database management event handling
+- (void)databasesChangedNotification:(NSNotification *)notification {
     [self.tableView reloadData];
 }
 
@@ -353,17 +350,20 @@ enum {
 // Private helper routines
 
 - (NSString *)friendlyNameAtIndex:(NSInteger)idx {
-    return [[databaseFactory friendlyNames] objectAtIndex:idx];
+    return [[self.databaseFactory friendlyNames] objectAtIndex:idx];
+}
+
+- (iPWSDatabaseModel *)modelForFriendlyName:(NSString *)friendlyName {
+    return [self.databaseFactory getOpenedDatabaseModelNamed:friendlyName errorMsg:NULL];
+}
+
+- (iPWSDatabaseModel *)modelForFriendlyNameAtIndex:(NSInteger)idx {
+    return [self modelForFriendlyName:[self friendlyNameAtIndex:idx]];
 }
 
 
 - (void)alertForError:(NSError *)errorMsg {
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:[errorMsg localizedDescription]
-                                                    message:nil
-                                                   delegate:nil
-                                          cancelButtonTitle:@"Dismiss"
-                                          otherButtonTitles:nil];
-    [alert show];
+    ShowDismissAlertView([errorMsg localizedDescription], nil);
 }
 
 - (void)showDatabaseDetailsForModel:(iPWSDatabaseModel *)model {
@@ -371,7 +371,6 @@ enum {
     iPWSDatabaseDetailViewController *vc = [[iPWSDatabaseDetailViewController alloc] 
                                             initWithNibName:@"iPWSDatabaseDetailViewController"
                                                      bundle:nil
-                                            databaseFactory:databaseFactory
                                                       model:model];
     [self.navigationController pushViewController:vc animated:YES];
     [vc release];

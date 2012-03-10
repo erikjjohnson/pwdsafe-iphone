@@ -28,6 +28,7 @@
 
 #import "iPWSDatabaseDetailViewController.h"
 #import "iPWSDatabaseFactory.h"
+#import "DismissAlertView.h"
 
 //------------------------------------------------------------------------------------
 // Private interface
@@ -68,12 +69,8 @@
 // Initialization
 - (id)initWithNibName:(NSString *)nibNameOrNil 
                bundle:(NSBundle *)nibBundleOrNil
-      databaseFactory:(iPWSDatabaseFactory *)theDatabaseFactory
                 model:(iPWSDatabaseModel *)theModel {
-    if (!theDatabaseFactory || !theModel) return nil;
-    
     if (self = [self initWithNibName:nibNameOrNil bundle:nibBundleOrNil]) {
-        databaseFactory           = [theDatabaseFactory retain];
         model                     = [theModel retain];
         self.navigationItem.title = @"Details";
         editing = NO;
@@ -83,7 +80,6 @@
 
 // Deallocation
 - (void)dealloc {
-    [databaseFactory release];
     [model release];
     [editButton release];
     [doneEditButton release];
@@ -123,6 +119,7 @@
     // Get the current friendly name and append - copy (x) until we find an unused name
     NSString *newFriendlyName = [NSString stringWithFormat:@"%@ - copy", [self modelFriendlyName]];
     
+    iPWSDatabaseFactory *databaseFactory = [iPWSDatabaseFactory sharedDatabaseFactory];
     int cnt = 2;
     while ((cnt < 10) && [databaseFactory doesFriendlyNameExist:newFriendlyName]) {
         newFriendlyName = [NSString stringWithFormat:@"%@ - copy(%d)", [self modelFriendlyName], cnt++];
@@ -146,14 +143,7 @@
 }
 
 - (void)duplicationAlertWithDescription:(NSString *)description success:(BOOL)success {
-    NSString *title = success ? @"Safe was duplicated" : @"Failed to duplicate safe";
-    UIAlertView* alertView = [[UIAlertView alloc] initWithTitle:title
-                                                        message:description
-                                                       delegate:nil
-                                              cancelButtonTitle:@"Dismiss"
-                                              otherButtonTitles:nil];
-    [alertView show];
-    [alertView release];
+    ShowDismissAlertView(success ? @"Safe was duplicated" : @"Failed to duplicate safe", description);
 }
 
 //------------------------------------------------------------------------------------
@@ -259,14 +249,9 @@
     NSString *newName  = modelNameTextField.text;
     if (![origName isEqualToString:newName]) {
         NSError *errorMsg;
+        iPWSDatabaseFactory *databaseFactory = [iPWSDatabaseFactory sharedDatabaseFactory];
         if (![databaseFactory renameDatabaseNamed:origName toNewName:newName errorMsg:&errorMsg]) {
-            UIAlertView *v = [[UIAlertView alloc] initWithTitle:@"Rename failed"
-                                                        message:[errorMsg localizedDescription]
-                                                       delegate:nil
-                                              cancelButtonTitle:@"Dismiss"
-                                              otherButtonTitles:nil];
-            [v show];
-            [v release];
+            ShowDismissAlertView(@"Rename failed", [errorMsg localizedDescription]);
         }
     }
     
@@ -275,13 +260,8 @@
     NSString *newPassphrase  = passphraseTextField.text;
     if (![origPassphrase isEqualToString:newPassphrase]) {
         if (![model changePassphrase:newPassphrase]) {
-            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Failed to change passphrase"
-                                                                message:@"An unexpected error prevent the passphrase from changing"
-                                                               delegate:nil
-                                                      cancelButtonTitle:@"Dismiss"
-                                                      otherButtonTitles:nil];
-            [alertView show];
-            [alertView release];
+            ShowDismissAlertView(@"Failed to change passphrase", 
+                                 @"An unexpected error prevent the passphrase from changing");
         }
     }
     

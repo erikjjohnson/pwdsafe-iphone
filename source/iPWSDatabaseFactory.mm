@@ -47,19 +47,32 @@
 // Private interface
 @interface iPWSDatabaseFactory () 
 - (void)synchronizeUserDefaults;
-
 - (NSError *)errorWithStr:(NSString *)errorStr;
+
+// ---- Change management
+- (void)modelChanged:(NSNotification *)notification;
+- (void)notifyModelAdded:(NSString *)friendlyName;
+- (void)notifyModelRenamedFrom:(NSString *)oldName to:(NSString *)newName;
+- (void)notifyModelRemoved:(NSString *)friendlyName;
+- (NSDictionary *)notificationInfoForModelName:(NSString *)friendlyName;
 @end
 
 
 //------------------------------------------------------------------------------------
 // Class variables
 
+// Notification constants
+NSString* iPWSDatabaseFactoryModelAddedNotification   = @"iPWSDatabaseFactoryModelAddedNotification";
+NSString* iPWSDatabaseFactoryModelRenamedNotification = @"iPWSDatabaseFactoryModelRenamedNotification";
+NSString* iPWSDatabaseFactoryModelRemovedNotification = @"iPWSDatabaseFactoryModelRemovedNotification";
+NSString* iPWSDatabaseFactoryModelNameUserInfoKey     = @"iPWSDatabaseFactoryModelNameUserInfoKey";
+NSString* iPWSDatabaseFactoryOldModelNameUserInfoKey  = @"iPWSDatabaseFactoryOldModelNameUserInfoKey";
+NSString* iPWSDatabaseFactoryNewModelNameUserInfoKey  = @"iPWSDatabaseFactoryNewModelNameUserInfoKey";
+
 // The key placed in the UserDefaults to retrieve the allDatabasesInfo
 static NSString *kiPWSDatabaseFactoryUserDefaults = @"kiPWSDatabaseFactoryUserDefaults";
 static NSString *PWSDatabaseFactoryMissingSafesMessage = 
 @"The location of the safes is missing.  Try backing up safes with iTunes file sharing then reinstall the application.";
-
 
 
 //------------------------------------------------------------------------------------
@@ -68,13 +81,22 @@ static NSString *PWSDatabaseFactoryMissingSafesMessage =
 
 @synthesize documentsDirectory;
 
+// Get the singleton
++ (id)sharedDatabaseFactory {
+    static iPWSDatabaseFactory *sharedDatabaseFactory = nil;
+    @synchronized(self) {
+        if (nil == sharedDatabaseFactory) {
+            sharedDatabaseFactory = [[iPWSDatabaseFactory alloc] init];
+        }
+    }
+    return sharedDatabaseFactory;
+}
+
 // Canonical initializer
-- (id)initWithDelegate:(id <iPWSDatabaseFactoryDelegate>)theDelegate {
-    if (self = [super init]) {
-        delegate = theDelegate;
-        
-        databaseFileNames = [[NSMutableDictionary dictionary] retain];
-        databases         = [[NSMutableDictionary dictionary] retain];
+- (id)init {
+    if (self = [super init]) {        
+        friendlyNameToFilename = [[NSMutableDictionary dictionary] retain];
+        openDatabaseModels     = [[NSMutableDictionary dictionary] retain];
 
         // Load the  UserDefaults (preferences) file for the application        
         // In previous versions of the code, the databaseFileNames were complete file system paths.
@@ -87,7 +109,7 @@ static NSString *PWSDatabaseFactoryMissingSafesMessage =
             if ([fileName isAbsolutePath]) {
                 fileName = [fileName lastPathComponent];
             }
-            [databaseFileNames setObject:fileName forKey:key];
+            [friendlyNameToFilename setObject:fileName forKey:key];
         }];
         [self synchronizeUserDefaults];
         
@@ -106,8 +128,8 @@ static NSString *PWSDatabaseFactoryMissingSafesMessage =
 // Destructor
 - (void) dealloc {
     [documentsDirectory release];
-    [databaseFileNames release];
-    [databases release];
+    [friendlyNameToFilename release];
+    [openDatabaseModels release];
     [super dealloc];
 }
 
@@ -116,7 +138,7 @@ static NSString *PWSDatabaseFactoryMissingSafesMessage =
 
 // Enumerating the friendly names
 - (NSArray *)friendlyNames {
-    return [databaseFileNames allKeys];
+    return [friendlyNameToFilename allKeys];
 }
 
 // Helper methdos to check the existance of a friendlyName or mapped file name
@@ -126,7 +148,7 @@ static NSString *PWSDatabaseFactoryMissingSafesMessage =
 
 // Determine if the given filename already is already in our preferences file (i.e., already in the list of safes)
 - (BOOL)isFileNameMapped:(NSString *)fileName {
-    NSEnumerator *etr = [databaseFileNames objectEnumerator];
+    NSEnumerator *etr = [friendlyNameToFilename objectEnumerator];
     NSString *name;
     while (name = [etr nextObject]) {
         if ([name isEqualToString:fileName]) return YES;
@@ -136,7 +158,7 @@ static NSString *PWSDatabaseFactoryMissingSafesMessage =
 
 // The full path, including filename, for the given friendly name
 - (NSString *)databasePathForName:(NSString *)friendlyName {
-    return [documentsDirectory stringByAppendingPathComponent:[databaseFileNames objectForKey:friendlyName]];
+    return [documentsDirectory stringByAppendingPathComponent:[friendlyNameToFilename objectForKey:friendlyName]];
 }
 
 //------------------------------------------------------------------------------------
@@ -170,37 +192,54 @@ static NSString *PWSDatabaseFactoryMissingSafesMessage =
 //------------------------------------------------------------------------------------
 // Accessing the database models
 
-// The database for a given name.  The friendlyName may exists, but the database not exist if either
-// the database has never been opened or removed
-- (iPWSDatabaseModel *)databaseModelNamed:(NSString *)friendlyName errorMsg:(NSError **)errorMsg {
-    // Check that the friendlyName exists
-    if (![self doesFriendlyNameExist:friendlyName]) {
-        SET_ERROR(errorMsg, 
-                  ([self errorWithStr:[NSString stringWithFormat:@"Database named %@ does not exist",friendlyName]]));
-        return nil;
-    }
-    
-    // Get the model, if it exists
-    iPWSDatabaseModel *model = [databases objectForKey:friendlyName];
+// Return an already opened database model.  If the database model is not opened, nil is returned
+- (iPWSDatabaseModel *)getOpenedDatabaseModelNamed:(NSString *)friendlyName errorMsg:(NSError **)errorMsg {
+    iPWSDatabaseModel *model = [openDatabaseModels objectForKey:friendlyName];
     if (!model) {
         SET_ERROR(errorMsg,
-                  ([self errorWithStr:[NSString stringWithFormat:@"Problem accessing \"%@\"", friendlyName]]));
+                  ([self errorWithStr:[NSString stringWithFormat:@"Database \"%@\" not opened", friendlyName]]));
     }
     return model;
 }
 
-// Only remove the model, not the database mapping
-- (void)removeDatabaseModelNamed:(NSString *)friendlyName {
-    [databases removeObjectForKey:friendlyName];
+// Open a database model already in our list of known databases
+- (iPWSDatabaseModel *)openDatabaseModelNamed:(NSString *)friendlyName 
+                                   passphrase:(NSString *)passphrase 
+                                     errorMsg:(NSError **)errorMsg {
+    // Sanity checks
+    if (![self doesFriendlyNameExist:friendlyName]) {
+        SET_ERROR(errorMsg, 
+                  ([self errorWithStr:[NSString stringWithFormat:@"Database \"%@\" does not exist", friendlyName]]));
+        return nil;
+    }
+    
+    // Construct a new model
+    iPWSDatabaseModel *model = 
+    [iPWSDatabaseModel databaseModelNamed:friendlyName
+                                fileNamed:[self databasePathForName:friendlyName]
+                               passphrase:passphrase
+                                 errorMsg:errorMsg];
+    if (!model) {
+        return nil;
+    }
+    
+    // Add the model the map of opened models
+    [openDatabaseModels setObject:model forKey:friendlyName];    
+    return model;
 }
 
-// Remove all models - useful for locking all databases
-- (void)removeAllDatabaseModels {
-    [databases removeAllObjects];
+// Close the database model by removing it from memory.
+- (void)closeDatabaseModelNamed:(NSString *)friendlyName {
+    [openDatabaseModels removeObjectForKey:friendlyName];
+}
+
+// Close all of the open models - useful for locking all databases
+- (void)closeAllDatabaseModels {
+    [openDatabaseModels removeAllObjects];
 }
 
 //------------------------------------------------------------------------------------
-// Modify the known databases
+// Modify the list of database preferences (known database files)
 
 // Add a new database
 - (BOOL)addDatabaseNamed:(NSString *)friendlyName 
@@ -208,30 +247,25 @@ static NSString *PWSDatabaseFactoryMissingSafesMessage =
               passphrase:(NSString *)passphrase
                 errorMsg:(NSError **)errorMsg {
     // Sanity checks
-    if ([self doesFriendlyNameExist:friendlyName] && 
-        ![fileName isEqualToString:[databaseFileNames objectForKey:friendlyName]]) {
+    if ([self doesFriendlyNameExist:friendlyName]) {
         SET_ERROR(errorMsg, 
                   ([self errorWithStr:[NSString stringWithFormat:@"Database \"%@\" already exists", friendlyName]]));
         return NO;
     }
     
-    // Construct a new model
-    iPWSDatabaseModel *model = 
-        [iPWSDatabaseModel databaseModelNamed:friendlyName
-                                    fileNamed:[documentsDirectory stringByAppendingPathComponent:fileName]
-                                   passphrase:passphrase
-                                     errorMsg:errorMsg];
-    if (!model) {
+    // Add the file mapping
+    [friendlyNameToFilename setObject:fileName forKey:friendlyName];
+    
+    // Attempt to open the model
+    if (nil == [self openDatabaseModelNamed:friendlyName passphrase:passphrase errorMsg:errorMsg]) {
+        // Remove the mapping as the passphrase was likely wrong
+        [friendlyNameToFilename removeObjectForKey:friendlyName];
         return NO;
     }
     
-    // Add the model to the factory
-    [databaseFileNames setObject:fileName forKey:friendlyName];
-    [databases setObject:model forKey:friendlyName];
+    // Synchronize the preferences and send a notification
     [self synchronizeUserDefaults];
-    
-    // Notify the delegate
-    [delegate iPWSDatabaseFactory:self didAddModelNamed:friendlyName];
+    [self notifyModelAdded:friendlyName];
     return YES;
 }
 
@@ -252,24 +286,23 @@ static NSString *PWSDatabaseFactoryMissingSafesMessage =
     }
     
     // Copy the filePath data from old name to new name
-    NSString *filePath = [databaseFileNames objectForKey:origFriendlyName];
+    NSString *filePath = [friendlyNameToFilename objectForKey:origFriendlyName];
     if (filePath) {
-        [databaseFileNames setObject:filePath forKey:newFriendlyName];
-        [databaseFileNames removeObjectForKey:origFriendlyName];
+        [friendlyNameToFilename setObject:filePath forKey:newFriendlyName];
+        [friendlyNameToFilename removeObjectForKey:origFriendlyName];
     }
     
     // Copy the model from the old name to the new name
-    iPWSDatabaseModel *model = [databases objectForKey:origFriendlyName];
+    iPWSDatabaseModel *model = [self getOpenedDatabaseModelNamed:origFriendlyName errorMsg:NULL];
     if (model) {
         model.friendlyName = newFriendlyName;
-        [databases setObject:model forKey:newFriendlyName];
-        [databases removeObjectForKey:origFriendlyName];
+        [openDatabaseModels setObject:model forKey:newFriendlyName];
+        [openDatabaseModels removeObjectForKey:origFriendlyName];
     }
     
+    // Synchronize and notify
     [self synchronizeUserDefaults];
-    
-    // Notify the delegate
-    [delegate iPWSDatabaseFactory:self didRenameModelNamed:origFriendlyName toNewName:newFriendlyName];
+    [self notifyModelRenamedFrom:origFriendlyName to:newFriendlyName];
     return YES;
 }
 
@@ -287,12 +320,12 @@ static NSString *PWSDatabaseFactoryMissingSafesMessage =
     if (!preserveFiles) {
         [[NSFileManager defaultManager] removeItemAtPath:[self databasePathForName:friendlyName] error:NULL];
     }
-    [databaseFileNames removeObjectForKey:friendlyName];
-    [self removeDatabaseModelNamed:friendlyName];
+    [self closeDatabaseModelNamed:friendlyName];
+    [friendlyNameToFilename removeObjectForKey:friendlyName];
+
+    // Synchronize and notify
     [self synchronizeUserDefaults];
-    
-    // Notify the delegate
-    [delegate iPWSDatabaseFactory:self didRemoveModelNamed:friendlyName];
+    [self notifyModelRemoved:friendlyName];
     return YES;
 }
 
@@ -307,7 +340,7 @@ static NSString *PWSDatabaseFactoryMissingSafesMessage =
     }
     
     // Get the original database model
-    iPWSDatabaseModel *origModel = [self databaseModelNamed:origFriendlyName errorMsg:errorMsg];
+    iPWSDatabaseModel *origModel = [self getOpenedDatabaseModelNamed:origFriendlyName errorMsg:errorMsg];
     if (!origModel) return NO;
     
     // Copy the database file
@@ -329,9 +362,39 @@ static NSString *PWSDatabaseFactoryMissingSafesMessage =
 //------------------------------------------------------------------------------------
 // Private interface
 
+// Event handling
+- (void)modelChanged:(NSNotification *)notification {
+    
+}
+
+- (void)notifyModelAdded:(NSString *)friendlyName {
+    [[NSNotificationCenter defaultCenter] postNotificationName:iPWSDatabaseFactoryModelAddedNotification
+                                                        object:self
+                                                      userInfo:[self notificationInfoForModelName:friendlyName]];
+}
+
+- (void)notifyModelRenamedFrom:(NSString *)oldName to:(NSString *)newName {
+    NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:
+                              oldName, iPWSDatabaseFactoryOldModelNameUserInfoKey,
+                              newName, iPWSDatabaseFactoryNewModelNameUserInfoKey, nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:iPWSDatabaseFactoryModelRenamedNotification
+                                                        object:self
+                                                      userInfo:userInfo];
+}
+
+- (void)notifyModelRemoved:(NSString *)friendlyName {
+    [[NSNotificationCenter defaultCenter] postNotificationName:iPWSDatabaseFactoryModelRemovedNotification
+                                                        object:self
+                                                      userInfo:[self notificationInfoForModelName:friendlyName]];
+}
+     
+- (NSDictionary *)notificationInfoForModelName:(NSString *)friendlyName {
+    return [NSDictionary dictionaryWithObject:friendlyName forKey:iPWSDatabaseFactoryModelNameUserInfoKey];
+}
+
 // Synchronize the current in-memory list of safes with the preferences
 - (void)synchronizeUserDefaults {
-    [[NSUserDefaults standardUserDefaults] setObject:databaseFileNames forKey:kiPWSDatabaseFactoryUserDefaults];
+    [[NSUserDefaults standardUserDefaults] setObject:friendlyNameToFilename forKey:kiPWSDatabaseFactoryUserDefaults];
     [[NSUserDefaults standardUserDefaults] synchronize]; 
 }
 

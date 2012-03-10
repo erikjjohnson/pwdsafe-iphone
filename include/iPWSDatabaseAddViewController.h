@@ -27,14 +27,12 @@
 
 
 #import <UIKit/UIKit.h>
-#import "iPWSDatabaseFactory.h"
 
 //------------------------------------------------------------------------------------
 // Class: iPWSDatabaseAddViewController
 // Description:
 //  Represents a view and controller for creating a new PasswordSafe database
 @interface iPWSDatabaseAddViewController : UIViewController {
-    iPWSDatabaseFactory   *databaseFactory;
     UIBarButtonItem       *cancelButton;
     UIBarButtonItem       *doneButton;
     IBOutlet UITextField  *friendlyName;
@@ -43,11 +41,6 @@
     IBOutlet UILabel      *confirmPassphraseMismatchLabel;
 	IBOutlet UIScrollView *scrollView;
 }
-
-// Initialization
-- (id)initWithNibName:(NSString *) nibNameOrNil
-               bundle:(NSBundle *)nibBundleOrNil 
-      databaseFactory:(iPWSDatabaseFactory *)theDatabaseFactory;
 
 // Interface builder connections
 - (IBAction)friendlyNameChanged:(id)sender;

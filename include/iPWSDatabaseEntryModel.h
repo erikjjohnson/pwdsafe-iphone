@@ -30,21 +30,24 @@
 #import "corelib/ItemData.h"
 #import "corelib/PWSfile.h"
 
-#import "iPWSDatabaseEntryModelDelegate.h"
+//------------------------------------------------------------------------------------
+// Notifications
+//  iPWSDatabaseEntryModelChangedNotification
+//    Whenever the entry changes it sends a notification on the default notification center with the
+//    name iPWSDatabaseEntryModelChangedNotification, with the object being the instance of the model
+//    and an empty user info dictionary
+extern NSString *iPWSDatabaseEntryModelChangedNotification;
 
 //------------------------------------------------------------------------------------
 // Class: iPWSDatabaseEntryModel
 // Description:
 //  Represents a single entry in the password safe database.  This is backed by the C-library version which
-//  stores the data encrypted in memory
-
+//  stores the data encrypted in memory.  The entry is capable of writing itself to a given file.
 @interface iPWSDatabaseEntryModel : NSObject {
-    CItemData                          data;
-    id<iPWSDatabaseEntryModelDelegate> delegate;
+    CItemData data;
 }
 
 // Accessors
-@property (assign)   id<iPWSDatabaseEntryModelDelegate> delegate;
 @property (copy)     NSString* title;
 @property (copy)     NSString* user;
 @property (copy)     NSString* password;
@@ -54,12 +57,8 @@
 @property (readonly) NSString* creationTime;
 @property (readonly) NSString* passwordExpiryTime;
 
-// Class methods
-+ (id)entryModelWithData:(const CItemData *)theData delegate:(id<iPWSDatabaseEntryModelDelegate>)theDelegate;
-
-// Instance methods
-- (id)initWithData:(const CItemData *)theData delegate:(id<iPWSDatabaseEntryModelDelegate>)theDelegate;
-
++ (id)entryModelWithItemData:(const CItemData *)theData;
+- (id)initWithItemData:(const CItemData *)theData;
 - (BOOL)writeToPWSfile:(PWSfile *)pwsFileHandle;
 
 @end

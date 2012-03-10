@@ -29,6 +29,10 @@
 
 #import "iPasswordSafeAppDelegate.h"
 #import "iPWSDatabasesViewController.h"
+#import "iPWSDatabaseFactory.h"
+
+#import "DropboxSDK/DropboxSDK.h"
+
 
 //------------------------------------------------------------------------------------
 // Class iPasswordSafeAppDelegate
@@ -79,7 +83,7 @@
     iPWSDatabasesViewController *vc = 
         (iPWSDatabasesViewController *)[navigationController.viewControllers objectAtIndex:0];    
     [navigationController popToViewController:vc animated:NO];
-    [vc.databaseFactory removeAllDatabaseModels];
+    [[iPWSDatabaseFactory sharedDatabaseFactory] closeAllDatabaseModels];
 }
 
 // All toolbars can (and should) show a lockAllDatabases button as provided here
