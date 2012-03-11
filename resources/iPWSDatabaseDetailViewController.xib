@@ -156,6 +156,7 @@
 							<string key="NSFrame">{{20, 352}, {280, 37}}</string>
 							<reference key="NSSuperview" ref="988482686"/>
 							<reference key="NSWindow"/>
+							<reference key="NSNextKeyView"/>
 							<string key="NSReuseIdentifierKey">_NS:9</string>
 							<bool key="IBUIOpaque">NO</bool>
 							<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
@@ -470,6 +471,7 @@
 							<string key="NSFrame">{{20, 320}, {166, 24}}</string>
 							<reference key="NSSuperview" ref="988482686"/>
 							<reference key="NSWindow"/>
+							<reference key="NSNextKeyView" ref="745271572"/>
 							<string key="NSReuseIdentifierKey">_NS:9</string>
 							<bool key="IBUIOpaque">NO</bool>
 							<bool key="IBUIClipsSubviews">YES</bool>
@@ -491,7 +493,7 @@
 							<string key="NSFrame">{{124, 278}, {176, 31}}</string>
 							<reference key="NSSuperview" ref="988482686"/>
 							<reference key="NSWindow"/>
-							<reference key="NSNextKeyView" ref="54182802"/>
+							<reference key="NSNextKeyView" ref="771703751"/>
 							<string key="NSReuseIdentifierKey">_NS:9</string>
 							<bool key="IBUIOpaque">NO</bool>
 							<bool key="IBUIClipsSubviews">YES</bool>
@@ -519,6 +521,7 @@
 							<string key="NSFrame">{{206, 317}, {94, 27}}</string>
 							<reference key="NSSuperview" ref="988482686"/>
 							<reference key="NSWindow"/>
+							<reference key="NSNextKeyView" ref="54182802"/>
 							<string key="NSReuseIdentifierKey">_NS:9</string>
 							<bool key="IBUIOpaque">NO</bool>
 							<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
@@ -532,9 +535,8 @@
 					<reference key="NSNextKeyView" ref="263730656"/>
 					<string key="NSReuseIdentifierKey">_NS:9</string>
 					<object class="NSColor" key="IBUIBackgroundColor">
-						<int key="NSColorSpace">3</int>
-						<bytes key="NSWhite">MQA</bytes>
-						<reference key="NSCustomColorSpace" ref="254163159"/>
+						<int key="NSColorSpace">1</int>
+						<bytes key="NSRGB">MC45Njg2Mjc0NTEgMC45Njg2Mjc0NTEgMC45Njg2Mjc0NTEAA</bytes>
 					</object>
 					<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 				</object>
@@ -912,11 +914,9 @@
 							<string>modelNameChanged</string>
 							<string>passphraseChanged</string>
 							<string>syncWithDropBoxChanged</string>
-							<string>syncWithDropBoxChanged:</string>
 						</object>
 						<object class="NSArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>id</string>
 							<string>id</string>
 							<string>id</string>
 							<string>id</string>
@@ -931,7 +931,6 @@
 							<string>modelNameChanged</string>
 							<string>passphraseChanged</string>
 							<string>syncWithDropBoxChanged</string>
-							<string>syncWithDropBoxChanged:</string>
 						</object>
 						<object class="NSArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
@@ -949,10 +948,6 @@
 							</object>
 							<object class="IBActionInfo">
 								<string key="name">syncWithDropBoxChanged</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">syncWithDropBoxChanged:</string>
 								<string key="candidateClassName">id</string>
 							</object>
 						</object>

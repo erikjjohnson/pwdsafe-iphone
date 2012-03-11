@@ -37,7 +37,7 @@
 //     is posted with the name iPWSDatabaseFactoryModelAddedNotification with the object being the database factory
 //     and the user info dictionary containing a single key of value iPWSDatabaseFactoryModelNameUserInfoKey with 
 //     an NSString with the friendly name of the model added
-//   
+//
 //   iPWSDatabaseFactoryModelRenamedNotification
 //     When a database is rename to the factory a notification on the default notification center
 //     is posted with the name iPWSDatabaseFactoryModelRenamedNotification with the object being the database factory
@@ -49,9 +49,26 @@
 //     is posted with the name iPWSDatabaseFactoryModelRemovedNotification with the object being the database factory
 //     and the user info dictionary containing a single key of value iPWSDatabaseFactoryModelNameUserInfoKey with 
 //     an NSString with the friendly name of the model removed
+//
+//   iPWSDatabaseFactoryModelOpenedNotification
+//     When a database is opened the factory sends notification on the default notification center
+//     with the name iPWSDatabaseFactoryModelOpenedNotification with the object being the database factory
+//     and the user info dictionary containing a single key of value iPWSDatabaseFactoryModelNameUserInfoKey with 
+//     an NSString with the friendly name of the model opened
+//   
+//   iPWSDatabaseFactoryModelClosedNotification
+//     When a database is closed the factory sends notification on the default notification center
+//     with the name iPWSDatabaseFactoryModelClosedNotification with the object being the database factory
+//     and the user info dictionary containing a single key of value iPWSDatabaseFactoryModelNameUserInfoKey with 
+//     an NSString with the friendly name of the model closed
+//
 extern NSString* iPWSDatabaseFactoryModelAddedNotification;
 extern NSString* iPWSDatabaseFactoryModelRenamedNotification;
 extern NSString* iPWSDatabaseFactoryModelRemovedNotification;
+
+extern NSString* iPWSDatabaseFactoryModelOpenedNotification;
+extern NSString* iPWSDatabaseFactoryModelClosedNotification;
+
 extern NSString* iPWSDatabaseFactoryModelNameUserInfoKey;
 extern NSString* iPWSDatabaseFactoryOldModelNameUserInfoKey;
 extern NSString* iPWSDatabaseFactoryNewModelNameUserInfoKey;

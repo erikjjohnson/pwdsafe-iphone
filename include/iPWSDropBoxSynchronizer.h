@@ -27,42 +27,41 @@
 
 
 #import <UIKit/UIKit.h>
+#import "DropboxSDK/DropboxSDK.h"
 #import "iPWSDatabaseModel.h"
 
 //------------------------------------------------------------------------------------
-// Class iPWSDatabaseDetailViewController
-// Description
-//  The DatabaseDetailViewController displays the header information about the given PasswordSafe model.  This includes
-//  the number of entries in the file, the version of the file, the creation date and creation machine.  In addition,
-//  the filename is displayed allowing for iTunes file sharing management.  Editing of the name, passphrase, and 
-//  duplication is handled by this controller as well.
-@interface iPWSDatabaseDetailViewController : UIViewController {
-    iPWSDatabaseModel   *model;
-    
-    IBOutlet UITextField     *modelNameTextField;
-    IBOutlet UITextField     *passphraseTextField;
-    IBOutlet UITextField     *numberOfEntriesTextField;
-    IBOutlet UITextField     *versionTextField;
-    IBOutlet UITextField     *filenameTextField;
-    IBOutlet UITextField     *lastSavedTextField;
-    IBOutlet UITextField     *savedByTextField;
-    IBOutlet UITextField     *savedOnTextField;
-    IBOutlet UISwitch        *syncWithDropBoxSwitch;
-    
-    BOOL                      editing;
-    UIBarButtonItem          *editButton;
-    UIBarButtonItem          *returnButton;
-    UIBarButtonItem          *doneEditButton;
-    UIBarButtonItem          *cancelEditButton;
+// Class: iPWSDropBoxSynchronizer
+// Description:
+//  The DropBox synchronizer tracks the database models that are kept in sync with
+//  DropBox.  This tracking is done via a plist file.  The synchronizer watches for when models are opened and when
+//  they are, if they are DropBox "synced" watchs for changes to model.  Any changes for a merge with the
+//  same named file on DropBox.  This merge process could be transparent, or require manual intervention, depending
+//  on whether or not conflicts arise.
+
+@interface iPWSDropBoxSynchronizer : UIViewController <DBSessionDelegate, UIActionSheetDelegate> {
+    NSMutableDictionary *synchronizedModels; // { friendlyName -> drop box ref }
+    iPWSDatabaseModel   *modelBeingSynchronized;
+
+    IBOutlet UILabel    *statusLabel;
+    BOOL                 viewShowing;
+    UIBarButtonItem     *cancelButton;
 }
 
-- (id)initWithNibName:(NSString *)nibNameOrNil 
-               bundle:(NSBundle *)nibBundleOrNil
-                model:(iPWSDatabaseModel *)model;
+// Access the singleton
++ (iPWSDropBoxSynchronizer *)sharedDropBoxSynchronizer;
 
-- (IBAction)duplicateButtonPressed;
-- (IBAction)passphraseChanged;
-- (IBAction)modelNameChanged;
-- (IBAction)syncWithDropBoxChanged;
+// Event handling from the application
+- (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url;
+
+// Helper routines
+- (BOOL)isFriendlyNameSynchronized:(NSString *)friendlyName;
+
+// Modifing the list of synchronized models
+- (BOOL)markModelNameForSynchronization:(NSString *)friendlyName;
+- (BOOL)unmarkModelNameForSynchronization:(NSString *)friendlyName;
+
+- (BOOL)synchronizeModel:(iPWSDatabaseModel *)model;
+- (IBAction)cancelSynchronization;
 
 @end

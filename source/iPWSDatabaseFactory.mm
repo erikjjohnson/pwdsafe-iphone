@@ -50,10 +50,13 @@
 - (NSError *)errorWithStr:(NSString *)errorStr;
 
 // ---- Change management
-- (void)modelChanged:(NSNotification *)notification;
 - (void)notifyModelAdded:(NSString *)friendlyName;
 - (void)notifyModelRenamedFrom:(NSString *)oldName to:(NSString *)newName;
 - (void)notifyModelRemoved:(NSString *)friendlyName;
+- (void)notifyModelOpened:(NSString *)friendlyName;
+- (void)notifyModelClosed:(NSString *)friendlyName;
+- (void)notifyWithName:(NSString *)name forModelName:(NSString *)friendlyName;
+- (void)notifyWithName:(NSString *)name userInfo:(NSDictionary *)userInfo;
 - (NSDictionary *)notificationInfoForModelName:(NSString *)friendlyName;
 @end
 
@@ -65,6 +68,11 @@
 NSString* iPWSDatabaseFactoryModelAddedNotification   = @"iPWSDatabaseFactoryModelAddedNotification";
 NSString* iPWSDatabaseFactoryModelRenamedNotification = @"iPWSDatabaseFactoryModelRenamedNotification";
 NSString* iPWSDatabaseFactoryModelRemovedNotification = @"iPWSDatabaseFactoryModelRemovedNotification";
+
+NSString* iPWSDatabaseFactoryModelOpenedNotification  = @"iPWSDatabaseFactoryModelOpenedNotification";
+NSString* iPWSDatabaseFactoryModelClosedNotification  = @"iPWSDatabaseFactoryModelClosedNotification";
+
+
 NSString* iPWSDatabaseFactoryModelNameUserInfoKey     = @"iPWSDatabaseFactoryModelNameUserInfoKey";
 NSString* iPWSDatabaseFactoryOldModelNameUserInfoKey  = @"iPWSDatabaseFactoryOldModelNameUserInfoKey";
 NSString* iPWSDatabaseFactoryNewModelNameUserInfoKey  = @"iPWSDatabaseFactoryNewModelNameUserInfoKey";
@@ -225,16 +233,21 @@ static NSString *PWSDatabaseFactoryMissingSafesMessage =
     
     // Add the model the map of opened models
     [openDatabaseModels setObject:model forKey:friendlyName];    
+    [self notifyModelOpened:friendlyName];
     return model;
 }
 
 // Close the database model by removing it from memory.
 - (void)closeDatabaseModelNamed:(NSString *)friendlyName {
     [openDatabaseModels removeObjectForKey:friendlyName];
+    [self notifyModelClosed:friendlyName];
 }
 
 // Close all of the open models - useful for locking all databases
 - (void)closeAllDatabaseModels {
+    [[openDatabaseModels allKeys] enumerateObjectsUsingBlock:^(id name, NSUInteger idx, BOOL *stop) {
+        [self notifyModelClosed:name]; 
+    }];
     [openDatabaseModels removeAllObjects];
 }
 
@@ -363,33 +376,39 @@ static NSString *PWSDatabaseFactoryMissingSafesMessage =
 // Private interface
 
 // Event handling
-- (void)modelChanged:(NSNotification *)notification {
-    
-}
-
 - (void)notifyModelAdded:(NSString *)friendlyName {
-    [[NSNotificationCenter defaultCenter] postNotificationName:iPWSDatabaseFactoryModelAddedNotification
-                                                        object:self
-                                                      userInfo:[self notificationInfoForModelName:friendlyName]];
+    [self notifyWithName:iPWSDatabaseFactoryModelAddedNotification forModelName:friendlyName]; 
 }
 
 - (void)notifyModelRenamedFrom:(NSString *)oldName to:(NSString *)newName {
     NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:
                               oldName, iPWSDatabaseFactoryOldModelNameUserInfoKey,
                               newName, iPWSDatabaseFactoryNewModelNameUserInfoKey, nil];
-    [[NSNotificationCenter defaultCenter] postNotificationName:iPWSDatabaseFactoryModelRenamedNotification
-                                                        object:self
-                                                      userInfo:userInfo];
+    [self notifyWithName:iPWSDatabaseFactoryModelRenamedNotification userInfo:userInfo];
 }
 
 - (void)notifyModelRemoved:(NSString *)friendlyName {
-    [[NSNotificationCenter defaultCenter] postNotificationName:iPWSDatabaseFactoryModelRemovedNotification
-                                                        object:self
-                                                      userInfo:[self notificationInfoForModelName:friendlyName]];
+    [self notifyWithName:iPWSDatabaseFactoryModelRemovedNotification forModelName:friendlyName];
+}
+
+- (void)notifyModelOpened:(NSString *)friendlyName {
+    [self notifyWithName:iPWSDatabaseFactoryModelOpenedNotification forModelName:friendlyName];
+}
+
+- (void)notifyModelClosed:(NSString *)friendlyName {
+    [self notifyWithName:iPWSDatabaseFactoryModelClosedNotification forModelName:friendlyName];
 }
      
 - (NSDictionary *)notificationInfoForModelName:(NSString *)friendlyName {
     return [NSDictionary dictionaryWithObject:friendlyName forKey:iPWSDatabaseFactoryModelNameUserInfoKey];
+}
+
+- (void)notifyWithName:(NSString *)name forModelName:(NSString *)friendlyName {
+    [self notifyWithName:name userInfo:[self notificationInfoForModelName:friendlyName]];
+}
+
+- (void) notifyWithName:(NSString *)name userInfo:(NSDictionary *)userInfo {
+    [[NSNotificationCenter defaultCenter] postNotificationName:name object:self userInfo:userInfo];
 }
 
 // Synchronize the current in-memory list of safes with the preferences

@@ -30,16 +30,9 @@
 #import "iPasswordSafeAppDelegate.h"
 #import "iPWSDatabasesViewController.h"
 #import "iPWSDatabaseFactory.h"
+#import "iPWSDropBoxSynchronizer.h"
 
-// DropBoxKeys.h is not open source, it contains the DropBox app key and secret
-// To create your own version of this file:
-// #define DROPBOX_APP_KEY_PLIST     YOUR_KEY
-// #define DROPBOX_APP_KEY         @"YOUR_KEY"
-// #define DROPBOX_APP_SECRET      @"YOUR_SECRET"
-
-#import "DropBoxKeys.h" 
 #import "DropboxSDK/DropboxSDK.h"
-
 
 //------------------------------------------------------------------------------------
 // Class iPasswordSafeAppDelegate
@@ -60,8 +53,7 @@
 #pragma mark -
 #pragma mark Application lifecycle
 
-// The first real entry point to the application.  Set the default user defaults and add the "safes"
-// view
+// The first real entry point to the application.  Set the default user defaults and add the "safes" view
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {    
     
     // Add the default user defaults (these are used before the user ever changes the
@@ -82,25 +74,14 @@
     [window addSubview:navigationController.view];
     [window makeKeyAndVisible];
     
-    
-    // TODO FIX
-    DBSession* dbSession = [[[DBSession alloc] initWithAppKey:DROPBOX_APP_KEY
-                                                    appSecret:DROPBOX_APP_SECRET
-                                                         root:kDBRootAppFolder] autorelease];
-    [DBSession setSharedSession:dbSession];
-    
+    // Make sure the DropBox synchronizer is alive
+    [iPWSDropBoxSynchronizer sharedDropBoxSynchronizer];
     return YES;
 }
 
+// Invoked when DropBox is authorizing the application to have access
 - (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url {
-    if ([[DBSession sharedSession] handleOpenURL:url]) {
-        if ([[DBSession sharedSession] isLinked]) {
-            NSLog(@"App linked successfully!");
-            // At this point you can start making API calls
-        }
-        return YES;
-    }
-    // Add whatever other url handling code your app requires here
+    if ([[iPWSDropBoxSynchronizer sharedDropBoxSynchronizer] application:application handleOpenURL:url]) return YES;
     return NO;
 }
 

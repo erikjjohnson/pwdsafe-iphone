@@ -28,8 +28,9 @@
 
 #import "iPWSDatabaseDetailViewController.h"
 #import "iPWSDatabaseFactory.h"
+#import "iPWSDropBoxSynchronizer.h"
 #import "DismissAlertView.h"
-#import "DropboxSDK/DropboxSDK.h"
+
 
 //------------------------------------------------------------------------------------
 // Private interface
@@ -50,6 +51,7 @@
 - (BOOL)editing;
 - (void)setEditing:(BOOL)isEditing;
 - (void)editButtonPressed;
+- (void)returnButtonPressed;
 - (void)doneEditButtonPressed;
 - (void)cancelEditButtonPressed;
 
@@ -83,6 +85,7 @@
 - (void)dealloc {
     [model release];
     [editButton release];
+    [returnButton release];
     [doneEditButton release];
     [cancelEditButton release];
     [super dealloc];
@@ -93,6 +96,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.navigationItem.rightBarButtonItem = self.editButton;
+    self.navigationItem.leftBarButtonItem  = self.returnButton;
     
     modelNameTextField.text    = [self modelFriendlyName];
     modelNameTextField.enabled = NO;
@@ -106,11 +110,14 @@
     lastSavedTextField.text       = [self modelWhenLastSaved];
     savedByTextField.text         = [self modelLastSavedBy];
     savedOnTextField.text         = [self modelLastSavedOn];
+    
+    syncWithDropBoxSwitch.on      = [[iPWSDropBoxSynchronizer sharedDropBoxSynchronizer] 
+                                     isFriendlyNameSynchronized:[self modelFriendlyName]];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    self.navigationController.toolbarHidden = YES;    
+    self.navigationController.toolbarHidden = YES;   
 }
 
 
@@ -148,8 +155,13 @@
 }
 
 - (void)syncWithDropBoxChanged {
-    if (![[DBSession sharedSession] isLinked]) {
-        [[DBSession sharedSession] link];
+    iPWSDropBoxSynchronizer *synchronizer = [iPWSDropBoxSynchronizer sharedDropBoxSynchronizer];
+    if ([syncWithDropBoxSwitch isOn]) {
+        [synchronizer markModelNameForSynchronization:model.friendlyName];
+        [synchronizer synchronizeModel:model];
+    } else {
+        [synchronizer unmarkModelNameForSynchronization:model.friendlyName];
+        [synchronizer cancelSynchronization];
     }
 }
 
@@ -200,6 +212,16 @@
     return editButton;
 }
 
+- (UIBarButtonItem *)returnButton {
+    if (!returnButton) {
+        returnButton = [[UIBarButtonItem alloc] initWithTitle:@"Back"
+                                                        style:UIBarButtonItemStylePlain
+                                                       target:self
+                                                       action:@selector(returnButtonPressed)];
+    }
+    return returnButton;
+}
+
 - (UIBarButtonItem *)doneEditButton {
     if (!doneEditButton) {
         doneEditButton = [[UIBarButtonItem alloc] initWithTitle:@"Done"
@@ -248,6 +270,16 @@
 
 - (void) editButtonPressed {
     self.editing = YES;
+}
+
+- (void)returnButtonPressed {
+    [UIView beginAnimations:nil context:NULL];
+    [UIView setAnimationDuration: 1.0];
+    [UIView setAnimationTransition:UIViewAnimationTransitionFlipFromLeft 
+                           forView:self.navigationController.view 
+                             cache:NO];
+    [self.navigationController popViewControllerAnimated:NO];
+    [UIView commitAnimations];
 }
 
 - (void)doneEditButtonPressed {

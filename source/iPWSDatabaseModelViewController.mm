@@ -27,7 +27,9 @@
 
 #import "iPWSDatabaseModelViewController.h"
 #import "iPWSDatabaseEntryViewController.h"
+#import "iPWSDatabaseDetailViewController.h"
 #import "iPasswordSafeAppDelegate.h"
+#import "iPWSDropBoxSynchronizer.h"
 
 //------------------------------------------------------------------------------------
 // Private interface
@@ -48,9 +50,11 @@
 
 - (UIBarButtonItem *)addButton;
 - (UIBarButtonItem *)searchDoneButton;
+- (UIBarButtonItem *)detailsButton;
 
 - (void)addButtonPressed;
 - (void)searchDoneButtonPressed;
+- (void)detailsButtonPressed;
 - (void)updateEditButton;
 
 - (void)modelChangedNotification:(NSNotification *)notification;
@@ -90,6 +94,16 @@
     return searchDoneButton;    
 }
 
+- (UIBarButtonItem *)detailsButton {
+    // Lazy initialize a page curl button
+    if (!detailsButton) {
+        detailsButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemPageCurl
+                                                                      target:self
+                                                                      action:@selector(detailsButtonPressed)];
+    }
+    return detailsButton;
+}
+
 
 //------------------------------------------------------------------------------------
 // Initializer
@@ -113,6 +127,7 @@
         self.toolbarItems = [NSArray arrayWithObjects: self.addButton, 
                                                        appDelegate.flexibleSpaceButton,
                                                        appDelegate.lockAllDatabasesButton, 
+                                                       self.detailsButton,
                                                        nil];
         // Initialize the search results
         searchResults = [[NSMutableArray alloc] init];
@@ -133,6 +148,15 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     self.navigationController.toolbarHidden = NO;  
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    
+    iPWSDropBoxSynchronizer *synchronizer = [iPWSDropBoxSynchronizer sharedDropBoxSynchronizer];
+    if ([synchronizer isFriendlyNameSynchronized:model.friendlyName]) {
+        [synchronizer synchronizeModel:model];
+    }
 }
 
 //------------------------------------------------------------------------------------
@@ -367,8 +391,6 @@
     iPWSDatabaseEntryModel *entry = 
         [notification.userInfo objectForKey:iPWSDatabaseEntryViewControllerEntryUserInfoKey];
     [model addDatabaseEntry:entry];
-    [self addEntryToSection:entry];
-    [self.tableView reloadData];
 }
 
 - (void)modelChangedNotification:(NSNotification *)notification {
@@ -380,6 +402,23 @@
     [self.tableView reloadData];
 }
 
+
+//------------------------------------------------------------------------------------
+// Model details
+- (void)detailsButtonPressed {
+    iPWSDatabaseDetailViewController *vc = [[iPWSDatabaseDetailViewController alloc] 
+                                            initWithNibName:@"iPWSDatabaseDetailViewController"
+                                            bundle:nil
+                                            model:model];
+    [UIView beginAnimations:nil context:NULL];
+    [UIView setAnimationDuration: 1];
+    [UIView setAnimationTransition:UIViewAnimationTransitionFlipFromRight 
+                           forView:self.navigationController.view 
+                             cache:YES];
+    [self.navigationController pushViewController:vc animated:NO];
+    [UIView commitAnimations];
+    [vc release];
+}
 
 //------------------------------------------------------------------------------------
 // Table view delegate

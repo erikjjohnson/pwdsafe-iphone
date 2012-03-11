@@ -30,7 +30,6 @@
 #import "iPWSDatabaseFactory.h"
 #import "iPWSDatabaseAddViewController.h"
 #import "iPWSDatabaseImportViewController.h"
-#import "iPWSDatabaseDetailViewController.h"
 #import "iPWSDatabaseModelViewController.h"
 #import "PasswordAlertView.h"
 #import "DismissAlertView.h"
@@ -47,7 +46,7 @@
 - (iPWSDatabaseModel *)modelForFriendlyName:(NSString *)friendlyName;
 - (iPWSDatabaseModel *)modelForFriendlyNameAtIndex:(NSInteger)idx;
 
-- (void)showDatabaseDetailsForModel:(iPWSDatabaseModel *)model;
+//- (void)showDatabaseDetailsForModel:(iPWSDatabaseModel *)model;
 - (void)showDatabaseModel:(iPWSDatabaseModel *)model;
 
 - (void)promptForPassphraseForName:(NSString *)friendlyName tag:(NSInteger)tag;
@@ -68,8 +67,7 @@ static NSString *IMPORT_DATABASE_BUTTON_STR = @"Import existing safe";
 // and the alertView the following tags
 static NSString *kPassphrasePromptContextFriendlyName = @"kPassphrasePromptContextFriendlyName";
 enum {
-    PASSPHRASE_PROMPT_OPEN_DATABASE_TAG,
-    PASSPHRASE_PROMPT_SHOW_DATABASE_DETAILS_TAG
+    PASSPHRASE_PROMPT_OPEN_DATABASE_TAG
 };
 
 //------------------------------------------------------------------------------------
@@ -177,7 +175,6 @@ enum {
     if (cell == nil) {
         cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault 
                                        reuseIdentifier:CellIdentifier] autorelease];
-        cell.accessoryType = UITableViewCellAccessoryDetailDisclosureButton;
     }
     
     cell.textLabel.text = [self friendlyNameAtIndex:indexPath.row];
@@ -222,18 +219,6 @@ enum {
     
 }
 
-// Called when a detailed view of a database is requested (i.e., edit the database friendly name)
-- (void)tableView: (UITableView *)tableView accessoryButtonTappedForRowWithIndexPath: (NSIndexPath *)indexPath {
-    NSString *friendlyName    = [self friendlyNameAtIndex:indexPath.row];
-    iPWSDatabaseModel *model = [self modelForFriendlyName:friendlyName];    
-    if (model) {
-        [self showDatabaseDetailsForModel:model];
-    } else {
-        [self promptForPassphraseForName:friendlyName
-                                     tag:PASSPHRASE_PROMPT_SHOW_DATABASE_DETAILS_TAG];
-    }    
-}
-
 // Navigate to the given database model
 - (void)showDatabaseModel:(iPWSDatabaseModel *)model {
     iPWSDatabaseModelViewController *vc = [[iPWSDatabaseModelViewController alloc] 
@@ -256,7 +241,7 @@ enum {
                                                destructiveButtonTitle:nil
                                                     otherButtonTitles:CREATE_DATABASE_BUTTON_STR, 
                                                                       IMPORT_DATABASE_BUTTON_STR, nil];
-    [actionSheet showInView:[self view]];    
+    [actionSheet showFromToolbar:self.navigationController.toolbar];    
 }
 
 // Called when the Add button action sheet is finished - either Create or Import
@@ -325,11 +310,7 @@ enum {
     // Do any final special processing   
     if (PASSPHRASE_PROMPT_OPEN_DATABASE_TAG == theAlertView.tag) {
         [self showDatabaseModel:model];
-    }
-    
-    if (PASSPHRASE_PROMPT_SHOW_DATABASE_DETAILS_TAG == theAlertView.tag) {
-        [self showDatabaseDetailsForModel:model];
-    }
+    }    
 }
 
 //------------------------------------------------------------------------------------
@@ -364,16 +345,6 @@ enum {
 
 - (void)alertForError:(NSError *)errorMsg {
     ShowDismissAlertView([errorMsg localizedDescription], nil);
-}
-
-- (void)showDatabaseDetailsForModel:(iPWSDatabaseModel *)model {
-    if (!model) return;
-    iPWSDatabaseDetailViewController *vc = [[iPWSDatabaseDetailViewController alloc] 
-                                            initWithNibName:@"iPWSDatabaseDetailViewController"
-                                                     bundle:nil
-                                                      model:model];
-    [self.navigationController pushViewController:vc animated:YES];
-    [vc release];
 }
 
 @end

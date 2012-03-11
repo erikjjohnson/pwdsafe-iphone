@@ -35,7 +35,8 @@
 //  iPWSDatabaseModelChangedNotification
 //     When an iPWSDatabaseModel changes, a notification to the default notification center is posted with
 //     the name iPWSDatabaseModelChangedNotification, the object is the instance of the model that changed
-//     and the user info dictionary contains a single key of the name iPWSDatabaseModelChangedEntryUserInfoKey
+//     and the user info dictionary contains a single key of the name iPWSDatabaseModelChangedEntryUserInfoKey if
+//     the change was due to an entry (as opposed to say the password changing)
 extern NSString* iPWSDatabaseModelChangedNotification;
 extern NSString* iPWSDatabaseModelChangedEntryUserInfoKey;
 

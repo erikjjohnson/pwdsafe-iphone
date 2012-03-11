@@ -56,6 +56,7 @@
 - (void)setPwsFileHandle:(PWSfile *)handle;
 
 // ---- Change management
+- (void)notifyChangeWithEntry:(iPWSDatabaseEntryModel *)entry;
 - (void)entryChanged:(NSNotification *)notification;
 - (void)watchEntryForNotifications:(iPWSDatabaseEntryModel *)entry;
 - (void)stopWatchingEntryForNotifications:(iPWSDatabaseEntryModel *)entry;
@@ -156,6 +157,7 @@ static BOOL sessionKeyInitialized = NO;
 - (BOOL)changePassphrase:(NSString *)newPassphrase {
     if (passphrase != newPassphrase) {
         self.passphrase = newPassphrase;
+        [self notifyChangeWithEntry:nil];
         return [self syncToFile];
     }
     return YES;
@@ -265,12 +267,14 @@ last_error:
 - (BOOL)addDatabaseEntry:(iPWSDatabaseEntryModel *)entry {
     [entries addObject:entry];
     [self watchEntryForNotifications:entry];
+    [self notifyChangeWithEntry:entry];
     return [self syncToFile];
 }
 
 - (BOOL)removeDatabaseEntry:(iPWSDatabaseEntryModel *)entry {
     [entries removeObjectIdenticalTo:entry];    
     [self stopWatchingEntryForNotifications:entry];
+    [self notifyChangeWithEntry:entry];
     return [self syncToFile];
 }
 
@@ -280,12 +284,18 @@ last_error:
 
 //------------------------------------------------------------------------------------
 // Entry observer - called when the entry is changed
-- (void)entryChanged:(NSNotification *)notification {
-    NSDictionary *userInfo = [NSDictionary dictionaryWithObject:notification.object 
-                                                         forKey:iPWSDatabaseModelChangedEntryUserInfoKey];
+- (void)notifyChangeWithEntry:(iPWSDatabaseEntryModel *)entry {
+    NSDictionary *userInfo = nil;
+    if (entry) {
+        userInfo = [NSDictionary dictionaryWithObject:entry forKey:iPWSDatabaseModelChangedEntryUserInfoKey];
+    }
     [[NSNotificationCenter defaultCenter] postNotificationName:iPWSDatabaseModelChangedNotification
                                                         object:self
-                                                      userInfo:userInfo];
+                                                      userInfo:userInfo];    
+}
+
+- (void)entryChanged:(NSNotification *)notification {
+    [self notifyChangeWithEntry:notification.object];
     [self syncToFile]; 
 }
 

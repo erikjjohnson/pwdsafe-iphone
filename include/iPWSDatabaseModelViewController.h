@@ -41,6 +41,7 @@
     NSMutableArray				*searchResults;
     UIBarButtonItem				*addButton;
     UIBarButtonItem             *searchDoneButton;
+    UIBarButtonItem             *detailsButton;
 	SearchOverlayViewController *searchOverlayController;
     IBOutlet UISearchBar		*searchBar;
     BOOL						 isSearching;
