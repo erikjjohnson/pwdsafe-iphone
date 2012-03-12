@@ -56,6 +56,8 @@
 - (void)cancelEditButtonPressed;
 
 - (void)duplicationAlertWithDescription:(NSString *)description success:(BOOL)success;
+
+- (iPWSDatabaseFactory *)databaseFactory;
 @end
 
 //------------------------------------------------------------------------------------
@@ -109,15 +111,20 @@
     filenameTextField.text        = [self modelFilePath];
     lastSavedTextField.text       = [self modelWhenLastSaved];
     savedByTextField.text         = [self modelLastSavedBy];
-    savedOnTextField.text         = [self modelLastSavedOn];
-    
-    syncWithDropBoxSwitch.on      = [[iPWSDropBoxSynchronizer sharedDropBoxSynchronizer] 
-                                     isFriendlyNameSynchronized:[self modelFriendlyName]];
+    savedOnTextField.text         = [self modelLastSavedOn];    
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     self.navigationController.toolbarHidden = YES;   
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    syncWithDropBoxSwitch.on = [[iPWSDatabaseFactory sharedDatabaseFactory] isDropBoxModel:[self modelFriendlyName]];    
+}
+
+- (iPWSDatabaseFactory *)databaseFactory {
+    return [iPWSDatabaseFactory sharedDatabaseFactory];
 }
 
 
@@ -127,20 +134,19 @@
     // Get the current friendly name and append - copy (x) until we find an unused name
     NSString *newFriendlyName = [NSString stringWithFormat:@"%@ - copy", [self modelFriendlyName]];
     
-    iPWSDatabaseFactory *databaseFactory = [iPWSDatabaseFactory sharedDatabaseFactory];
     int cnt = 2;
-    while ((cnt < 10) && [databaseFactory doesFriendlyNameExist:newFriendlyName]) {
+    while ((cnt < 10) && [self.databaseFactory doesFriendlyNameExist:newFriendlyName]) {
         newFriendlyName = [NSString stringWithFormat:@"%@ - copy(%d)", [self modelFriendlyName], cnt++];
     }
     
-    if ([databaseFactory doesFriendlyNameExist:newFriendlyName]) {
+    if ([self.databaseFactory doesFriendlyNameExist:newFriendlyName]) {
         [self duplicationAlertWithDescription:@"Too many copies already exist." success:NO];
         return;
     }
     
-    if (![databaseFactory duplicateDatabaseNamed:[self modelFriendlyName]
-                                       toNewName:newFriendlyName
-                                        errorMsg:NULL]) {
+    if (![self.databaseFactory duplicateDatabaseNamed:[self modelFriendlyName]
+                                            toNewName:newFriendlyName
+                                             errorMsg:NULL]) {
         NSString *msg = @"An internal error prevented a duplicate file from being created";
         [self duplicationAlertWithDescription:msg success:NO];
         return;
@@ -157,10 +163,10 @@
 - (void)syncWithDropBoxChanged {
     iPWSDropBoxSynchronizer *synchronizer = [iPWSDropBoxSynchronizer sharedDropBoxSynchronizer];
     if ([syncWithDropBoxSwitch isOn]) {
-        [synchronizer markModelNameForSynchronization:model.friendlyName];
+        [self.databaseFactory markModelNameForDropBox:model.friendlyName];
         [synchronizer synchronizeModel:model];
     } else {
-        [synchronizer unmarkModelNameForSynchronization:model.friendlyName];
+        [self.databaseFactory unmarkModelNameForDropBox:model.friendlyName];
         [synchronizer cancelSynchronization];
     }
 }

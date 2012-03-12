@@ -33,15 +33,12 @@
 //------------------------------------------------------------------------------------
 // Class: iPWSDropBoxSynchronizer
 // Description:
-//  The DropBox synchronizer tracks the database models that are kept in sync with
-//  DropBox.  This tracking is done via a plist file.  The synchronizer watches for when models are opened and when
-//  they are, if they are DropBox "synced" watchs for changes to model.  Any changes for a merge with the
+//  The DropBox synchronizer tracks a given database models and keeps it in sync with
+//  DropBox.  The synchronizer watches for when the model changes and typically silently merges with the
 //  same named file on DropBox.  This merge process could be transparent, or require manual intervention, depending
 //  on whether or not conflicts arise.
-
 @interface iPWSDropBoxSynchronizer : UIViewController <DBSessionDelegate, UIActionSheetDelegate> {
-    NSMutableDictionary *synchronizedModels; // { friendlyName -> drop box ref }
-    iPWSDatabaseModel   *modelBeingSynchronized;
+    iPWSDatabaseModel   *model;
 
     IBOutlet UILabel    *statusLabel;
     BOOL                 viewShowing;
@@ -54,13 +51,7 @@
 // Event handling from the application
 - (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url;
 
-// Helper routines
-- (BOOL)isFriendlyNameSynchronized:(NSString *)friendlyName;
-
-// Modifing the list of synchronized models
-- (BOOL)markModelNameForSynchronization:(NSString *)friendlyName;
-- (BOOL)unmarkModelNameForSynchronization:(NSString *)friendlyName;
-
+// Setting the model to watch and synchronize
 - (BOOL)synchronizeModel:(iPWSDatabaseModel *)model;
 - (IBAction)cancelSynchronization;
 

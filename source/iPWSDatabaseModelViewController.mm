@@ -28,6 +28,7 @@
 #import "iPWSDatabaseModelViewController.h"
 #import "iPWSDatabaseEntryViewController.h"
 #import "iPWSDatabaseDetailViewController.h"
+#import "iPWSDatabaseFactory.h"
 #import "iPasswordSafeAppDelegate.h"
 #import "iPWSDropBoxSynchronizer.h"
 
@@ -143,6 +144,13 @@
 
     // Setup the search bar
     searchBar.autocorrectionType = UITextAutocorrectionTypeNo;
+    
+}
+
+- (void)viewDidUnload {
+    if ([[iPWSDatabaseFactory sharedDatabaseFactory] isDropBoxModel:model.friendlyName]) {
+        [[iPWSDropBoxSynchronizer sharedDropBoxSynchronizer] cancelSynchronization];
+    }    
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -152,11 +160,9 @@
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    
-    iPWSDropBoxSynchronizer *synchronizer = [iPWSDropBoxSynchronizer sharedDropBoxSynchronizer];
-    if ([synchronizer isFriendlyNameSynchronized:model.friendlyName]) {
-        [synchronizer synchronizeModel:model];
-    }
+    if ([[iPWSDatabaseFactory sharedDatabaseFactory] isDropBoxModel:model.friendlyName]) {
+        [[iPWSDropBoxSynchronizer sharedDropBoxSynchronizer] synchronizeModel:model];
+    }    
 }
 
 //------------------------------------------------------------------------------------

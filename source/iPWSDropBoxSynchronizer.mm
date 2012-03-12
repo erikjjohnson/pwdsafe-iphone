@@ -42,31 +42,24 @@
 //------------------------------------------------------------------------------------
 // Class: iPWSDropBoxSynchronizer
 // Description:
-//  The DropBox synchronizer tracks the database models that are kept in sync with
-//  DropBox.  This tracking is done via a plist file.  The synchronizer watches for when models are opened and when
-//  they are, if they are DropBox "synced" watchs for changes to model.  Any changes for a merge with the
+//  The DropBox synchronizer tracks a given database models and keeps it in sync with
+//  DropBox.  The synchronizer watches for when the model changes and typically silently merges with the
 //  same named file on DropBox.  This merge process could be transparent, or require manual intervention, depending
 //  on whether or not conflicts arise.
 
 //------------------------------------------------------------------------------------
 // Private interface
 @interface iPWSDropBoxSynchronizer () 
-@property (retain) iPWSDatabaseModel *modelBeingSynchronized;
+@property (retain) iPWSDatabaseModel *model;
 @property (assign, getter=isViewShowing) BOOL viewShowing;
 
-- (void)synchronizeUserDefaults;
-
-- (iPWSDatabaseModel *)modelForName:(NSString *)friendlyName;
-
 - (void)synchronizeCurrentModel;
-
-- (void)listenForApplicationNotifications;
-- (void)stopListeningForApplicationNotifications;
-- (void)applicationDidEnterBackground:(NSNotification *)notification;
+- (void)cancelAndDisableSynchronization;
 
 - (void)listenForModelChanges;
 - (void)stopListeningForModelChanges;
 - (void)modelChanged:(NSNotification *)notification;
+- (void)modelClosed:(NSNotification *)notification;
 
 - (void)showView;
 - (void)hideView;
@@ -75,15 +68,12 @@
 - (void)authorizationAlertWithMessage:(NSString *)message authorizeButtonTitle:(NSString *)buttonTitle;
 @end
 
-// The key placed in the UserDefaults to retrieve the DropBox synchronization information
-static NSString *kiPWSDropBoxSynchronizationUserDefaults = @"kiPWSDropBoxSynchronizationUserDefaults";
-
 //------------------------------------------------------------------------------------
-// Factory implementation
+// Synchronizer implementation
 @implementation iPWSDropBoxSynchronizer
 
 @synthesize viewShowing;
-@synthesize modelBeingSynchronized;
+@synthesize model;
 
 // Get the singleton
 + (id)sharedDropBoxSynchronizer {
@@ -103,15 +93,6 @@ static NSString *kiPWSDropBoxSynchronizationUserDefaults = @"kiPWSDropBoxSynchro
         self.viewShowing = NO;
         self.navigationItem.title = @"DropBox";
         
-        // Load the synchronization information into a mutable dictionary
-        synchronizedModels     = [[NSMutableDictionary dictionary] retain];
-        NSDictionary *defaults = [[NSUserDefaults standardUserDefaults] 
-                                  dictionaryForKey:kiPWSDropBoxSynchronizationUserDefaults];
-        [defaults enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
-            [synchronizedModels setObject:obj forKey:key];
-        }];
-        [self synchronizeUserDefaults];
-
         // Register with DropBox
         DBSession* dbSession = [[[DBSession alloc] initWithAppKey:DROPBOX_APP_KEY
                                                         appSecret:DROPBOX_APP_SECRET
@@ -119,67 +100,42 @@ static NSString *kiPWSDropBoxSynchronizationUserDefaults = @"kiPWSDropBoxSynchro
         dbSession.delegate = self;
         [dbSession unlinkAll]; // TODO: Remove.  For testing only
         [DBSession setSharedSession:dbSession];
-        
-        [self listenForApplicationNotifications];
-        [self listenForModelChanges];
     }
     return self;
 }
 
 // Destructor
 - (void) dealloc {
-    [self stopListeningForModelChanges];
-    [self stopListeningForApplicationNotifications];
-    self.modelBeingSynchronized        = nil;
+    [self cancelSynchronization];
     [DBSession sharedSession].delegate = nil;
-    [synchronizedModels release];
+
+    self.model        = nil;
     [cancelButton release];
     [super dealloc];
 }
 
-
-//------------------------------------------------------------------------------------
-// Helper routines
-- (iPWSDatabaseFactory *)databaseFactory {
-    return [iPWSDatabaseFactory sharedDatabaseFactory];
-}
-
-- (BOOL)isFriendlyNameSynchronized:(NSString *)friendlyName {
-    return [[synchronizedModels allKeys] containsObject:friendlyName];
-}
-
-- (iPWSDatabaseModel *)modelForName:(NSString *)friendlyName {
-    return [self.databaseFactory getOpenedDatabaseModelNamed:friendlyName errorMsg:NULL];
-}
-
+// A cancel button to stop synchronization
 - (UIBarButtonItem *)cancelButton {
     if (!cancelButton) {
-        cancelButton = [[UIBarButtonItem alloc] initWithTitle:@"Cancel"
+        cancelButton = [[UIBarButtonItem alloc] initWithTitle:@"Cancel & Disable"
                                                         style:UIBarButtonItemStylePlain
                                                        target:self
-                                                       action:@selector(cancelSynchronization)];
+                                                       action:@selector(cancelAndDisableSynchronization)];
     }
     return cancelButton;
 }
 
+// Our navigation controller is taken from our owning controller
 - (UINavigationController *)navigationController {
-    iPasswordSafeAppDelegate *appDelegate = [UIApplication sharedApplication].delegate;
+    iPasswordSafeAppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
     return appDelegate.navigationController;
 }
 
 //------------------------------------------------------------------------------------
 // View handling
-- (void)viewDidLoad {
-    [super viewDidLoad];
-    self.navigationItem.leftBarButtonItem = self.cancelButton;
-}
-
-- (void)viewDidUnload {
-    [super viewDidUnload];
-}
-
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
+    self.navigationItem.leftBarButtonItem = self.cancelButton;
     self.navigationController.toolbarHidden = YES;
     self.viewShowing = YES;
     [self synchronizeCurrentModel];
@@ -199,9 +155,14 @@ static NSString *kiPWSDropBoxSynchronizationUserDefaults = @"kiPWSDropBoxSynchro
 }
 
 - (void)promptForAuthorization {
-    [self authorizationAlertWithMessage:@"You will be redirected to DropBox to authorize this application. "
-                                        "If your preferences lock databases on exit, re-open this safe after "
-                                        "DropBox authorization."
+    NSString *additionalInstructions = @"";
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"require_passphrase_on_resume"]) {
+        additionalInstructions = @" Your preferences specify locking all safes on application exit.  Thus"
+                                  " after DropBox authorizes this application, you will need to re-open this safe"
+                                  " to resume DropBox synchronization.";
+    }
+    NSString *message = @"You will be redirected to DropBox to authorize this application.";
+    [self authorizationAlertWithMessage:[NSString stringWithFormat:@"%@%@", message, additionalInstructions] 
                    authorizeButtonTitle:@"Take me to DropBox"];
 }
 
@@ -217,15 +178,14 @@ static NSString *kiPWSDropBoxSynchronizationUserDefaults = @"kiPWSDropBoxSynchro
                                               cancelButtonTitle:@"Don't use DropBox"
                                          destructiveButtonTitle:nil
                                               otherButtonTitles:buttonTitle, nil];
-    //[sheet showFromToolbar:self.navigationController.toolbar];
     [sheet showInView:self.view];
 }
 
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
     if (buttonIndex == actionSheet.cancelButtonIndex) {
         [self hideView];
-        if (self.modelBeingSynchronized) {
-            [self unmarkModelNameForSynchronization:self.modelBeingSynchronized.friendlyName];
+        if (self.model) {
+            [self cancelAndDisableSynchronization];
         }
     } else {
         [[DBSession sharedSession] link];        
@@ -253,98 +213,79 @@ static NSString *kiPWSDropBoxSynchronizationUserDefaults = @"kiPWSDropBoxSynchro
 }
 
 //------------------------------------------------------------------------------------
-// Modify the list of synchronized databases
-
-// Add a new database for synchronization
-- (BOOL)markModelNameForSynchronization:(NSString *)friendlyName {
-    // Sanity checks
-    if ([self isFriendlyNameSynchronized:friendlyName]) return YES;
-    if (![self.databaseFactory doesFriendlyNameExist:friendlyName]) return NO;
-    
-    // Add the synchronization information, the reference is nil since this is the first
-    // time the database has been synchronized
-    [synchronizedModels setObject:@"" forKey:friendlyName];
-    [self synchronizeUserDefaults];
-    
-    return YES;
-}
-
-// Remove a database from those that are synchronized
-- (BOOL)unmarkModelNameForSynchronization:(NSString *)friendlyName {
-    if ([self isFriendlyNameSynchronized:friendlyName]) {
-        [synchronizedModels removeObjectForKey:friendlyName];
-        [self synchronizeUserDefaults];
-    }
-    return YES;
-}
-
-//------------------------------------------------------------------------------------
 // Start synchronization
-- (BOOL)synchronizeModel:(iPWSDatabaseModel *)model {
-    if (![self isFriendlyNameSynchronized:model.friendlyName]) return NO;
-    
+- (BOOL)synchronizeModel:(iPWSDatabaseModel *)theModel {    
     // Only synchronize one model at a time
-    if (self.modelBeingSynchronized && ![model isEqual:self.modelBeingSynchronized]) {
-        ShowDismissAlertView(@"DropBox synchronization conflict", @"Another safe is being synchronized");
-        return NO;
+    if ([self.model isEqual:theModel]) return YES;
+    if (self.model && ![theModel isEqual:self.model]) {
+        [self cancelSynchronization];
     }
-    self.modelBeingSynchronized = model;
+    self.model = theModel;
     [self synchronizeCurrentModel];
+    [self listenForModelChanges];
     return YES;
 }
 
 - (IBAction)cancelSynchronization {
-    self.modelBeingSynchronized = nil;
     [self hideView];
+    [self stopListeningForModelChanges];
+    self.model = nil;
+}
+
+- (void)cancelAndDisableSynchronization {
+    [[iPWSDatabaseFactory sharedDatabaseFactory] unmarkModelNameForDropBox:self.model.friendlyName];
+    [self cancelSynchronization];
 }
 
 //------------------------------------------------------------------------------------
 // Private interface
 
 //------------------------------------------------------------------------------------
-// Application events
-- (void)listenForApplicationNotifications {
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(applicationDidEnterBackground:)
-                                                 name:UIApplicationDidEnterBackgroundNotification
-                                               object:[UIApplication  sharedApplication]];
-}
-
-- (void)stopListeningForApplicationNotifications {
-    [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                    name:UIApplicationDidEnterBackgroundNotification
-                                                  object:[UIApplication sharedApplication]];
-}
-
-- (void)applicationDidEnterBackground:(NSNotification *)notification {
-    [self cancelSynchronization];
-}
-
-//------------------------------------------------------------------------------------
 // Whenver a model changes, see if we are to be synchronizing it and then do so
-// We don't listen for opened models because of an ordering issue with the views.  We need the model
-// view to open and then we will lay our view on top of that view.  Listening for model open causes
-// the other order to occur, occluding our synchronization view.
 - (void)listenForModelChanges {
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(modelChanged:)
                                                  name:iPWSDatabaseModelChangedNotification
-                                               object:nil];
+                                               object:self.model];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(modelClosed:)
+                                                 name:iPWSDatabaseFactoryModelClosedNotification 
+                                               object:[iPWSDatabaseFactory sharedDatabaseFactory]];
 }
 
 - (void)stopListeningForModelChanges {
     [[NSNotificationCenter defaultCenter] removeObserver:self
                                                     name:iPWSDatabaseModelChangedNotification
-                                                  object:nil];
+                                                  object:self.model];
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:iPWSDatabaseFactoryModelClosedNotification 
+                                                  object:[iPWSDatabaseFactory sharedDatabaseFactory]];
 }
 
 - (void)modelChanged:(NSNotification *)notification {
-    [self synchronizeModel:notification.object];
+    if (![self.model isEqual:notification.object]) {
+        NSLog(@"Internal error with DropBox synchronization.  Model mistmatch, expected %@, got %@",
+              self.model, notification.object);
+        return;
+    }
+    [self synchronizeCurrentModel];
+}
+
+- (void)modelClosed:(NSNotification *)notification {
+    NSString *changedModelName = [notification.userInfo objectForKey:iPWSDatabaseFactoryModelNameUserInfoKey];
+    if ([self.model.friendlyName isEqual:changedModelName]) {
+        [self cancelSynchronization];
+    }
 }
 
 //------------------------------------------------------------------------------------
 // The real synchronization work
 - (void)synchronizeCurrentModel {
+    if (!self.model) {
+        [self cancelSynchronization];
+        return;
+    };
+    
     // Ensure our view is up and available
     if (![self isViewShowing]) {
         [self showView];
@@ -357,17 +298,10 @@ static NSString *kiPWSDropBoxSynchronizationUserDefaults = @"kiPWSDropBoxSynchro
         return;
     }
     
-    NSLog(@"Real synchronization to occur now for %@", self.modelBeingSynchronized.friendlyName);
-    //self.modelBeingSynchronized = nil;  // TODO: Call dropbox here
+    NSLog(@"Real synchronization to occur now for %@", self.model.friendlyName);
+    // TODO: Call dropbox here
     
     [self hideView];  // TODO: Hide the view after dropbox calls
-}
-
-// Synchronize the current in-memory list of safes with the preferences
-- (void)synchronizeUserDefaults {
-    [[NSUserDefaults standardUserDefaults] setObject:synchronizedModels 
-                                              forKey:kiPWSDropBoxSynchronizationUserDefaults];
-    [[NSUserDefaults standardUserDefaults] synchronize]; 
 }
 
 @end
