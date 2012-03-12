@@ -30,7 +30,7 @@
 #import "iPasswordSafeAppDelegate.h"
 #import "iPWSDatabasesViewController.h"
 #import "iPWSDatabaseFactory.h"
-#import "iPWSDropBoxSynchronizer.h"
+#import "iPWSDropBoxAuthenticator.h"
 
 #import "DropboxSDK/DropboxSDK.h"
 
@@ -74,14 +74,14 @@
     [window addSubview:navigationController.view];
     [window makeKeyAndVisible];
     
-    // Make sure the DropBox synchronizer is alive
-    [iPWSDropBoxSynchronizer sharedDropBoxSynchronizer];
+    // Make sure the DropBox authenticator is alive
+    [iPWSDropBoxAuthenticator sharedDropBoxAuthenticator];
     return YES;
 }
 
 // Invoked when DropBox is authorizing the application to have access
 - (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url {
-    if ([[iPWSDropBoxSynchronizer sharedDropBoxSynchronizer] application:application handleOpenURL:url]) return YES;
+    if ([[iPWSDropBoxAuthenticator sharedDropBoxAuthenticator] application:application handleOpenURL:url]) return YES;
     return NO;
 }
 

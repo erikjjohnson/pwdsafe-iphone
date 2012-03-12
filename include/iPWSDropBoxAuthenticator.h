@@ -27,30 +27,39 @@
 
 
 #import <UIKit/UIKit.h>
-#import "iPWSDatabaseModel.h"
-#import "iPWSDropBoxSynchronizer.h"
-#import "SearchOverlayViewController.h"
+#import "DropboxSDK/DropboxSDK.h"
+
+@class iPWSDropBoxAuthenticator;
 
 //------------------------------------------------------------------------------------
-// Class: iPWSDatabaseModelViewController
+// Protocls: iPWSDropBoxAuthenticatorDelegate
 // Description:
-//  Represents a simple table view controller displaying the entries of a database model.  When an entry is
-//  selected push an EntryViewController to display that entry
-@interface iPWSDatabaseModelViewController : UITableViewController {
-    iPWSDatabaseModel			*model;
-    NSMutableArray				*sectionData;
-    NSMutableArray				*searchResults;
-    UIBarButtonItem				*addButton;
-    UIBarButtonItem             *searchDoneButton;
-    UIBarButtonItem             *detailsButton;
-	SearchOverlayViewController *searchOverlayController;
-    IBOutlet UISearchBar		*searchBar;
-    BOOL						 isSearching;
-	BOOL						 showSearchResults;
-    BOOL						 isSelectable;
-    iPWSDropBoxSynchronizer     *dropBoxSynchronizer;
+//  An entity wishing for DropBox authentication must implement this protocol to receive
+//  the response of authentication
+@protocol iPWSDropBoxAuthenticatorDelegate <NSObject>
+- (void)dropBoxAuthenticatorSucceeded:(iPWSDropBoxAuthenticator *)authenticator;
+- (void)dropBoxAuthenticatorFailed:(iPWSDropBoxAuthenticator *)authenticator;
+@end
+
+//------------------------------------------------------------------------------------
+// Class: iPWSDropBoxAuthenticator
+// Description:
+//  The DropBox authenticator handles the process of displaying information to the user about
+//  the process of authentication.
+@interface iPWSDropBoxAuthenticator : NSObject <DBSessionDelegate, UIActionSheetDelegate> {
+    id<iPWSDropBoxAuthenticatorDelegate>  delegate;
+    UIView                               *view;
 }
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil model:(iPWSDatabaseModel *)theModel;
+@property (assign) id<iPWSDropBoxAuthenticatorDelegate> delegate;
+
+// Access the singleton
++ (iPWSDropBoxAuthenticator *)sharedDropBoxAuthenticator;
+
+// Event handling from the application
+- (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url;
+
+- (BOOL)isAuthenticated;
+- (void)authenticateWithView:(UIView *)view delegate:(id<iPWSDropBoxAuthenticatorDelegate>)theDelegate;
 
 @end

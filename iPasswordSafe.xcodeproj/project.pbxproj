@@ -34,6 +34,7 @@
 		30E1070E1279F32E00649034 /* diceicon.png in Resources */ = {isa = PBXBuildFile; fileRef = 30E1070D1279F32E00649034 /* diceicon.png */; };
 		A10F649712F3CBCE00FFC851 /* SearchOverlayViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = A10F649612F3CBCE00FFC851 /* SearchOverlayViewController.xib */; };
 		A10F649912F3CBDF00FFC851 /* SearchOverlayViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = A10F649812F3CBDF00FFC851 /* SearchOverlayViewController.mm */; };
+		A119225B150D90EE00A8C520 /* iPWSDropBoxAuthenticator.mm in Sources */ = {isa = PBXBuildFile; fileRef = A119225A150D90ED00A8C520 /* iPWSDropBoxAuthenticator.mm */; };
 		A14CF8D71499171900D53605 /* PasswordAlertView.mm in Sources */ = {isa = PBXBuildFile; fileRef = A14CF8D61499171900D53605 /* PasswordAlertView.mm */; };
 		A16BF23A1507088F0035960A /* DismissAlertView.mm in Sources */ = {isa = PBXBuildFile; fileRef = A16BF2391507088F0035960A /* DismissAlertView.mm */; };
 		A1851335150C35970081EE26 /* iPWSDropBoxSynchronizer.mm in Sources */ = {isa = PBXBuildFile; fileRef = A1851334150C35970081EE26 /* iPWSDropBoxSynchronizer.mm */; };
@@ -101,6 +102,8 @@
 		A10F649612F3CBCE00FFC851 /* SearchOverlayViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = SearchOverlayViewController.xib; path = resources/SearchOverlayViewController.xib; sourceTree = "<group>"; };
 		A10F649812F3CBDF00FFC851 /* SearchOverlayViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = SearchOverlayViewController.mm; path = source/SearchOverlayViewController.mm; sourceTree = "<group>"; };
 		A10F649A12F3CBEE00FFC851 /* SearchOverlayViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SearchOverlayViewController.h; path = include/SearchOverlayViewController.h; sourceTree = "<group>"; };
+		A1192259150D90BF00A8C520 /* iPWSDropBoxAuthenticator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = iPWSDropBoxAuthenticator.h; path = include/iPWSDropBoxAuthenticator.h; sourceTree = "<group>"; };
+		A119225A150D90ED00A8C520 /* iPWSDropBoxAuthenticator.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = iPWSDropBoxAuthenticator.mm; path = source/iPWSDropBoxAuthenticator.mm; sourceTree = "<group>"; };
 		A14CF8D51499170200D53605 /* PasswordAlertView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PasswordAlertView.h; path = include/PasswordAlertView.h; sourceTree = "<group>"; };
 		A14CF8D61499171900D53605 /* PasswordAlertView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = PasswordAlertView.mm; path = source/PasswordAlertView.mm; sourceTree = "<group>"; };
 		A16BF2381507087A0035960A /* DismissAlertView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DismissAlertView.h; path = include/DismissAlertView.h; sourceTree = "<group>"; };
@@ -194,6 +197,7 @@
 				A1CB19AA1509A58C0006DD14 /* Controllers */,
 				A1CB19A91509A5840006DD14 /* Views */,
 				3013F25F124A752200C82647 /* iPasswordSafeAppDelegate.mm */,
+				A119225A150D90ED00A8C520 /* iPWSDropBoxAuthenticator.mm */,
 				A1851334150C35970081EE26 /* iPWSDropBoxSynchronizer.mm */,
 				3013F260124A752200C82647 /* main.mm */,
 			);
@@ -207,6 +211,7 @@
 				A1CB19A71509A5590006DD14 /* Controllers */,
 				A1CB19A81509A56E0006DD14 /* Views */,
 				A1F18B65150AFFB200DA947E /* DropBoxKeys.h */,
+				A1192259150D90BF00A8C520 /* iPWSDropBoxAuthenticator.h */,
 				A1851333150C358B0081EE26 /* iPWSDropBoxSynchronizer.h */,
 				A16BF23B15070DA50035960A /* iPWSMacros.h */,
 				3013F266124A753400C82647 /* iPasswordSafeAppDelegate.h */,
@@ -398,6 +403,7 @@
 				A14CF8D71499171900D53605 /* PasswordAlertView.mm in Sources */,
 				A16BF23A1507088F0035960A /* DismissAlertView.mm in Sources */,
 				A1851335150C35970081EE26 /* iPWSDropBoxSynchronizer.mm in Sources */,
+				A119225B150D90EE00A8C520 /* iPWSDropBoxAuthenticator.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

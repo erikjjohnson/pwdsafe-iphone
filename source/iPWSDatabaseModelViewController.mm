@@ -35,6 +35,9 @@
 //------------------------------------------------------------------------------------
 // Private interface
 @interface iPWSDatabaseModelViewController ()
+- (void)startDropBoxSynchronizer;
+- (void)stopDropBoxSyncrhonizer;
+
 - (void)initSectionDataWithModel:(iPWSDatabaseModel *)model;
 - (void)addEntryToSection:(iPWSDatabaseEntryModel *)entry;
 - (void)removeEntryFromSectionAtIndexPath:(NSIndexPath *)indexPath;
@@ -71,7 +74,97 @@
 @implementation iPWSDatabaseModelViewController
 
 //------------------------------------------------------------------------------------
-// Instance methods
+// Initializer
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil model:(iPWSDatabaseModel *)theModel {
+    if (!theModel) return nil;
+    if (self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil]) {
+        model                     = [theModel retain];
+        self.navigationItem.title = @"Safe entries";
+
+        // Watch for changes in the model
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(modelChangedNotification:)
+                                                     name:iPWSDatabaseModelChangedNotification 
+                                                   object:model];
+
+        // Map the model to the section data
+        [self initSectionDataWithModel:model];
+        
+        // Add the toolbar
+        iPasswordSafeAppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
+        self.toolbarItems = [NSArray arrayWithObjects: self.addButton, 
+                                                       appDelegate.flexibleSpaceButton,
+                                                       appDelegate.lockAllDatabasesButton, 
+                                                       self.detailsButton,
+                                                       nil];
+        // Initialize the search results
+        searchResults = [[NSMutableArray alloc] init];
+        isSearching   = showSearchResults = NO;
+        [self updateSearchResults];
+     }
+    return self;
+}
+
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [self stopDropBoxSyncrhonizer];
+    [addButton release];
+    [searchDoneButton release];
+    [model release];
+    [sectionData release];
+    [searchResults release];
+	[searchOverlayController release];
+    [super dealloc];
+}
+
+//------------------------------------------------------------------------------------
+// View loading and unloading
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    self.navigationItem.rightBarButtonItem = self.editButtonItem;
+
+    // Setup the search bar
+    searchBar.autocorrectionType = UITextAutocorrectionTypeNo;
+    
+}
+
+- (void)viewDidUnload {
+    if ([[iPWSDatabaseFactory sharedDatabaseFactory] isDropBoxModel:model.friendlyName]) {
+        [self stopDropBoxSyncrhonizer];
+    }    
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    self.navigationController.toolbarHidden = NO;  
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    if ([[iPWSDatabaseFactory sharedDatabaseFactory] isDropBoxModel:model.friendlyName]) {
+        [self startDropBoxSynchronizer];
+    } else {
+        [self stopDropBoxSyncrhonizer];
+    }
+}
+
+//------------------------------------------------------------------------------------
+// DropBox handling
+- (void)startDropBoxSynchronizer {
+    if (!dropBoxSynchronizer) {
+        dropBoxSynchronizer = [[iPWSDropBoxSynchronizer alloc] initWithModel:model];
+        [self.navigationController pushViewController:dropBoxSynchronizer animated:YES];
+    }
+}
+
+- (void)stopDropBoxSyncrhonizer {
+    if (dropBoxSynchronizer) {
+        [dropBoxSynchronizer cancelSynchronization];
+        [dropBoxSynchronizer release];
+        dropBoxSynchronizer = nil;
+    }
+}
 
 //------------------------------------------------------------------------------------
 // Accessors
@@ -105,65 +198,6 @@
     return detailsButton;
 }
 
-
-//------------------------------------------------------------------------------------
-// Initializer
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil model:(iPWSDatabaseModel *)theModel {
-    if (!theModel) return nil;
-    if (self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil]) {
-        model                     = [theModel retain];
-        self.navigationItem.title = @"Safe entries";
-
-        // Watch for changes in the model
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(modelChangedNotification:)
-                                                     name:iPWSDatabaseModelChangedNotification 
-                                                   object:model];
-
-        // Map the model to the section data
-        [self initSectionDataWithModel:model];
-        
-        // Add the toolbar
-        iPasswordSafeAppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
-        self.toolbarItems = [NSArray arrayWithObjects: self.addButton, 
-                                                       appDelegate.flexibleSpaceButton,
-                                                       appDelegate.lockAllDatabasesButton, 
-                                                       self.detailsButton,
-                                                       nil];
-        // Initialize the search results
-        searchResults = [[NSMutableArray alloc] init];
-        isSearching   = showSearchResults = NO;
-        [self updateSearchResults];
-     }
-    return self;
-}
-
-- (void)viewDidLoad {
-    [super viewDidLoad];
-    self.navigationItem.rightBarButtonItem = self.editButtonItem;
-
-    // Setup the search bar
-    searchBar.autocorrectionType = UITextAutocorrectionTypeNo;
-    
-}
-
-- (void)viewDidUnload {
-    if ([[iPWSDatabaseFactory sharedDatabaseFactory] isDropBoxModel:model.friendlyName]) {
-        [[iPWSDropBoxSynchronizer sharedDropBoxSynchronizer] cancelSynchronization];
-    }    
-}
-
-- (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
-    self.navigationController.toolbarHidden = NO;  
-}
-
-- (void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
-    if ([[iPWSDatabaseFactory sharedDatabaseFactory] isDropBoxModel:model.friendlyName]) {
-        [[iPWSDropBoxSynchronizer sharedDropBoxSynchronizer] synchronizeModel:model];
-    }    
-}
 
 //------------------------------------------------------------------------------------
 // Table data source
@@ -438,22 +472,6 @@
                                                            entry:[self entryAtIndexPath:indexPath]];
     [self.navigationController pushViewController:vc animated:YES];
     [vc release];
-}
-
-//------------------------------------------------------------------------------------
-// Memory management
-#pragma mark -
-#pragma mark Memory management
-
-- (void)dealloc {
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
-    [addButton release];
-    [searchDoneButton release];
-    [model release];
-    [sectionData release];
-    [searchResults release];
-	[searchOverlayController release];
-    [super dealloc];
 }
 
 

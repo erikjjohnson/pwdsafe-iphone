@@ -28,7 +28,6 @@
 
 #import "iPWSDatabaseDetailViewController.h"
 #import "iPWSDatabaseFactory.h"
-#import "iPWSDropBoxSynchronizer.h"
 #import "DismissAlertView.h"
 
 
@@ -161,13 +160,10 @@
 }
 
 - (void)syncWithDropBoxChanged {
-    iPWSDropBoxSynchronizer *synchronizer = [iPWSDropBoxSynchronizer sharedDropBoxSynchronizer];
     if ([syncWithDropBoxSwitch isOn]) {
         [self.databaseFactory markModelNameForDropBox:model.friendlyName];
-        [synchronizer synchronizeModel:model];
     } else {
         [self.databaseFactory unmarkModelNameForDropBox:model.friendlyName];
-        [synchronizer cancelSynchronization];
     }
 }
 

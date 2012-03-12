@@ -27,8 +27,8 @@
 
 
 #import <UIKit/UIKit.h>
-#import "DropboxSDK/DropboxSDK.h"
 #import "iPWSDatabaseModel.h"
+#import "iPWSDropBoxAuthenticator.h"
 
 //------------------------------------------------------------------------------------
 // Class: iPWSDropBoxSynchronizer
@@ -37,7 +37,7 @@
 //  DropBox.  The synchronizer watches for when the model changes and typically silently merges with the
 //  same named file on DropBox.  This merge process could be transparent, or require manual intervention, depending
 //  on whether or not conflicts arise.
-@interface iPWSDropBoxSynchronizer : UIViewController <DBSessionDelegate, UIActionSheetDelegate> {
+@interface iPWSDropBoxSynchronizer : UIViewController <UIActionSheetDelegate, iPWSDropBoxAuthenticatorDelegate> {
     iPWSDatabaseModel   *model;
 
     IBOutlet UILabel    *statusLabel;
@@ -45,14 +45,10 @@
     UIBarButtonItem     *cancelButton;
 }
 
-// Access the singleton
-+ (iPWSDropBoxSynchronizer *)sharedDropBoxSynchronizer;
+// Initialize the view with the model to synchronize with
+- (id)initWithModel:(iPWSDatabaseModel *)model;
 
-// Event handling from the application
-- (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url;
-
-// Setting the model to watch and synchronize
-- (BOOL)synchronizeModel:(iPWSDatabaseModel *)model;
+// Stopping the synchronization
 - (IBAction)cancelSynchronization;
 
 @end

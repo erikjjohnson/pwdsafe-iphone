@@ -28,16 +28,10 @@
 
 #import "iPWSDropBoxSynchronizer.h"
 #import "iPWSDatabaseFactory.h"
-#import "DismissAlertView.h"
+#import "iPWSDropBoxAuthenticator.h"
 #import "iPasswordSafeAppDelegate.h"
+#import "DismissAlertView.h"
 #import "DropboxSDK/DropboxSDK.h"
-
-// DropBoxKeys.h is not open source, it contains the DropBox app key and secret
-// To create your own version of this file:
-// #define DROPBOX_APP_KEY_PLIST     YOUR_KEY
-// #define DROPBOX_APP_KEY         @"YOUR_KEY"
-// #define DROPBOX_APP_SECRET      @"YOUR_SECRET"
-#import "DropBoxKeys.h" 
 
 //------------------------------------------------------------------------------------
 // Class: iPWSDropBoxSynchronizer
@@ -63,9 +57,6 @@
 
 - (void)showView;
 - (void)hideView;
-- (void)promptForAuthorization;
-- (void)promptForReauthorization;
-- (void)authorizationAlertWithMessage:(NSString *)message authorizeButtonTitle:(NSString *)buttonTitle;
 @end
 
 //------------------------------------------------------------------------------------
@@ -75,31 +66,13 @@
 @synthesize viewShowing;
 @synthesize model;
 
-// Get the singleton
-+ (id)sharedDropBoxSynchronizer {
-    static iPWSDropBoxSynchronizer *sharedDropBoxSynchronizer = nil;
-    @synchronized(self) {
-        if (nil == sharedDropBoxSynchronizer) {
-            sharedDropBoxSynchronizer = [[iPWSDropBoxSynchronizer alloc] initWithNibName:@"iPWSDropBoxSynchronizerView"
-                                                                                  bundle:nil];
-        }
-    }
-    return sharedDropBoxSynchronizer;
-}
-
 // Canonical initializer
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
-    if (self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil]) {  
-        self.viewShowing = NO;
+- (id)initWithModel:(iPWSDatabaseModel *)theModel {
+    if (self = [super initWithNibName:@"iPWSDropBoxSynchronizerView" bundle:nil]) {  
+        self.viewShowing          = NO;
         self.navigationItem.title = @"DropBox";
-        
-        // Register with DropBox
-        DBSession* dbSession = [[[DBSession alloc] initWithAppKey:DROPBOX_APP_KEY
-                                                        appSecret:DROPBOX_APP_SECRET
-                                                             root:kDBRootAppFolder] autorelease];
-        dbSession.delegate = self;
-        [dbSession unlinkAll]; // TODO: Remove.  For testing only
-        [DBSession setSharedSession:dbSession];
+        self.model                = theModel;
+        [self listenForModelChanges];
     }
     return self;
 }
@@ -107,9 +80,7 @@
 // Destructor
 - (void) dealloc {
     [self cancelSynchronization];
-    [DBSession sharedSession].delegate = nil;
-
-    self.model        = nil;
+    self.model = nil;
     [cancelButton release];
     [super dealloc];
 }
@@ -154,78 +125,18 @@
     }
 }
 
-- (void)promptForAuthorization {
-    NSString *additionalInstructions = @"";
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"require_passphrase_on_resume"]) {
-        additionalInstructions = @" Your preferences specify locking all safes on application exit.  Thus"
-                                  " after DropBox authorizes this application, you will need to re-open this safe"
-                                  " to resume DropBox synchronization.";
-    }
-    NSString *message = @"You will be redirected to DropBox to authorize this application.";
-    [self authorizationAlertWithMessage:[NSString stringWithFormat:@"%@%@", message, additionalInstructions] 
-                   authorizeButtonTitle:@"Take me to DropBox"];
-}
-
-- (void)promptForReauthorization {
-    [self authorizationAlertWithMessage:@"DropBox authorization failed" 
-                   authorizeButtonTitle:@"Try authorization again"];
-}
-
-// Alerting for authorization
-- (void)authorizationAlertWithMessage:(NSString *)message authorizeButtonTitle:(NSString *)buttonTitle {
-    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:message
-                                                       delegate:self
-                                              cancelButtonTitle:@"Don't use DropBox"
-                                         destructiveButtonTitle:nil
-                                              otherButtonTitles:buttonTitle, nil];
-    [sheet showInView:self.view];
-}
-
-- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
-    if (buttonIndex == actionSheet.cancelButtonIndex) {
-        [self hideView];
-        if (self.model) {
-            [self cancelAndDisableSynchronization];
-        }
-    } else {
-        [[DBSession sharedSession] link];        
-    }
-}
-
 //------------------------------------------------------------------------------------
-// DropBox callbacks
-// Invoked when DropBox is authorizing the application to have access
-- (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url {
-    if ([[DBSession sharedSession] handleOpenURL:url]) {
-        if ([[DBSession sharedSession] isLinked]) {
-            [self synchronizeCurrentModel];
-        } else {
-            [self promptForReauthorization];
-        }
-        return YES;
-    }
-    return NO;
-}
-
-// Drop box failed our authorization
-- (void)sessionDidReceiveAuthorizationFailure:(DBSession *)session userId:(NSString *)userId {
-    [self promptForReauthorization];
-}
-
-//------------------------------------------------------------------------------------
-// Start synchronization
-- (BOOL)synchronizeModel:(iPWSDatabaseModel *)theModel {    
-    // Only synchronize one model at a time
-    if ([self.model isEqual:theModel]) return YES;
-    if (self.model && ![theModel isEqual:self.model]) {
-        [self cancelSynchronization];
-    }
-    self.model = theModel;
+// Authentication callbacks
+- (void)dropBoxAuthenticatorSucceeded:(iPWSDropBoxAuthenticator *)authenticator {
     [self synchronizeCurrentModel];
-    [self listenForModelChanges];
-    return YES;
 }
 
+- (void)dropBoxAuthenticatorFailed:(iPWSDropBoxAuthenticator *)authenticator {
+    [self cancelAndDisableSynchronization];
+}
+
+//------------------------------------------------------------------------------------
+// Stopping synchronization
 - (IBAction)cancelSynchronization {
     [self hideView];
     [self stopListeningForModelChanges];
@@ -293,8 +204,9 @@
     }
     
     // Ensure we are authorized
-    if (![[DBSession sharedSession] isLinked]) {
-        [self promptForAuthorization];
+    iPWSDropBoxAuthenticator *authenticator = [iPWSDropBoxAuthenticator sharedDropBoxAuthenticator];
+    if (![authenticator isAuthenticated]) {
+        [authenticator authenticateWithView:self.view delegate:self];
         return;
     }
     
