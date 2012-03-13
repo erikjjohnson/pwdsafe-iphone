@@ -50,7 +50,7 @@
 - (NSString *)sectionToString:(int)i;
 
 - (void)updateSearchResults;
-- (SearchOverlayViewController *)searchOverlayController;
+- (ActivityOverlayViewController *)searchOverlayController;
 
 - (UIBarButtonItem *)addButton;
 - (UIBarButtonItem *)searchDoneButton;
@@ -264,25 +264,23 @@
 //------------------------------------------------------------------------------------
 // Searching
 // Add a grey overlay to show the original list and allow for cancelling
-- (SearchOverlayViewController *)searchOverlayController {
+- (ActivityOverlayViewController *)searchOverlayController {
 	if (!searchOverlayController) {
 		searchOverlayController = 
-			[[SearchOverlayViewController alloc] initWithNibName:@"SearchOverlayViewController" 
-														  bundle:[NSBundle mainBundle]
-														  target:self
-														selector:@selector(searchDoneButtonPressed)];
+			[[ActivityOverlayViewController alloc] initWithNibName:@"ActivityOverlayViewController" 
+                                                            bundle:[NSBundle mainBundle]
+                                                            target:self
+                                                          selector:@selector(searchDoneButtonPressed)];
 		
-	}
-
-    CGFloat yaxis = self.navigationController.navigationBar.frame.size.height;
-    CGFloat width = self.view.frame.size.width;
+	}	
+    CGFloat yaxis  = self.navigationController.navigationBar.frame.size.height;
+    CGFloat width  = self.view.frame.size.width;
     CGFloat height = self.view.frame.size.height;
     
     CGRect frame = CGRectMake(0, yaxis, width, height);
     searchOverlayController.view.frame = frame;
-    searchOverlayController.view.backgroundColor = [UIColor grayColor];
-    searchOverlayController.view.alpha = 0.5;
-	
+
+    [searchOverlayController hideActivityIndicator];
     return searchOverlayController;
 }
 
@@ -329,7 +327,7 @@
     if (!isSearching) return;
     
 	// If there are no search results and we are searching, use the overlay view
-	SearchOverlayViewController *overlay = [self searchOverlayController];
+	ActivityOverlayViewController *overlay = [self searchOverlayController];
 	if (!showSearchResults && isSearching) {
 		[self.tableView insertSubview:overlay.view aboveSubview:self.parentViewController.view];
 		return;

@@ -26,12 +26,36 @@
 // OF SUCH DAMAGE.
 
 #import <UIKit/UIKit.h>
+#import "iPWSDropBoxAuthenticator.h"
+#import "DropboxSDK/DropboxSDK.h"
+#import "ActivityOverlayViewController.h"
 
-@interface SearchOverlayViewController : UIViewController {
-	id  target;
-	SEL selector;
+//------------------------------------------------------------------------------------
+// Class: iPWSDropBoxImportViewController
+// Description:
+//  Represents a view and controller for importing a PasswordSafe database from an 
+//  existing file in DropBox
+@interface iPWSDropBoxImportViewController : UIViewController 
+    <UIPickerViewDelegate, 
+     UIPickerViewDataSource, 
+     iPWSDropBoxAuthenticatorDelegate,
+     DBRestClientDelegate> {
+    UIBarButtonItem                 *cancelButton;
+    UIBarButtonItem                 *doneButton;
+    NSMutableArray                  *psafeFiles;
+    NSInteger                        selectedImportFileIdx;
+    ActivityOverlayViewController   *spinningOverlayViewController;
+    DBRestClient                    *dbClient;
+    NSString                        *loadingFilename;
+    
+    IBOutlet UITextField       *friendlyName;
+    IBOutlet UITextField       *passphrase;
+    IBOutlet UIPickerView      *importFilePicker;
+	IBOutlet UIScrollView      *scrollView;
 }
 
-- (id) initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil target:(id)t selector:(SEL)s;
+// Interface builder connections
+- (IBAction)friendlyNameChanged:(id)sender;
+- (IBAction)passphraseChanged:(id)sender;
 
 @end

@@ -32,11 +32,13 @@
 		30933F591251316F00622BFA /* iPWSDatabaseAddViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 30933F581251316F00622BFA /* iPWSDatabaseAddViewController.xib */; };
 		30DF134C1278C801005929AD /* lockbarbutton.png in Resources */ = {isa = PBXBuildFile; fileRef = 30DF134B1278C801005929AD /* lockbarbutton.png */; };
 		30E1070E1279F32E00649034 /* diceicon.png in Resources */ = {isa = PBXBuildFile; fileRef = 30E1070D1279F32E00649034 /* diceicon.png */; };
-		A10F649712F3CBCE00FFC851 /* SearchOverlayViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = A10F649612F3CBCE00FFC851 /* SearchOverlayViewController.xib */; };
-		A10F649912F3CBDF00FFC851 /* SearchOverlayViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = A10F649812F3CBDF00FFC851 /* SearchOverlayViewController.mm */; };
+		A10F649712F3CBCE00FFC851 /* ActivityOverlayViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = A10F649612F3CBCE00FFC851 /* ActivityOverlayViewController.xib */; };
+		A10F649912F3CBDF00FFC851 /* ActivityOverlayViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = A10F649812F3CBDF00FFC851 /* ActivityOverlayViewController.mm */; };
 		A119225B150D90EE00A8C520 /* iPWSDropBoxAuthenticator.mm in Sources */ = {isa = PBXBuildFile; fileRef = A119225A150D90ED00A8C520 /* iPWSDropBoxAuthenticator.mm */; };
 		A14CF8D71499171900D53605 /* PasswordAlertView.mm in Sources */ = {isa = PBXBuildFile; fileRef = A14CF8D61499171900D53605 /* PasswordAlertView.mm */; };
 		A16BF23A1507088F0035960A /* DismissAlertView.mm in Sources */ = {isa = PBXBuildFile; fileRef = A16BF2391507088F0035960A /* DismissAlertView.mm */; };
+		A17F221F150EC54900AB1495 /* iPWSDropBoxImportViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = A17F221E150EC54900AB1495 /* iPWSDropBoxImportViewController.mm */; };
+		A17F2221150EC55600AB1495 /* iPWSDropBoxImportViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = A17F2220150EC55600AB1495 /* iPWSDropBoxImportViewController.xib */; };
 		A1851335150C35970081EE26 /* iPWSDropBoxSynchronizer.mm in Sources */ = {isa = PBXBuildFile; fileRef = A1851334150C35970081EE26 /* iPWSDropBoxSynchronizer.mm */; };
 		A1851346150D20CC0081EE26 /* iPWSDropBoxSynchronizerView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A1851345150D20CC0081EE26 /* iPWSDropBoxSynchronizerView.xib */; };
 		A1C6BD3512626D7700F192B9 /* lockicon.png in Resources */ = {isa = PBXBuildFile; fileRef = A1C6BD3412626D7700F192B9 /* lockicon.png */; };
@@ -99,9 +101,9 @@
 		30933F581251316F00622BFA /* iPWSDatabaseAddViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = iPWSDatabaseAddViewController.xib; path = resources/iPWSDatabaseAddViewController.xib; sourceTree = "<group>"; };
 		30DF134B1278C801005929AD /* lockbarbutton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = lockbarbutton.png; path = resources/lockbarbutton.png; sourceTree = "<group>"; };
 		30E1070D1279F32E00649034 /* diceicon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = diceicon.png; path = resources/diceicon.png; sourceTree = "<group>"; };
-		A10F649612F3CBCE00FFC851 /* SearchOverlayViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = SearchOverlayViewController.xib; path = resources/SearchOverlayViewController.xib; sourceTree = "<group>"; };
-		A10F649812F3CBDF00FFC851 /* SearchOverlayViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = SearchOverlayViewController.mm; path = source/SearchOverlayViewController.mm; sourceTree = "<group>"; };
-		A10F649A12F3CBEE00FFC851 /* SearchOverlayViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SearchOverlayViewController.h; path = include/SearchOverlayViewController.h; sourceTree = "<group>"; };
+		A10F649612F3CBCE00FFC851 /* ActivityOverlayViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = ActivityOverlayViewController.xib; path = resources/ActivityOverlayViewController.xib; sourceTree = "<group>"; };
+		A10F649812F3CBDF00FFC851 /* ActivityOverlayViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = ActivityOverlayViewController.mm; path = source/ActivityOverlayViewController.mm; sourceTree = "<group>"; };
+		A10F649A12F3CBEE00FFC851 /* ActivityOverlayViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ActivityOverlayViewController.h; path = include/ActivityOverlayViewController.h; sourceTree = "<group>"; };
 		A1192259150D90BF00A8C520 /* iPWSDropBoxAuthenticator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = iPWSDropBoxAuthenticator.h; path = include/iPWSDropBoxAuthenticator.h; sourceTree = "<group>"; };
 		A119225A150D90ED00A8C520 /* iPWSDropBoxAuthenticator.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = iPWSDropBoxAuthenticator.mm; path = source/iPWSDropBoxAuthenticator.mm; sourceTree = "<group>"; };
 		A14CF8D51499170200D53605 /* PasswordAlertView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PasswordAlertView.h; path = include/PasswordAlertView.h; sourceTree = "<group>"; };
@@ -109,6 +111,9 @@
 		A16BF2381507087A0035960A /* DismissAlertView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DismissAlertView.h; path = include/DismissAlertView.h; sourceTree = "<group>"; };
 		A16BF2391507088F0035960A /* DismissAlertView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = DismissAlertView.mm; path = source/DismissAlertView.mm; sourceTree = "<group>"; };
 		A16BF23B15070DA50035960A /* iPWSMacros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = iPWSMacros.h; path = include/iPWSMacros.h; sourceTree = "<group>"; };
+		A17F221D150EC53300AB1495 /* iPWSDropBoxImportViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = iPWSDropBoxImportViewController.h; path = include/iPWSDropBoxImportViewController.h; sourceTree = "<group>"; };
+		A17F221E150EC54900AB1495 /* iPWSDropBoxImportViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = iPWSDropBoxImportViewController.mm; path = source/iPWSDropBoxImportViewController.mm; sourceTree = "<group>"; };
+		A17F2220150EC55600AB1495 /* iPWSDropBoxImportViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = iPWSDropBoxImportViewController.xib; path = resources/iPWSDropBoxImportViewController.xib; sourceTree = "<group>"; };
 		A1851333150C358B0081EE26 /* iPWSDropBoxSynchronizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = iPWSDropBoxSynchronizer.h; path = include/iPWSDropBoxSynchronizer.h; sourceTree = "<group>"; };
 		A1851334150C35970081EE26 /* iPWSDropBoxSynchronizer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = iPWSDropBoxSynchronizer.mm; path = source/iPWSDropBoxSynchronizer.mm; sourceTree = "<group>"; };
 		A1851345150D20CC0081EE26 /* iPWSDropBoxSynchronizerView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = iPWSDropBoxSynchronizerView.xib; path = resources/iPWSDropBoxSynchronizerView.xib; sourceTree = "<group>"; };
@@ -172,8 +177,9 @@
 				304BB1401252956300702002 /* iPWSDatabaseDetailViewController.xib */,
 				303CC30E125688DB005E4970 /* iPWSDatabaseModelViewController.xib */,
 				303CC357125696D0005E4970 /* iPWSDatabaseEntryViewController.xib */,
+				A17F2220150EC55600AB1495 /* iPWSDropBoxImportViewController.xib */,
 				A1851345150D20CC0081EE26 /* iPWSDropBoxSynchronizerView.xib */,
-				A10F649612F3CBCE00FFC851 /* SearchOverlayViewController.xib */,
+				A10F649612F3CBCE00FFC851 /* ActivityOverlayViewController.xib */,
 				3013F255124A74E100C82647 /* MainWindow.xib */,
 			);
 			name = Resources;
@@ -247,7 +253,8 @@
 				304BB13F1252955A00702002 /* iPWSDatabaseDetailViewController.h */,
 				303CC310125688E5005E4970 /* iPWSDatabaseModelViewController.h */,
 				303CC356125696C6005E4970 /* iPWSDatabaseEntryViewController.h */,
-				A10F649A12F3CBEE00FFC851 /* SearchOverlayViewController.h */,
+				A17F221D150EC53300AB1495 /* iPWSDropBoxImportViewController.h */,
+				A10F649A12F3CBEE00FFC851 /* ActivityOverlayViewController.h */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -279,7 +286,8 @@
 				304BB13B1252953500702002 /* iPWSDatabaseDetailViewController.mm */,
 				303CC30A125688B3005E4970 /* iPWSDatabaseModelViewController.mm */,
 				303CC3521256969F005E4970 /* iPWSDatabaseEntryViewController.mm */,
-				A10F649812F3CBDF00FFC851 /* SearchOverlayViewController.mm */,
+				A17F221E150EC54900AB1495 /* iPWSDropBoxImportViewController.mm */,
+				A10F649812F3CBDF00FFC851 /* ActivityOverlayViewController.mm */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -376,8 +384,9 @@
 				A1C6BD3512626D7700F192B9 /* lockicon.png in Resources */,
 				30DF134C1278C801005929AD /* lockbarbutton.png in Resources */,
 				30E1070E1279F32E00649034 /* diceicon.png in Resources */,
-				A10F649712F3CBCE00FFC851 /* SearchOverlayViewController.xib in Resources */,
+				A10F649712F3CBCE00FFC851 /* ActivityOverlayViewController.xib in Resources */,
 				A1851346150D20CC0081EE26 /* iPWSDropBoxSynchronizerView.xib in Resources */,
+				A17F2221150EC55600AB1495 /* iPWSDropBoxImportViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -399,11 +408,12 @@
 				304BB13D1252953500702002 /* iPWSDatabaseDetailViewController.mm in Sources */,
 				303CC30C125688B3005E4970 /* iPWSDatabaseModelViewController.mm in Sources */,
 				303CC3541256969F005E4970 /* iPWSDatabaseEntryViewController.mm in Sources */,
-				A10F649912F3CBDF00FFC851 /* SearchOverlayViewController.mm in Sources */,
+				A10F649912F3CBDF00FFC851 /* ActivityOverlayViewController.mm in Sources */,
 				A14CF8D71499171900D53605 /* PasswordAlertView.mm in Sources */,
 				A16BF23A1507088F0035960A /* DismissAlertView.mm in Sources */,
 				A1851335150C35970081EE26 /* iPWSDropBoxSynchronizer.mm in Sources */,
 				A119225B150D90EE00A8C520 /* iPWSDropBoxAuthenticator.mm in Sources */,
+				A17F221F150EC54900AB1495 /* iPWSDropBoxImportViewController.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

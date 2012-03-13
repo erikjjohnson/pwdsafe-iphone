@@ -30,6 +30,7 @@
 #import "iPWSDatabaseFactory.h"
 #import "iPWSDatabaseAddViewController.h"
 #import "iPWSDatabaseImportViewController.h"
+#import "iPWSDropBoxImportViewController.h"
 #import "iPWSDatabaseModelViewController.h"
 #import "PasswordAlertView.h"
 #import "DismissAlertView.h"
@@ -61,6 +62,7 @@
 // Class variables
 static NSString *CREATE_DATABASE_BUTTON_STR = @"Create new safe";
 static NSString *IMPORT_DATABASE_BUTTON_STR = @"Import existing safe";
+static NSString *IMPORT_DROPBOX_DATABASE_BUTTON_STR = @"Import safe from DropBox";
 
 // Each time we prompt for a passphrase, we have to save context regarding what the operation was that
 // required the passphrase.  To this end, the passphrasePromptContext dictionary contains the following keys
@@ -240,7 +242,8 @@ enum {
                                                     cancelButtonTitle:@"Cancel"
                                                destructiveButtonTitle:nil
                                                     otherButtonTitles:CREATE_DATABASE_BUTTON_STR, 
-                                                                      IMPORT_DATABASE_BUTTON_STR, nil];
+                                                                      IMPORT_DATABASE_BUTTON_STR,
+                                                                      IMPORT_DROPBOX_DATABASE_BUTTON_STR, nil];
     [actionSheet showFromToolbar:self.navigationController.toolbar];    
 }
 
@@ -263,6 +266,15 @@ enum {
         iPWSDatabaseImportViewController *vc = [[iPWSDatabaseImportViewController alloc]
                                                 initWithNibName:@"iPWSDatabaseImportViewController"
                                                          bundle:nil];
+        [self.navigationController pushViewController:vc animated:YES];
+        [vc release];
+    }
+    
+    // Import a database from DropBox
+    if ([buttonText isEqualToString:IMPORT_DROPBOX_DATABASE_BUTTON_STR]) {
+        iPWSDropBoxImportViewController *vc = [[iPWSDropBoxImportViewController alloc]
+                                                initWithNibName:@"iPWSDropBoxImportViewController"
+                                                bundle:nil];
         [self.navigationController pushViewController:vc animated:YES];
         [vc release];
     }

@@ -25,32 +25,51 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
 // OF SUCH DAMAGE.
 
-
-#import <UIKit/UIKit.h>
-#import "iPWSDatabaseModel.h"
-#import "iPWSDropBoxSynchronizer.h"
 #import "ActivityOverlayViewController.h"
+#import "iPasswordSafeAppDelegate.h"
 
-//------------------------------------------------------------------------------------
-// Class: iPWSDatabaseModelViewController
-// Description:
-//  Represents a simple table view controller displaying the entries of a database model.  When an entry is
-//  selected push an EntryViewController to display that entry
-@interface iPWSDatabaseModelViewController : UITableViewController {
-    iPWSDatabaseModel			  *model;
-    NSMutableArray				  *sectionData;
-    NSMutableArray				  *searchResults;
-    UIBarButtonItem				  *addButton;
-    UIBarButtonItem               *searchDoneButton;
-    UIBarButtonItem               *detailsButton;
-	ActivityOverlayViewController *searchOverlayController;
-    IBOutlet UISearchBar		  *searchBar;
-    BOOL						   isSearching;
-	BOOL						   showSearchResults;
-    BOOL						   isSelectable;
-    iPWSDropBoxSynchronizer       *dropBoxSynchronizer;
+@implementation ActivityOverlayViewController
+
+// The designated initializer.  
+- (id) initWithNibName:(NSString *)nibNameOrNil 
+                bundle:(NSBundle *)nibBundleOrNil
+                target:(id)t 
+              selector:(SEL)s {
+    if (self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil]) {
+        target   = [t retain];
+		selector = s;
+
+        self.view.backgroundColor = [UIColor grayColor];
+        self.view.alpha = 0.5;
+    }
+    return self;
+}
+ 
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+	if ([target respondsToSelector:selector]) {
+		[target performSelector:selector];
+	}
 }
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil model:(iPWSDatabaseModel *)theModel;
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
+	return ((interfaceOrientation == UIInterfaceOrientationPortrait) ||
+            (interfaceOrientation == UIInterfaceOrientationLandscapeLeft) ||
+            (interfaceOrientation == UIInterfaceOrientationLandscapeRight));
+}
+
+- (void)showActivityIndicator {
+    activityIndicatorView.hidden = NO;
+    [activityIndicatorView startAnimating];
+}
+
+- (void)hideActivityIndicator {
+    activityIndicatorView.hidden = YES;
+}
+
+- (void)dealloc {
+	[target release];
+    [super dealloc];
+}
+
 
 @end

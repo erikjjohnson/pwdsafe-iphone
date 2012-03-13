@@ -100,10 +100,10 @@
 }
 
 - (void)authenticateWithView:(UIView *)theView delegate:(id<iPWSDropBoxAuthenticatorDelegate>)theDelegate {
+    self.delegate = theDelegate;
     if ([self isAuthenticated]) {
         [self sendDelegateSuccess];
     } else {
-        self.delegate = theDelegate;
         self.view     = theView;
         [self promptForAuthorization];
     }
@@ -113,8 +113,8 @@
     NSString *additionalInstructions = @"";
     if ([[NSUserDefaults standardUserDefaults] boolForKey:@"require_passphrase_on_resume"]) {
         additionalInstructions = @" Your preferences specify locking all safes on application exit.  Thus"
-                                  " after DropBox authorizes this application, you will need to re-open any"
-                                  " open safes";
+                                  " after DropBox authorizes this application, you will need to re-open this"
+                                  " safe or import dialog";
     }
     NSString *message = @"You will be redirected to DropBox to authorize this application.";
     [self authorizationAlertWithMessage:[NSString stringWithFormat:@"%@%@", message, additionalInstructions] 

@@ -25,37 +25,20 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
 // OF SUCH DAMAGE.
 
-#import "SearchOverlayViewController.h"
+#import <UIKit/UIKit.h>
 
-
-@implementation SearchOverlayViewController
-
-// The designated initializer.  
-- (id) initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil target:(id)t selector:(SEL)s {
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self) {
-        target   = [t retain];
-		selector = s;
-    }
-    return self;
-}
- 
-- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-	if ([target respondsToSelector:selector]) {
-		[target performSelector:selector];
-	}
+@interface ActivityOverlayViewController : UIViewController {
+	id                                target;
+	SEL                               selector;
+    IBOutlet UIActivityIndicatorView *activityIndicatorView;
 }
 
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
-	return ((interfaceOrientation == UIInterfaceOrientationPortrait) ||
-            (interfaceOrientation == UIInterfaceOrientationLandscapeLeft) ||
-            (interfaceOrientation == UIInterfaceOrientationLandscapeRight));
-}
+- (id) initWithNibName:(NSString *)nibNameOrNil 
+                bundle:(NSBundle *)nibBundleOrNil
+                target:(id)t 
+              selector:(SEL)s;
 
-- (void)dealloc {
-	[target release];
-    [super dealloc];
-}
-
+- (void)showActivityIndicator;
+- (void)hideActivityIndicator;
 
 @end
