@@ -174,9 +174,18 @@ static NSString *PWSDatabaseFactoryMissingSafesMessage =
     return NO;
 }
 
+// Determine if the given filename is in the Documents folder
+- (BOOL)doesFileNameExist:(NSString *)fileName {
+    return [[NSFileManager defaultManager] fileExistsAtPath:[self databasePathForFileName:fileName]];
+}
+
+- (NSString *)databasePathForFileName:(NSString *)fileName {
+    return [documentsDirectory stringByAppendingPathComponent:fileName];
+}
+
 // The full path, including filename, for the given friendly name
 - (NSString *)databasePathForName:(NSString *)friendlyName {
-    return [documentsDirectory stringByAppendingPathComponent:[friendlyNameToFilename objectForKey:friendlyName]];
+    return [self databasePathForFileName:[friendlyNameToFilename objectForKey:friendlyName]];
 }
 
 //------------------------------------------------------------------------------------
@@ -369,7 +378,7 @@ static NSString *PWSDatabaseFactoryMissingSafesMessage =
     // Copy the database file
     NSString* newFileName = [self createUniqueFilenameWithPrefix:newFriendlyName];
     if (![[NSFileManager defaultManager] copyItemAtPath:[self databasePathForName:origFriendlyName]
-                                                 toPath:[documentsDirectory stringByAppendingPathComponent:newFileName] 
+                                                 toPath:[self databasePathForFileName:newFileName] 
                                                   error:errorMsg]) {
         return NO;
     }

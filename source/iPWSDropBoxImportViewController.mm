@@ -46,6 +46,8 @@
 - (void)startSpinner;
 - (void)stopSpinner;
 - (ActivityOverlayViewController *)spinningOverlayViewController;
+
+- (void)popView;
 @end
 
 //------------------------------------------------------------------------------------
@@ -107,6 +109,14 @@
                                                                        delegate:self];
 }
 
+- (void)popView {
+    if (self.loadingFilename) {
+        [self.dbClient cancelFileLoad:self.loadingFilename];
+        self.loadingFilename = nil;
+    }
+    [self.navigationController popViewControllerAnimated:NO];
+}
+
 - (IBAction)friendlyNameChanged:(id)sender {
     [self updateDoneButton];
 }
@@ -126,29 +136,39 @@
 
 - (void)dropBoxAuthenticatorFailed:(iPWSDropBoxAuthenticator *)authenticator {
     [self stopSpinner];
-    [self cancelButtonPressed];
+    [self popView];
 }
 
 //------------------------------------------------------------------------------------
 // DBClient delegate callbacks
 - (void)restClient:(DBRestClient*)client loadedMetadata:(DBMetadata*)metadata {
+    [psafeFiles removeAllObjects];
     for (DBMetadata* child in metadata.contents) {
-        if (!child.isDirectory && ![[iPWSDatabaseFactory sharedDatabaseFactory] isFileNameMapped:child.filename]) {
+        if (!child.isDirectory && ![[iPWSDatabaseFactory sharedDatabaseFactory] doesFileNameExist:child.filename]) {
             [psafeFiles addObject:child.filename];
         }
     }
     [self stopSpinner];
-    [importFilePicker reloadAllComponents];
+    
+    if ([psafeFiles count]) {
+        [importFilePicker reloadAllComponents];        
+    } else {
+        ShowDismissAlertView(@"No safes to import", 
+                             @"No unmapped safes were found. Files on DropBox in Apps/PasswordSafes-iPhone with the"
+                              " same name as existing files will not be imported.  Instead, locally import the file"
+                              " and synchronize it with DropBox");
+        [self popView];
+    }
 }
 
 - (void)restClient:(DBRestClient*)client metadataUnchangedAtPath:(NSString*)path {
-    ShowDismissAlertView(@"DropBox unexpected failure", @"Please try again");
-    [self cancelButtonPressed];
+    ShowDismissAlertView(@"DropBox unexpected failure", @"Go ahead and try again if you feel lucky.");
+    [self popView];
 }
 
 - (void)restClient:(DBRestClient*)client loadMetadataFailedWithError:(NSError*)error {
-    ShowDismissAlertView(@"DropBox load failed", @"Failed to get listing of safes on DropBox");
-    [self cancelButtonPressed];
+    ShowDismissAlertView(@"DropBox file listing failed", @"Go ahead and try again if you feel lucky.");
+    [self popView];
 }
 
 - (void)restClient:(DBRestClient*)client loadedFile:(NSString*)destPath {
@@ -156,16 +176,19 @@
     self.loadingFilename = nil;
     [self stopSpinner];
     iPWSDatabaseFactory *databaseFactory = [iPWSDatabaseFactory sharedDatabaseFactory];
+    NSString *fileName                   = [psafeFiles objectAtIndex:selectedImportFileIdx];
     if (![databaseFactory addDatabaseNamed:friendlyName.text
-                             withFileNamed:[psafeFiles objectAtIndex:selectedImportFileIdx]
+                             withFileNamed:fileName
                                 passphrase:passphrase.text 
                                   errorMsg:&errorMsg]) {
+        [[NSFileManager defaultManager] removeItemAtPath:[databaseFactory databasePathForFileName:fileName]
+                                                   error:NULL];
         passphrase.text = @"";
         [passphrase becomeFirstResponder];
         ShowDismissAlertView(@"Import failed", [errorMsg localizedDescription]);
     } else {
         [databaseFactory markModelNameForDropBox:friendlyName.text];
-        [self cancelButtonPressed];
+        [self popView];
     }
 }
 
@@ -255,11 +278,7 @@
 }
 
 - (void)cancelButtonPressed {
-    if (self.loadingFilename) {
-        [self.dbClient cancelFileLoad:self.loadingFilename];
-        self.loadingFilename = nil;
-    }
-    [self.navigationController popViewControllerAnimated:NO];
+    [self popView];
 }
 
 - (void)doneButtonPressed {

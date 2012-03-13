@@ -107,6 +107,10 @@ extern NSString* iPWSDatabaseFactoryNewModelNameUserInfoKey;
 - (NSString *)databasePathForName:(NSString *)friendlyName;
 - (NSString *)createUniqueFilenameWithPrefix:(NSString *)prefix;
 
+// File-based helpers
+- (BOOL)doesFileNameExist:(NSString *)fileName;
+- (NSString *)databasePathForFileName:(NSString *)fileName;
+
 // Accessing the database models
 - (iPWSDatabaseModel *)openDatabaseModelNamed:(NSString *)friendlyName 
                                    passphrase:(NSString *)passphrase
