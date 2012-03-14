@@ -90,7 +90,8 @@ extern NSString* iPWSDatabaseFactoryNewModelNameUserInfoKey;
 @interface iPWSDatabaseFactory : NSObject {
     NSString                       *documentsDirectory;
     NSMutableDictionary            *friendlyNameToFilename; // { friendlyName -> fileName}
-    NSMutableDictionary            *dropBoxModels;          // { friendlyName -> drop box ref }
+    NSMutableDictionary            *dropBoxModels;          // { friendlyName -> empty string }
+    NSMutableDictionary            *dropBoxRevisions;       // { friendlyName -> lastKnownDropBoxRev }
     NSMutableDictionary            *openDatabaseModels;     // { friendlyName -> iPWSDatabaseModel }
 }
 
@@ -138,5 +139,7 @@ extern NSString* iPWSDatabaseFactoryNewModelNameUserInfoKey;
 - (BOOL)isDropBoxModel:(NSString *)friendlyName;
 - (BOOL)markModelNameForDropBox:(NSString *)friendlyName;
 - (BOOL)unmarkModelNameForDropBox:(NSString *)friendlyName;
+- (NSString *)dropBoxRevForModelName:(NSString *)friendlyName;
+- (BOOL)setDropBoxRev:(NSString *)rev forModelName:(NSString *)friendlyName;
 
 @end

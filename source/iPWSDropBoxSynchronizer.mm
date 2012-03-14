@@ -45,7 +45,9 @@
 // Private interface
 @interface iPWSDropBoxSynchronizer () 
 @property (retain) iPWSDatabaseModel *model;
+@property (retain) DBRestClient      *dbClient;
 @property (assign, getter=isViewShowing) BOOL viewShowing;
+- (iPWSDatabaseFactory *)databaseFactory;
 
 - (void)synchronizeCurrentModel;
 - (void)cancelAndDisableSynchronization;
@@ -57,6 +59,7 @@
 
 - (void)showView;
 - (void)hideView;
+- (void)updateStatus:(NSString *)status;
 @end
 
 //------------------------------------------------------------------------------------
@@ -65,6 +68,7 @@
 
 @synthesize viewShowing;
 @synthesize model;
+@synthesize dbClient;
 
 // Canonical initializer
 - (id)initWithModel:(iPWSDatabaseModel *)theModel {
@@ -80,7 +84,9 @@
 // Destructor
 - (void) dealloc {
     [self cancelSynchronization];
-    self.model = nil;
+    self.model             = nil;
+    self.dbClient.delegate = nil;
+    self.dbClient          = nil;
     [cancelButton release];
     [super dealloc];
 }
@@ -100,6 +106,10 @@
 - (UINavigationController *)navigationController {
     iPasswordSafeAppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
     return appDelegate.navigationController;
+}
+
+- (iPWSDatabaseFactory *)databaseFactory {
+    return [iPWSDatabaseFactory sharedDatabaseFactory];
 }
 
 //------------------------------------------------------------------------------------
@@ -125,6 +135,10 @@
     }
 }
 
+- (void)updateStatus:(NSString *)status {
+    statusLabel.text = status;
+}
+
 //------------------------------------------------------------------------------------
 // Authentication callbacks
 - (void)dropBoxAuthenticatorSucceeded:(iPWSDropBoxAuthenticator *)authenticator {
@@ -140,11 +154,13 @@
 - (IBAction)cancelSynchronization {
     [self hideView];
     [self stopListeningForModelChanges];
-    self.model = nil;
+    self.dbClient.delegate = nil;
+    self.dbClient          = nil;
+    self.model             = nil;
 }
 
 - (void)cancelAndDisableSynchronization {
-    [[iPWSDatabaseFactory sharedDatabaseFactory] unmarkModelNameForDropBox:self.model.friendlyName];
+    [self.databaseFactory unmarkModelNameForDropBox:self.model.friendlyName];
     [self cancelSynchronization];
 }
 
@@ -161,7 +177,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(modelClosed:)
                                                  name:iPWSDatabaseFactoryModelClosedNotification 
-                                               object:[iPWSDatabaseFactory sharedDatabaseFactory]];
+                                               object:self.databaseFactory];
 }
 
 - (void)stopListeningForModelChanges {
@@ -170,7 +186,7 @@
                                                   object:self.model];
     [[NSNotificationCenter defaultCenter] removeObserver:self
                                                     name:iPWSDatabaseFactoryModelClosedNotification 
-                                                  object:[iPWSDatabaseFactory sharedDatabaseFactory]];
+                                                  object:self.databaseFactory];
 }
 
 - (void)modelChanged:(NSNotification *)notification {
@@ -204,16 +220,31 @@
     }
     
     // Ensure we are authorized
+    [self updateStatus:@"Authorizing..."];
     iPWSDropBoxAuthenticator *authenticator = [iPWSDropBoxAuthenticator sharedDropBoxAuthenticator];
     if (![authenticator isAuthenticated]) {
         [authenticator authenticateWithView:self.view delegate:self];
         return;
     }
     
-    NSLog(@"Real synchronization to occur now for %@", self.model.friendlyName);
-    // TODO: Call dropbox here
-    
-    [self hideView];  // TODO: Hide the view after dropbox calls
+    [self updateStatus:@"Uploading file to DropBox..."];
+    self.dbClient = [[[DBRestClient alloc] initWithSession:[DBSession sharedSession]] autorelease];
+    self.dbClient.delegate = self;
+    [self.dbClient uploadFile:[self.model.fileName lastPathComponent]
+                       toPath:@"/"
+                withParentRev:[self.databaseFactory dropBoxRevForModelName:self.model.friendlyName]
+                     fromPath:self.model.fileName];
+}
+
+- (void)restClient:(DBRestClient*)client uploadedFile:(NSString*)destPath from:(NSString*)srcPath 
+          metadata:(DBMetadata*)metadata {
+    [self.databaseFactory setDropBoxRev:metadata.rev forModelName:self.model.friendlyName];
+    [self hideView];
+}
+
+- (void)restClient:(DBRestClient*)client uploadFileFailedWithError:(NSError*)error {
+    ShowDismissAlertView(@"DropBox sychronization failed", @"TODO: Implement a merge capability");
+    [self hideView];
 }
 
 @end

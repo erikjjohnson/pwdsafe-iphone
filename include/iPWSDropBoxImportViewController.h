@@ -43,6 +43,7 @@
     UIBarButtonItem                 *cancelButton;
     UIBarButtonItem                 *doneButton;
     NSMutableArray                  *psafeFiles;
+    NSMutableDictionary             *dropBoxRevisions;
     NSInteger                        selectedImportFileIdx;
     ActivityOverlayViewController   *spinningOverlayViewController;
     DBRestClient                    *dbClient;

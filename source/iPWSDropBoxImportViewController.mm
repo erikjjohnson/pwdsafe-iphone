@@ -68,6 +68,7 @@
     if ((self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil])) {
         self.navigationItem.title = @"Import DropBox safe";
         psafeFiles                = [[NSMutableArray array] retain];
+        dropBoxRevisions          = [[NSMutableDictionary dictionary] retain];
     }
     
     return self;
@@ -75,13 +76,15 @@
 
 // Deallocation
 - (void)dealloc {
-    self.dbClient        = nil;
-    self.loadingFilename = nil;
+    self.dbClient.delegate = nil;
+    self.dbClient          = nil;
+    self.loadingFilename   = nil;
     [iPWSDropBoxAuthenticator sharedDropBoxAuthenticator].delegate = nil;
     [spinningOverlayViewController release];
     [cancelButton release];
     [doneButton release];
     [psafeFiles release];
+    [dropBoxRevisions release];
     [super dealloc];
 }
 
@@ -143,15 +146,19 @@
 // DBClient delegate callbacks
 - (void)restClient:(DBRestClient*)client loadedMetadata:(DBMetadata*)metadata {
     [psafeFiles removeAllObjects];
+    [dropBoxRevisions removeAllObjects];
     for (DBMetadata* child in metadata.contents) {
-        if (!child.isDirectory && ![[iPWSDatabaseFactory sharedDatabaseFactory] doesFileNameExist:child.filename]) {
+        if (!child.isDirectory && 
+            ![[iPWSDatabaseFactory sharedDatabaseFactory] doesFileNameExist:child.filename] &&
+            child.rev) {
             [psafeFiles addObject:child.filename];
+            [dropBoxRevisions setObject:child.rev forKey:child.filename];
         }
     }
     [self stopSpinner];
     
     if ([psafeFiles count]) {
-        [importFilePicker reloadAllComponents];        
+        [importFilePicker reloadAllComponents];
     } else {
         ShowDismissAlertView(@"No safes to import", 
                              @"No unmapped safes were found. Files on DropBox in Apps/PasswordSafes-iPhone with the"
@@ -188,6 +195,7 @@
         ShowDismissAlertView(@"Import failed", [errorMsg localizedDescription]);
     } else {
         [databaseFactory markModelNameForDropBox:friendlyName.text];
+        [databaseFactory setDropBoxRev:[dropBoxRevisions objectForKey:fileName] forModelName:friendlyName.text];
         [self popView];
     }
 }

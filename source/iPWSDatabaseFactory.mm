@@ -50,6 +50,8 @@
 - (void)synchronizeUserDefaults;
 - (NSError *)errorWithStr:(NSString *)errorStr;
 
+- (void)discardDropBoxSettingsForModelNamed:(NSString *)friendlyName;
+
 // ---- Change management
 - (void)notifyModelAdded:(NSString *)friendlyName;
 - (void)notifyModelRenamedFrom:(NSString *)oldName to:(NSString *)newName;
@@ -79,8 +81,9 @@ NSString* iPWSDatabaseFactoryOldModelNameUserInfoKey  = @"iPWSDatabaseFactoryOld
 NSString* iPWSDatabaseFactoryNewModelNameUserInfoKey  = @"iPWSDatabaseFactoryNewModelNameUserInfoKey";
 
 // The keys placed in the UserDefaults
-static NSString *kiPWSDatabaseFactoryUserDefaults = @"kiPWSDatabaseFactoryUserDefaults";
-static NSString *kiPWSDatabaseDropBoxUserDefaults = @"kiPWSDatabaseDropBoxUserDefaults";
+static NSString *kiPWSDatabaseFactoryUserDefaults    = @"kiPWSDatabaseFactoryUserDefaults";
+static NSString *kiPWSDatabaseDropBoxUserDefaults    = @"kiPWSDatabaseDropBoxUserDefaults";
+static NSString *kiPWSDatabaseDropBoxRevUserDefaults = @"kiPWSDatabaseDropBoxRevUserDefaults";
 
 static NSString *PWSDatabaseFactoryMissingSafesMessage = 
 @"The location of the safes is missing.  Try backing up safes with iTunes file sharing then reinstall the application.";
@@ -108,6 +111,7 @@ static NSString *PWSDatabaseFactoryMissingSafesMessage =
     if (self = [super init]) {        
         friendlyNameToFilename = [[NSMutableDictionary dictionary] retain];
         dropBoxModels          = [[NSMutableDictionary dictionary] retain];
+        dropBoxRevisions       = [[NSMutableDictionary dictionary] retain];
         openDatabaseModels     = [[NSMutableDictionary dictionary] retain];
 
         // Load the  UserDefaults (preferences) file for the application        
@@ -124,10 +128,16 @@ static NSString *PWSDatabaseFactoryMissingSafesMessage =
             [friendlyNameToFilename setObject:fileName forKey:key];
         }];
         
-        // Load the DropBox information into a mutable dictionary
+        // Load the DropBox synchronization information into a mutable dictionary
         defaults = [[NSUserDefaults standardUserDefaults] dictionaryForKey:kiPWSDatabaseDropBoxUserDefaults];
         [defaults enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
             [dropBoxModels setObject:obj forKey:key];
+        }];
+        
+        // Load the DropBox revisions information into a mutable dictionary
+        defaults = [[NSUserDefaults standardUserDefaults] dictionaryForKey:kiPWSDatabaseDropBoxRevUserDefaults];
+        [defaults enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
+            [dropBoxRevisions setObject:obj forKey:key];
         }];
 
         [self synchronizeUserDefaults];
@@ -149,6 +159,7 @@ static NSString *PWSDatabaseFactoryMissingSafesMessage =
     [documentsDirectory release];
     [friendlyNameToFilename release];
     [dropBoxModels release];
+    [dropBoxRevisions release];
     [openDatabaseModels release];
     [super dealloc];
 }
@@ -330,6 +341,7 @@ static NSString *PWSDatabaseFactoryMissingSafesMessage =
         model.friendlyName = newFriendlyName;
         [openDatabaseModels setObject:model forKey:newFriendlyName];
         [openDatabaseModels removeObjectForKey:origFriendlyName];
+        [self discardDropBoxSettingsForModelNamed:origFriendlyName];
     }
     
     // Synchronize and notify
@@ -351,6 +363,7 @@ static NSString *PWSDatabaseFactoryMissingSafesMessage =
     BOOL preserveFiles = [[NSUserDefaults standardUserDefaults] boolForKey:@"preserve_files_on_delete"];
     if (!preserveFiles) {
         [[NSFileManager defaultManager] removeItemAtPath:[self databasePathForName:friendlyName] error:NULL];
+        [self discardDropBoxSettingsForModelNamed:friendlyName];
     }
     [self closeDatabaseModelNamed:friendlyName];
     [friendlyNameToFilename removeObjectForKey:friendlyName];
@@ -417,6 +430,24 @@ static NSString *PWSDatabaseFactoryMissingSafesMessage =
     return YES;
 }
 
+- (NSString *)dropBoxRevForModelName:(NSString *)friendlyName {
+    return [dropBoxRevisions objectForKey:friendlyName];
+}
+
+- (BOOL)setDropBoxRev:(NSString *)rev forModelName:(NSString *)friendlyName {
+    if (![self doesFriendlyNameExist:friendlyName]) return NO;
+    if (!rev) return NO;
+    NSLog(@"DropBox rev: %@ for model %@", rev, friendlyName);
+    [dropBoxRevisions setObject:rev forKey:friendlyName];
+    [self synchronizeUserDefaults];
+    return YES;
+}
+
+- (void)discardDropBoxSettingsForModelNamed:(NSString *)friendlyName {
+    [dropBoxModels removeObjectForKey:friendlyName];
+    [dropBoxRevisions removeObjectForKey:friendlyName];
+}
+
 //------------------------------------------------------------------------------------
 // Private interface
 
@@ -460,6 +491,7 @@ static NSString *PWSDatabaseFactoryMissingSafesMessage =
 - (void)synchronizeUserDefaults {
     [[NSUserDefaults standardUserDefaults] setObject:friendlyNameToFilename forKey:kiPWSDatabaseFactoryUserDefaults];
     [[NSUserDefaults standardUserDefaults] setObject:dropBoxModels forKey:kiPWSDatabaseDropBoxUserDefaults];
+    [[NSUserDefaults standardUserDefaults] setObject:dropBoxRevisions forKey:kiPWSDatabaseDropBoxRevUserDefaults];
     [[NSUserDefaults standardUserDefaults] synchronize]; 
 }
 
