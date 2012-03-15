@@ -202,7 +202,7 @@ static NSString* MERGE_PROMPT_STR       = @"Merge the two safes";
                                                              fileNamed:destPath
                                                             passphrase:self.model.passphrase
                                                               errorMsg:&errorMsg] autorelease];
-    if (!model) {
+    if (!newModel) {
         [self notifyAbandonedWithReason:[NSString stringWithFormat:@"Unable to open DropBox safe: %@", 
                                          [errorMsg localizedDescription]]];
         [self popView];
