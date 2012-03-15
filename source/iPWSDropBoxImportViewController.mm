@@ -28,6 +28,7 @@
 #import "iPWSDropBoxImportViewController.h"
 #import "iPWSDropBoxAuthenticator.h"
 #import "iPWSDatabaseFactory.h"
+#import "iPWSDropBoxPreferences.h"
 #import "DismissAlertView.h"
 
 //------------------------------------------------------------------------------------
@@ -194,8 +195,9 @@
         [passphrase becomeFirstResponder];
         ShowDismissAlertView(@"Import failed", [errorMsg localizedDescription]);
     } else {
-        [databaseFactory markModelNameForDropBox:friendlyName.text];
-        [databaseFactory setDropBoxRev:[dropBoxRevisions objectForKey:fileName] forModelName:friendlyName.text];
+        [[iPWSDropBoxPreferences sharedPreferences] markModelNameForDropBox:friendlyName.text];
+        [[iPWSDropBoxPreferences sharedPreferences] setDropBoxRev:[dropBoxRevisions objectForKey:fileName]
+                                                     forModelName:friendlyName.text];
         [self popView];
     }
 }

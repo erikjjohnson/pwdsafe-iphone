@@ -28,6 +28,7 @@
 
 #import "iPWSDropBoxSynchronizer.h"
 #import "iPWSDatabaseFactory.h"
+#import "iPWSDropBoxPreferences.h"
 #import "iPWSDropBoxAuthenticator.h"
 #import "iPasswordSafeAppDelegate.h"
 #import "DismissAlertView.h"
@@ -51,11 +52,13 @@
 
 - (void)synchronizeCurrentModel;
 - (void)cancelAndDisableSynchronization;
+- (void)resolveConflict;
 
 - (void)listenForModelChanges;
 - (void)stopListeningForModelChanges;
 - (void)modelChanged:(NSNotification *)notification;
 - (void)modelClosed:(NSNotification *)notification;
+- (void)closeAllSafes;
 
 - (void)showView;
 - (void)hideView;
@@ -74,7 +77,7 @@
 - (id)initWithModel:(iPWSDatabaseModel *)theModel {
     if (self = [super initWithNibName:@"iPWSDropBoxSynchronizerView" bundle:nil]) {  
         self.viewShowing          = NO;
-        self.navigationItem.title = @"DropBox";
+        self.navigationItem.title = @"DropBox Sync";
         self.model                = theModel;
         [self listenForModelChanges];
     }
@@ -160,7 +163,7 @@
 }
 
 - (void)cancelAndDisableSynchronization {
-    [self.databaseFactory unmarkModelNameForDropBox:self.model.friendlyName];
+    [[iPWSDropBoxPreferences sharedPreferences] unmarkModelForDropBox:self.model];
     [self cancelSynchronization];
 }
 
@@ -232,19 +235,58 @@
     self.dbClient.delegate = self;
     [self.dbClient uploadFile:[self.model.fileName lastPathComponent]
                        toPath:@"/"
-                withParentRev:[self.databaseFactory dropBoxRevForModelName:self.model.friendlyName]
+                withParentRev:[[iPWSDropBoxPreferences sharedPreferences] dropBoxRevForModel:self.model]
                      fromPath:self.model.fileName];
+}
+
+- (void)resolveConflict {
+    iPWSDropBoxConflictResolver *resolver = [[iPWSDropBoxConflictResolver alloc] initWithModel:self.model];
+    resolver.delegate = self;
+    [self.navigationController pushViewController:resolver animated:YES];
 }
 
 - (void)restClient:(DBRestClient*)client uploadedFile:(NSString*)destPath from:(NSString*)srcPath 
           metadata:(DBMetadata*)metadata {
-    [self.databaseFactory setDropBoxRev:metadata.rev forModelName:self.model.friendlyName];
-    [self hideView];
+    if ([metadata.filename isEqualToString:[self.model.fileName lastPathComponent]]) {
+        [[iPWSDropBoxPreferences sharedPreferences] setDropBoxRev:metadata.rev forModel:self.model];
+        [self hideView];
+    } else {
+        [self resolveConflict];
+    }
 }
 
 - (void)restClient:(DBRestClient*)client uploadFileFailedWithError:(NSError*)error {
-    ShowDismissAlertView(@"DropBox sychronization failed", @"TODO: Implement a merge capability");
-    [self hideView];
+    [self resolveConflict];
+}
+
+//------------------------------------------------------------------------------------
+// Resolver delegate
+- (void)closeAllSafes {
+    ShowDismissAlertView(@"Closing safe", @"The conflict resolution requires safes to be closed");
+    iPasswordSafeAppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
+    [appDelegate lockAllDatabases];    
+}
+
+- (void)dropBoxConflictResolver:(iPWSDropBoxConflictResolver *)resolver 
+      resolvedConflictIntoModel:(iPWSDatabaseModel *)theModel {
+    if (![theModel isEqual:self.model]) {
+        [self closeAllSafes];
+    }
+}
+
+- (void)dropBoxConflictResolver:(iPWSDropBoxConflictResolver *)resolver 
+           failedToReplaceModel:(iPWSDatabaseModel *)oldModel 
+                      withModel:(iPWSDatabaseModel *)newModel {
+    ShowDismissAlertView(@"Zoinks!", @"Something went wrong resolving the conflict.  Check iTunes and hope a backup "
+                         "file is still there");
+    [self closeAllSafes];
+}
+
+- (void)dropBoxConflictResolverWasAbandoned:(iPWSDropBoxConflictResolver *)resolver reason:(NSString *)reason {
+    ShowDismissAlertView(@"Failed to resolve the conflict", 
+                         [NSString stringWithFormat:@"%@. DropBox sync will be disabled. Try it again if you like.", 
+                          reason]);
+    [self cancelAndDisableSynchronization];
 }
 
 @end

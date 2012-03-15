@@ -26,34 +26,44 @@
 // OF SUCH DAMAGE.
 
 
-#import <UIKit/UIKit.h>
+#import <Foundation/Foundation.h>
+#import "iPWSDropBoxPreferences.h"
 #import "iPWSDatabaseModel.h"
-#import "iPWSDropBoxAuthenticator.h"
-#import "iPWSDropBoxConflictResolver.h"
-#import "DropboxSDK/DropboxSDK.h"
 
 //------------------------------------------------------------------------------------
-// Class: iPWSDropBoxSynchronizer
+// Class: iPWSDropBoxPreferences
 // Description:
-//  The DropBox synchronizer tracks a given database models and keeps it in sync with
-//  DropBox.  The synchronizer watches for when the model changes and typically silently merges with the
-//  same named file on DropBox.  This merge process could be transparent, or require manual intervention, depending
-//  on whether or not conflicts arise.
-@interface iPWSDropBoxSynchronizer : UIViewController 
-    <iPWSDropBoxAuthenticatorDelegate, iPWSDropBoxConflictResolverDelegate, DBRestClientDelegate> {
-    iPWSDatabaseModel   *model;
+//  The iPWSDropBoxPreferences is maintain a mapping from filename of a model to
+//    1. Whether or not that file should be synchronized with DropBox
+//    2. The last known DropBox revision of that file
+//
 
-    IBOutlet UILabel    *statusLabel;
-    BOOL                 viewShowing;
-    UIBarButtonItem     *cancelButton;
-    
-    DBRestClient        *dbClient;
+@interface iPWSDropBoxPreferences : NSObject {
+    NSMutableArray       *synchronizedFiles;      // { filenames }
+    NSMutableDictionary  *dropBoxRevisions;       // { filename -> lastKnownDropBoxRev }
 }
 
-// Initialize the view with the model to synchronize with
-- (id)initWithModel:(iPWSDatabaseModel *)model;
+// Access the singleton
++ (iPWSDropBoxPreferences *)sharedPreferences;
 
-// Stopping the synchronization
-- (IBAction)cancelSynchronization;
+- (BOOL)isModelSynchronizedWithDropBox:(iPWSDatabaseModel *)model;
+- (BOOL)isModelNameSynchronizedWithDropBox:(NSString *)friendlyName;
+- (BOOL)isFileSynchronizedWithDropBox:(NSString *)fileName;
+
+- (BOOL)markModelForDropBox:(iPWSDatabaseModel *)model;
+- (BOOL)markModelNameForDropBox:(NSString *)friendlyName;
+- (BOOL)markFileForDropBox:(NSString *)fileName;
+
+- (BOOL)unmarkModelForDropBox:(iPWSDatabaseModel *)model;
+- (BOOL)unmarkModelNameForDropBox:(NSString *)friendlyName;
+- (BOOL)unmarkFileForDropBox:(NSString *)fileName;
+
+- (NSString *)dropBoxRevForModel:(iPWSDatabaseModel *)model;
+- (NSString *)dropBoxRevForModelName:(NSString *)friendlyName;
+- (NSString *)dropBoxRevForFile:(NSString *)fileName;
+
+- (BOOL)setDropBoxRev:(NSString *)rev forModel:(iPWSDatabaseModel *)model;
+- (BOOL)setDropBoxRev:(NSString *)rev forModelName:(NSString *)friendlyName;
+- (BOOL)setDropBoxRev:(NSString *)rev forFile:(NSString *)fileName;
 
 @end

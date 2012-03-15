@@ -80,7 +80,7 @@
                                                         appSecret:DROPBOX_APP_SECRET
                                                              root:kDBRootAppFolder] autorelease];
         dbSession.delegate = self;
-        [dbSession unlinkAll]; // TODO: Remove.  For testing only
+        //[dbSession unlinkAll]; // TODO: Remove.  For testing only
         [DBSession setSharedSession:dbSession];
     }
     return self;
@@ -140,6 +140,9 @@
     if (buttonIndex == actionSheet.cancelButtonIndex) {
         [self sendDelegateFailure];
     } else {
+        if ([[NSUserDefaults standardUserDefaults] boolForKey:@"require_passphrase_on_resume"]) {
+            self.delegate = nil;
+        }
         [[DBSession sharedSession] link];        
     }
 }

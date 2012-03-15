@@ -63,7 +63,7 @@ extern NSString* iPWSDatabaseModelChangedEntryUserInfoKey;
 
 // Accessors 
 @property (readonly) NSArray                       *entries;
-@property (readonly) NSString                      *fileName;
+@property (copy)     NSString                      *fileName;
 @property (copy)     NSString                      *friendlyName;
 @property (readonly) PWSfile::VERSION              version;
 @property (readonly) const PWSfile::HeaderRecord   *headerRecord;

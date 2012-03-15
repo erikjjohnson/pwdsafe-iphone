@@ -80,7 +80,7 @@ extern NSString* iPWSDatabaseFactoryNewModelNameUserInfoKey;
 //  The iPWSDatabaseFactory is represents the list of known PasswordSafe databases.
 //  Each database is represented by a friendly name, which maps to a database
 //  model, a file path, and DropBox synchronization preference.  The mapping from friendlyName to file name 
-//  as well as the DropBox synchronization preferences are maintained in the application's
+//  are maintained in the application's
 //  preferences.  The mapping from friendlyName to database instance is only maintained in memory. Hence, it
 //  is possible that a friendlyName exists, but the call to obtain the database for that friendly name
 //  (databaseNamed:errorMsg:) fails.  In this case, one must call addDatabaseNamed:withFileNamed:passphrase:errorMsg:
@@ -90,8 +90,6 @@ extern NSString* iPWSDatabaseFactoryNewModelNameUserInfoKey;
 @interface iPWSDatabaseFactory : NSObject {
     NSString                       *documentsDirectory;
     NSMutableDictionary            *friendlyNameToFilename; // { friendlyName -> fileName}
-    NSMutableDictionary            *dropBoxModels;          // { friendlyName -> empty string }
-    NSMutableDictionary            *dropBoxRevisions;       // { friendlyName -> lastKnownDropBoxRev }
     NSMutableDictionary            *openDatabaseModels;     // { friendlyName -> iPWSDatabaseModel }
 }
 
@@ -134,12 +132,8 @@ extern NSString* iPWSDatabaseFactoryNewModelNameUserInfoKey;
 - (BOOL)duplicateDatabaseNamed:(NSString *)origFriendlyName
                      toNewName:(NSString *)newFriendlyName
                       errorMsg:(NSError **)errorMsg;
-
-// Modifing the list of DropBox synchronized models
-- (BOOL)isDropBoxModel:(NSString *)friendlyName;
-- (BOOL)markModelNameForDropBox:(NSString *)friendlyName;
-- (BOOL)unmarkModelNameForDropBox:(NSString *)friendlyName;
-- (NSString *)dropBoxRevForModelName:(NSString *)friendlyName;
-- (BOOL)setDropBoxRev:(NSString *)rev forModelName:(NSString *)friendlyName;
+- (BOOL)replaceExistingModel:(iPWSDatabaseModel *)modelToBeReplaced
+           withUnmappedModel:(iPWSDatabaseModel *)newModel
+                    errorMsg:(NSError **)errorMsg;
 
 @end

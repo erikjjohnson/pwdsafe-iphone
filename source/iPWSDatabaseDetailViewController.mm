@@ -28,6 +28,7 @@
 
 #import "iPWSDatabaseDetailViewController.h"
 #import "iPWSDatabaseFactory.h"
+#import "iPWSDropBoxPreferences.h"
 #import "DismissAlertView.h"
 
 
@@ -119,7 +120,7 @@
 }
 
 - (void)viewDidAppear:(BOOL)animated {
-    syncWithDropBoxSwitch.on = [[iPWSDatabaseFactory sharedDatabaseFactory] isDropBoxModel:[self modelFriendlyName]];    
+    syncWithDropBoxSwitch.on = [[iPWSDropBoxPreferences sharedPreferences] isModelSynchronizedWithDropBox:model];   
 }
 
 - (iPWSDatabaseFactory *)databaseFactory {
@@ -161,9 +162,9 @@
 
 - (void)syncWithDropBoxChanged {
     if ([syncWithDropBoxSwitch isOn]) {
-        [self.databaseFactory markModelNameForDropBox:model.friendlyName];
+        [[iPWSDropBoxPreferences sharedPreferences] markModelForDropBox:model];
     } else {
-        [self.databaseFactory unmarkModelNameForDropBox:model.friendlyName];
+        [[iPWSDropBoxPreferences sharedPreferences] unmarkModelForDropBox:model];
     }
 }
 

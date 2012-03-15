@@ -29,6 +29,7 @@
 #import "iPWSDatabaseEntryViewController.h"
 #import "iPWSDatabaseDetailViewController.h"
 #import "iPWSDatabaseFactory.h"
+#import "iPWSDropBoxPreferences.h"
 #import "iPasswordSafeAppDelegate.h"
 #import "iPWSDropBoxSynchronizer.h"
 
@@ -130,7 +131,7 @@
 }
 
 - (void)viewDidUnload {
-    if ([[iPWSDatabaseFactory sharedDatabaseFactory] isDropBoxModel:model.friendlyName]) {
+    if ([[iPWSDropBoxPreferences sharedPreferences] isModelSynchronizedWithDropBox:model]) {
         [self stopDropBoxSyncrhonizer];
     }    
 }
@@ -142,7 +143,7 @@
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    if ([[iPWSDatabaseFactory sharedDatabaseFactory] isDropBoxModel:model.friendlyName]) {
+    if ([[iPWSDropBoxPreferences sharedPreferences] isModelSynchronizedWithDropBox:model]) {
         [self startDropBoxSynchronizer];
     } else {
         [self stopDropBoxSyncrhonizer];

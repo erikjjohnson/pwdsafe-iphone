@@ -132,7 +132,7 @@ static BOOL sessionKeyInitialized = NO;
 // Accessors
 // Read the version of the model from the file (no passphrase required)
 - (PWSfile::VERSION) version {
-    return PWSfile::ReadVersion([fileName UTF8String]);
+    return PWSfile::ReadVersion([self.fileName UTF8String]);
 }
 
 // Read the header from the model's file (passphrase required)
@@ -217,11 +217,11 @@ static BOOL sessionKeyInitialized = NO;
     // Initialize the instance by either creating a new file or opening an existing one
     if (self = [super init]) {
         entries           = [[NSMutableArray alloc] init];
-        fileName          = [theFileName retain];
+        self.fileName     = theFileName;
         self.friendlyName = theFriendlyName;
         self.passphrase   = thePassphrase;
         
-        BOOL exists = [[NSFileManager defaultManager] fileExistsAtPath:fileName];
+        BOOL exists = [[NSFileManager defaultManager] fileExistsAtPath:self.fileName];
         if (exists) {
             // The file exists, open it and read all of the entries
             if (![self openPWSfileForReading]) goto last_error;
@@ -257,7 +257,7 @@ last_error:
     self.passphrase    = nil;
     self.pwsFileHandle = NULL;
     self.friendlyName  = nil;
-    [fileName release];
+    self.fileName      = nil;
     [entries release];
     [super dealloc];
 }
@@ -336,7 +336,7 @@ last_error:
         v = PWSfile::VCURRENT;
     }
     
-    self.pwsFileHandle = PWSfile::MakePWSfile([fileName UTF8String], v, mode, status, NULL, NULL);
+    self.pwsFileHandle = PWSfile::MakePWSfile([self.fileName UTF8String], v, mode, status, NULL, NULL);
     if ((NULL == self.pwsFileHandle) || (PWSfile::SUCCESS != status)) {
         self.lastError = [self errorForStatus:status];
         return NO;

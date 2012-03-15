@@ -28,32 +28,40 @@
 
 #import <UIKit/UIKit.h>
 #import "iPWSDatabaseModel.h"
-#import "iPWSDropBoxAuthenticator.h"
-#import "iPWSDropBoxConflictResolver.h"
 #import "DropboxSDK/DropboxSDK.h"
 
-//------------------------------------------------------------------------------------
-// Class: iPWSDropBoxSynchronizer
-// Description:
-//  The DropBox synchronizer tracks a given database models and keeps it in sync with
-//  DropBox.  The synchronizer watches for when the model changes and typically silently merges with the
-//  same named file on DropBox.  This merge process could be transparent, or require manual intervention, depending
-//  on whether or not conflicts arise.
-@interface iPWSDropBoxSynchronizer : UIViewController 
-    <iPWSDropBoxAuthenticatorDelegate, iPWSDropBoxConflictResolverDelegate, DBRestClientDelegate> {
-    iPWSDatabaseModel   *model;
+@class iPWSDropBoxConflictResolver;
 
-    IBOutlet UILabel    *statusLabel;
-    BOOL                 viewShowing;
-    UIBarButtonItem     *cancelButton;
-    
-    DBRestClient        *dbClient;
+@protocol iPWSDropBoxConflictResolverDelegate <NSObject>
+- (void)dropBoxConflictResolver:(iPWSDropBoxConflictResolver *)resolver 
+      resolvedConflictIntoModel:(iPWSDatabaseModel *)model;
+
+- (void)dropBoxConflictResolverWasAbandoned:(iPWSDropBoxConflictResolver *)resolver
+                                     reason:(NSString *)reason;
+
+- (void)dropBoxConflictResolver:(iPWSDropBoxConflictResolver *)resolver
+           failedToReplaceModel:(iPWSDatabaseModel *)oldModel 
+                      withModel:(iPWSDatabaseModel *)newModel;
+@end
+
+//------------------------------------------------------------------------------------
+// Class: iPWSDropBoxConflictResolver
+// Description:
+//  The DropBox conflict resolver takes a given model that is synchronized with DropBox and 
+//  is known to have a version conflict.  It prompts the user for the three means to resolve
+//  the conflict: keep mine, keep theirs, or merge.
+@interface iPWSDropBoxConflictResolver : UIViewController <UIActionSheetDelegate, DBRestClientDelegate> {
+    id<iPWSDropBoxConflictResolverDelegate>  delegate;
+    iPWSDatabaseModel                       *model;
+    DBRestClient                            *dbClient;
+
+    IBOutlet UILabel                        *statusLabel;
+    UIBarButtonItem                         *cancelButton;
 }
 
 // Initialize the view with the model to synchronize with
 - (id)initWithModel:(iPWSDatabaseModel *)model;
 
-// Stopping the synchronization
-- (IBAction)cancelSynchronization;
+@property (assign) id<iPWSDropBoxConflictResolverDelegate> delegate;
 
 @end
