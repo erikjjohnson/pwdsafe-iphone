@@ -48,11 +48,20 @@ static NSString* MERGE_PROMPT_STR       = @"Merge the two safes";
 @interface iPWSDropBoxConflictResolver () 
 @property (retain) iPWSDatabaseModel *model;
 @property (retain) DBRestClient      *dbClient;
+@property (retain) NSString          *downloadedFile;
+@property (retain) NSString          *downloadedFileRev;
 
 - (iPWSDatabaseFactory *)databaseFactory;
 - (iPWSDropBoxPreferences *)dropBoxPreferences;
+- (NSString *)dropBoxPathForModel;
 
 - (void)displayResolutionChoices;
+- (void)restoreDropBoxToLocalVersion;
+- (void)downloadAndOpenDropBoxSafe;
+- (void)openDownloadedFile:(NSString *)fileName withPassphrase:(NSString *)passphrase;
+- (void)replaceLocalModelWithModel:(iPWSDatabaseModel *)newModel;
+- (void)mergeLocalModelWithModel:(iPWSDatabaseModel *)newModel;
+
 - (void)updateStatus:(NSString *)status;
 - (void)cancelButtonPressed;
 - (void)popView;
@@ -60,7 +69,6 @@ static NSString* MERGE_PROMPT_STR       = @"Merge the two safes";
 - (void)notifyResolutionWithModel:(iPWSDatabaseModel *)theModel;
 - (void)notifyFailureWithOldModel:(iPWSDatabaseModel *)oldModel newModel:(iPWSDatabaseModel *)newModel;
 - (void)notifyAbandonedWithReason:(NSString *)reason;
-- (NSString *)dropBoxPathForModel;
 @end
 
 //------------------------------------------------------------------------------------
@@ -70,6 +78,8 @@ static NSString* MERGE_PROMPT_STR       = @"Merge the two safes";
 @synthesize delegate;
 @synthesize model;
 @synthesize dbClient;
+@synthesize downloadedFile;
+@synthesize downloadedFileRev;
 
 // Canonical initializer
 - (id)initWithModel:(iPWSDatabaseModel *)theModel {
@@ -82,9 +92,11 @@ static NSString* MERGE_PROMPT_STR       = @"Merge the two safes";
 
 // Destructor
 - (void) dealloc {
-    self.model             = nil;
-    self.dbClient.delegate = nil;
-    self.dbClient          = nil;
+    self.model              = nil;
+    self.dbClient.delegate  = nil;
+    self.dbClient           = nil;
+    self.downloadedFile     = nil;
+    self.downloadedFileRev  = nil;
     [cancelButton release];
     [super dealloc];
 }
@@ -120,7 +132,7 @@ static NSString* MERGE_PROMPT_STR       = @"Merge the two safes";
     self.navigationController.toolbarHidden = YES;
     
     [self updateStatus:@"Determining strategy..."];
-    self.dbClient          = [[DBRestClient alloc] initWithSession:[DBSession sharedSession]];
+    self.dbClient          = [[[DBRestClient alloc] initWithSession:[DBSession sharedSession]] autorelease];
     self.dbClient.delegate = self;
     [self displayResolutionChoices];
 }
@@ -132,8 +144,8 @@ static NSString* MERGE_PROMPT_STR       = @"Merge the two safes";
                                               cancelButtonTitle:@"Don't use DropBox"
                                          destructiveButtonTitle:nil
                                               otherButtonTitles:USE_MINE_PROMPT_STR,
-                            USE_DROPBOX_PROMPT_STR,
-                            MERGE_PROMPT_STR, nil];
+                                                                USE_DROPBOX_PROMPT_STR,
+                                                                MERGE_PROMPT_STR, nil];
     [sheet showInView:self.view];
 }
 
@@ -145,23 +157,19 @@ static NSString* MERGE_PROMPT_STR       = @"Merge the two safes";
     
     NSString *buttonText = [actionSheet buttonTitleAtIndex:buttonIndex];
     if ([buttonText isEqualToString:USE_MINE_PROMPT_STR]) {
-        [self updateStatus:@"Restoring DropBox file from our copy..."];
-        [self.dbClient restoreFile:self.dropBoxPathForModel
-                             toRev:[[self dropBoxPreferences] dropBoxRevForModel:self.model]];
+        [self updateStatus:@"Creating backup of DropBox safe..."];
+        [self.dbClient copyFrom:self.dropBoxPathForModel toPath:[NSString stringWithFormat:@"%@.bak", 
+                                                                 self.dropBoxPathForModel]];
     }
     
     if ([buttonText isEqualToString:USE_DROPBOX_PROMPT_STR]) {
-        [self updateStatus:@"Getting DropBox file into temporary..."];
-        NSString *temporary = [self.databaseFactory createUniqueFilenameWithPrefix:
-                               [self.model.fileName lastPathComponent]];
-        [self.dbClient loadFile:self.dropBoxPathForModel 
-                       intoPath:[self.databaseFactory.documentsDirectory stringByAppendingPathComponent:temporary]];
+        afterDownload = @selector(replaceLocalModelWithModel:);
+        [self downloadAndOpenDropBoxSafe];
     }
 
     if ([buttonText isEqualToString:MERGE_PROMPT_STR]) {
-        NSLog(@"TODO: Merge");
-        [self notifyResolutionWithModel:model];
-        [self.navigationController popViewControllerAnimated:YES];
+        afterDownload = @selector(mergeLocalModelWithModel:);
+        [self downloadAndOpenDropBoxSafe];
     }
 }
 
@@ -171,18 +179,109 @@ static NSString* MERGE_PROMPT_STR       = @"Merge the two safes";
 
 - (void)cancelButtonPressed {
     [self popView];
+    [self notifyAbandonedWithReason:@"Synchronization canceled"];
 }
 
 - (void)popView {
+    if (self.downloadedFile) {
+        [[NSFileManager defaultManager] removeItemAtPath:self.downloadedFile error:NULL];
+    }
+    self.downloadedFile    = nil;
     self.dbClient.delegate = nil;
     self.dbClient          = nil;
-    [self.navigationController popViewControllerAnimated:YES];    
+    [self.navigationController popViewControllerAnimated:NO];    
 }
 
 //------------------------------------------------------------------------------------
 // Private interface
 
+// Both use theirs and merge require a download and then open of the safe
+- (void)downloadAndOpenDropBoxSafe { 
+    [self updateStatus:@"Getting DropBox file into temporary..."];
+    NSString *temporary = [self.databaseFactory createUniqueFilenameWithPrefix: 
+                           [self.model.fileName lastPathComponent]];
+    [self.dbClient loadFile:self.dropBoxPathForModel 
+                   intoPath:[self.databaseFactory.documentsDirectory stringByAppendingPathComponent:temporary]];
+
+}
+
+- (void)openDownloadedFile:(NSString *)fileName withPassphrase:(NSString *)passphrase {
+    [self updateStatus:@"Attempting to open the DropBox file..."];
+    
+    NSError *errorMsg;
+    iPWSDatabaseModel *newModel = [[[iPWSDatabaseModel alloc] initNamed:@"DropBox safe"
+                                                              fileNamed:fileName
+                                                             passphrase:passphrase
+                                                               errorMsg:&errorMsg] autorelease];
+    if (!newModel) {
+        // Anything wrong except passphrase is irrecoverable
+        if (errorMsg.code != PWSfile::WRONG_PASSWORD) {
+            [self notifyAbandonedWithReason:[NSString stringWithFormat:@"Unable to open DropBox safe: %@", 
+                                             [errorMsg localizedDescription]]];
+            [self popView];
+        } else {            
+            // The password changed, prompt for it until the user gives up
+            PasswordAlertView *v = [[PasswordAlertView alloc] initWithTitle:@"Password entry" 
+                                                                    message:@"DropBox safe" 
+                                                                   delegate:self 
+                                                          cancelButtonTitle:@"Cancel" 
+                                                            doneButtonTitle:@"OK"];
+            [v show];
+            [v release];
+        }
+        return;
+    }
+    
+    // The model opened, so do whatever is next
+    if ([self respondsToSelector:afterDownload]) {
+        [self performSelector:afterDownload withObject:newModel];
+    } else {
+        [self notifyAbandonedWithReason:@"Internal error in conflict resolver"];
+        [self popView];
+    }
+}
+
+- (void)alertView:(UIAlertView *)theAlertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    PasswordAlertView *alertView = (PasswordAlertView *)theAlertView;
+    if (buttonIndex == alertView.cancelButtonIndex) {
+        [self notifyAbandonedWithReason:@"DropBox safe password was not known"];
+        [self popView];
+    } else {
+        [self openDownloadedFile:self.downloadedFile withPassphrase:alertView.passwordTextField.text];
+    }
+}
+
+- (void)restClient:(DBRestClient *)client 
+        loadedFile:(NSString *)destPath 
+       contentType:(NSString *)contentType 
+          metadata:(DBMetadata *)metadata {
+    self.downloadedFile    = destPath;
+    self.downloadedFileRev = metadata.rev;
+    NSLog(@"Downloaded file rev: %@", self.downloadedFileRev);
+    [self openDownloadedFile:self.downloadedFile withPassphrase:self.model.passphrase];
+}
+
+- (void)restClient:(DBRestClient*)client loadFileFailedWithError:(NSError*)error {
+    [self notifyAbandonedWithReason:@"Failed to get the DropBox safe"];
+    [self popView];
+}
+
+
 // Replace mine with theirs
+- (void)restoreDropBoxToLocalVersion {
+    [self updateStatus:@"Restoring DropBox file from our copy..."];
+    [self.dbClient restoreFile:self.dropBoxPathForModel
+                         toRev:[[self dropBoxPreferences] dropBoxRevForModel:self.model]];
+}
+
+- (void)restClient:(DBRestClient *)client copiedPath:(NSString *)from_path toPath:(NSString *)to_path {
+    [self restoreDropBoxToLocalVersion];
+}
+
+- (void)restClient:(DBRestClient *)client copyPathFailedWithError:(NSError *)error {
+    [self restoreDropBoxToLocalVersion];
+}
+
 - (void)restClient:(DBRestClient *)client restoredFile:(DBMetadata *)fileMetadata {
     [self notifyResolutionWithModel:self.model];
     [self popView];
@@ -193,40 +292,45 @@ static NSString* MERGE_PROMPT_STR       = @"Merge the two safes";
     [self popView];
 }
 
-
 // Replace theirs with mine
-- (void)restClient:(DBRestClient *)client loadedFile:(NSString *)destPath contentType:(NSString *)contentType {
-    // Attempt to open the downloaded model with the same passphrase
+- (void)replaceLocalModelWithModel:(iPWSDatabaseModel *)newModel {
     NSError *errorMsg;
-    iPWSDatabaseModel *newModel = [[[iPWSDatabaseModel alloc] initNamed:self.model.friendlyName
-                                                             fileNamed:destPath
-                                                            passphrase:self.model.passphrase
-                                                              errorMsg:&errorMsg] autorelease];
-    if (!newModel) {
-        [self notifyAbandonedWithReason:[NSString stringWithFormat:@"Unable to open DropBox safe: %@", 
-                                         [errorMsg localizedDescription]]];
-        [self popView];
-        return;
-    }
-    
     if (![self.databaseFactory replaceExistingModel:self.model withUnmappedModel:newModel errorMsg:&errorMsg]) {
         [self notifyFailureWithOldModel:self.model newModel:newModel];
-        [self popView];
-        return;
+    } else {
+        [self notifyResolutionWithModel:newModel];
     }
-    
-    [self notifyResolutionWithModel:newModel];
     [self popView];
 }
 
-- (void)restClient:(DBRestClient*)client loadFileFailedWithError:(NSError*)error {
-    [self notifyAbandonedWithReason:@"Failed to get the DropBox safe"];
+// Merge the two models
+- (void)mergeLocalModelWithModel:(iPWSDatabaseModel *)newModel {
+    iPWSDatabaseModelMerger *merger = [[iPWSDatabaseModelMerger alloc] initWithPrimaryModel:self.model
+                                                                              secondaryModel:newModel];
+    merger.delegate = self;
+    [self.navigationController pushViewController:merger animated:YES];
+    [merger release];
+}
+
+- (void)modelMerger:(iPWSDatabaseModelMerger *)merger 
+ mergedPrimaryModel:(iPWSDatabaseModel *)primaryModel 
+     secondaryModel:(iPWSDatabaseModel *)secondaryModel
+          intoModel:(iPWSDatabaseModel *)mergedModel {
+    [[iPWSDropBoxPreferences sharedPreferences] setDropBoxRev:self.downloadedFileRev forModel:self.model];
+    [self replaceLocalModelWithModel:mergedModel];
+}
+
+- (void)modelMergerWasCancelled:(iPWSDatabaseModelMerger *)merger {
+    [self cancelButtonPressed];
+}
+
+- (void)modelMerger:(iPWSDatabaseModelMerger *)merger failedWithError:(NSError *)errorMsg {
+    [self notifyAbandonedWithReason:[errorMsg localizedDescription]];
     [self popView];
 }
 
 
-// TODO Merge
-
+// Delegate notifications
 - (void)notifyResolutionWithModel:(iPWSDatabaseModel *)theModel {
     if ([self.delegate respondsToSelector:@selector(dropBoxConflictResolver:resolvedConflictIntoModel:)]) {
         [self.delegate dropBoxConflictResolver:self resolvedConflictIntoModel:theModel];
@@ -240,8 +344,8 @@ static NSString* MERGE_PROMPT_STR       = @"Merge the two safes";
 }
 
 - (void)notifyAbandonedWithReason:(NSString *)reason {
-    if ([self.delegate respondsToSelector:@selector(dropBoxConflictResolverWasAbandoned:reason:)]) {
-        [self.delegate dropBoxConflictResolverWasAbandoned:self reason:reason];
+    if ([self.delegate respondsToSelector:@selector(dropBoxConflictResolver:failedWithReason:)]) {
+        [self.delegate dropBoxConflictResolver:self failedWithReason:reason];
     }
 }
 

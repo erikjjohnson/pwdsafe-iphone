@@ -36,6 +36,8 @@
 		A10F649912F3CBDF00FFC851 /* ActivityOverlayViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = A10F649812F3CBDF00FFC851 /* ActivityOverlayViewController.mm */; };
 		A119225B150D90EE00A8C520 /* iPWSDropBoxAuthenticator.mm in Sources */ = {isa = PBXBuildFile; fileRef = A119225A150D90ED00A8C520 /* iPWSDropBoxAuthenticator.mm */; };
 		A14CF8D71499171900D53605 /* PasswordAlertView.mm in Sources */ = {isa = PBXBuildFile; fileRef = A14CF8D61499171900D53605 /* PasswordAlertView.mm */; };
+		A150EF451512B671002EC340 /* iPWSDatabaseModelMerger.mm in Sources */ = {isa = PBXBuildFile; fileRef = A150EF441512B671002EC340 /* iPWSDatabaseModelMerger.mm */; };
+		A150EF471512B68E002EC340 /* iPWSDatabaseModelMerger.xib in Resources */ = {isa = PBXBuildFile; fileRef = A150EF461512B68E002EC340 /* iPWSDatabaseModelMerger.xib */; };
 		A16BF23A1507088F0035960A /* DismissAlertView.mm in Sources */ = {isa = PBXBuildFile; fileRef = A16BF2391507088F0035960A /* DismissAlertView.mm */; };
 		A17F221F150EC54900AB1495 /* iPWSDropBoxImportViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = A17F221E150EC54900AB1495 /* iPWSDropBoxImportViewController.mm */; };
 		A17F2221150EC55600AB1495 /* iPWSDropBoxImportViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = A17F2220150EC55600AB1495 /* iPWSDropBoxImportViewController.xib */; };
@@ -111,6 +113,9 @@
 		A119225A150D90ED00A8C520 /* iPWSDropBoxAuthenticator.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = iPWSDropBoxAuthenticator.mm; path = source/iPWSDropBoxAuthenticator.mm; sourceTree = "<group>"; };
 		A14CF8D51499170200D53605 /* PasswordAlertView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PasswordAlertView.h; path = include/PasswordAlertView.h; sourceTree = "<group>"; };
 		A14CF8D61499171900D53605 /* PasswordAlertView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = PasswordAlertView.mm; path = source/PasswordAlertView.mm; sourceTree = "<group>"; };
+		A150EF431512B64A002EC340 /* iPWSDatabaseModelMerger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = iPWSDatabaseModelMerger.h; path = include/iPWSDatabaseModelMerger.h; sourceTree = "<group>"; };
+		A150EF441512B671002EC340 /* iPWSDatabaseModelMerger.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = iPWSDatabaseModelMerger.mm; path = source/iPWSDatabaseModelMerger.mm; sourceTree = "<group>"; };
+		A150EF461512B68E002EC340 /* iPWSDatabaseModelMerger.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = iPWSDatabaseModelMerger.xib; path = resources/iPWSDatabaseModelMerger.xib; sourceTree = "<group>"; };
 		A16BF2381507087A0035960A /* DismissAlertView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DismissAlertView.h; path = include/DismissAlertView.h; sourceTree = "<group>"; };
 		A16BF2391507088F0035960A /* DismissAlertView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = DismissAlertView.mm; path = source/DismissAlertView.mm; sourceTree = "<group>"; };
 		A16BF23B15070DA50035960A /* iPWSMacros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = iPWSMacros.h; path = include/iPWSMacros.h; sourceTree = "<group>"; };
@@ -183,6 +188,7 @@
 				30933F581251316F00622BFA /* iPWSDatabaseAddViewController.xib */,
 				304BB0801252835C00702002 /* iPWSDatabaseImportViewController.xib */,
 				304BB1401252956300702002 /* iPWSDatabaseDetailViewController.xib */,
+				A150EF461512B68E002EC340 /* iPWSDatabaseModelMerger.xib */,
 				303CC30E125688DB005E4970 /* iPWSDatabaseModelViewController.xib */,
 				303CC357125696D0005E4970 /* iPWSDatabaseEntryViewController.xib */,
 				A1FD0B64151193E800FF0E8E /* iPWSDropBoxConflictResolverView.xib */,
@@ -212,6 +218,7 @@
 				A1CB19AB1509A5910006DD14 /* Models */,
 				A1CB19AA1509A58C0006DD14 /* Controllers */,
 				A1CB19A91509A5840006DD14 /* Views */,
+				A150EF441512B671002EC340 /* iPWSDatabaseModelMerger.mm */,
 				3013F25F124A752200C82647 /* iPasswordSafeAppDelegate.mm */,
 				3013F260124A752200C82647 /* main.mm */,
 			);
@@ -225,6 +232,7 @@
 				A1CB19A61509A53B0006DD14 /* Models */,
 				A1CB19A71509A5590006DD14 /* Controllers */,
 				A1CB19A81509A56E0006DD14 /* Views */,
+				A150EF431512B64A002EC340 /* iPWSDatabaseModelMerger.h */,
 				A16BF23B15070DA50035960A /* iPWSMacros.h */,
 				3013F266124A753400C82647 /* iPasswordSafeAppDelegate.h */,
 				3013F270124A76E100C82647 /* iPasswordSafe_Prefix.pch */,
@@ -417,6 +425,7 @@
 				A1851346150D20CC0081EE26 /* iPWSDropBoxSynchronizerView.xib in Resources */,
 				A17F2221150EC55600AB1495 /* iPWSDropBoxImportViewController.xib in Resources */,
 				A1FD0B65151193E800FF0E8E /* iPWSDropBoxConflictResolverView.xib in Resources */,
+				A150EF471512B68E002EC340 /* iPWSDatabaseModelMerger.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -446,6 +455,7 @@
 				A17F221F150EC54900AB1495 /* iPWSDropBoxImportViewController.mm in Sources */,
 				A1FD0B5E1511798800FF0E8E /* iPWSDropBoxPreferences.mm in Sources */,
 				A1FD0B611511939E00FF0E8E /* iPWSDropBoxConflictResolver.mm in Sources */,
+				A150EF451512B671002EC340 /* iPWSDatabaseModelMerger.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

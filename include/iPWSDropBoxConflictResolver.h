@@ -28,16 +28,20 @@
 
 #import <UIKit/UIKit.h>
 #import "iPWSDatabaseModel.h"
+#import "PasswordAlertView.h"
+#import "iPWSDatabaseModelMerger.h"
 #import "DropboxSDK/DropboxSDK.h"
 
 @class iPWSDropBoxConflictResolver;
 
+// The protocol used to indicate to the caller of the conflict resolver the results of
+// the resolution
 @protocol iPWSDropBoxConflictResolverDelegate <NSObject>
 - (void)dropBoxConflictResolver:(iPWSDropBoxConflictResolver *)resolver 
       resolvedConflictIntoModel:(iPWSDatabaseModel *)model;
 
-- (void)dropBoxConflictResolverWasAbandoned:(iPWSDropBoxConflictResolver *)resolver
-                                     reason:(NSString *)reason;
+- (void)dropBoxConflictResolver:(iPWSDropBoxConflictResolver *)resolver
+               failedWithReason:(NSString *)reason;
 
 - (void)dropBoxConflictResolver:(iPWSDropBoxConflictResolver *)resolver
            failedToReplaceModel:(iPWSDatabaseModel *)oldModel 
@@ -50,10 +54,14 @@
 //  The DropBox conflict resolver takes a given model that is synchronized with DropBox and 
 //  is known to have a version conflict.  It prompts the user for the three means to resolve
 //  the conflict: keep mine, keep theirs, or merge.
-@interface iPWSDropBoxConflictResolver : UIViewController <UIActionSheetDelegate, DBRestClientDelegate> {
+@interface iPWSDropBoxConflictResolver : UIViewController 
+    <UIActionSheetDelegate, DBRestClientDelegate, UIAlertViewDelegate, iPWSDatabaseModelMergerDelegate> {
     id<iPWSDropBoxConflictResolverDelegate>  delegate;
     iPWSDatabaseModel                       *model;
     DBRestClient                            *dbClient;
+    SEL                                      afterDownload;
+    NSString                                *downloadedFile;
+    NSString                                *downloadedFileRev;
 
     IBOutlet UILabel                        *statusLabel;
     UIBarButtonItem                         *cancelButton;

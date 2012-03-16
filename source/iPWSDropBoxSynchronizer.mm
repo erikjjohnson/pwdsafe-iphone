@@ -282,7 +282,7 @@
     [self closeAllSafes];
 }
 
-- (void)dropBoxConflictResolverWasAbandoned:(iPWSDropBoxConflictResolver *)resolver reason:(NSString *)reason {
+- (void)dropBoxConflictResolver:(iPWSDropBoxConflictResolver *)resolver failedWithReason:(NSString *)reason {
     ShowDismissAlertView(@"Failed to resolve the conflict", 
                          [NSString stringWithFormat:@"%@. DropBox sync will be disabled. Try it again if you like.", 
                           reason]);
