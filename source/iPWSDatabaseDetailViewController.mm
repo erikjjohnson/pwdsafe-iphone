@@ -97,6 +97,7 @@
 // Interface handlers
 - (void)viewDidLoad {
     [super viewDidLoad];
+    [(UIScrollView *)self.view setContentSize:CGSizeMake(320, 400)];
     self.navigationItem.rightBarButtonItem = self.editButton;
     self.navigationItem.leftBarButtonItem  = self.returnButton;
     
@@ -121,6 +122,12 @@
 
 - (void)viewDidAppear:(BOOL)animated {
     syncWithDropBoxSwitch.on = [[iPWSDropBoxPreferences sharedPreferences] isModelSynchronizedWithDropBox:model];   
+}
+
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
+	return ((interfaceOrientation == UIInterfaceOrientationPortrait) ||
+            (interfaceOrientation == UIInterfaceOrientationLandscapeLeft) ||
+            (interfaceOrientation == UIInterfaceOrientationLandscapeRight));
 }
 
 - (iPWSDatabaseFactory *)databaseFactory {

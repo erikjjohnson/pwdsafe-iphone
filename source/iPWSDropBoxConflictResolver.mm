@@ -50,6 +50,7 @@ static NSString* MERGE_PROMPT_STR       = @"Merge the two safes";
 @property (retain) DBRestClient      *dbClient;
 @property (retain) NSString          *downloadedFile;
 @property (retain) NSString          *downloadedFileRev;
+@property (assign, getter = isDoneShowingChoices) BOOL doneShowingChoices;             
 
 - (iPWSDatabaseFactory *)databaseFactory;
 - (iPWSDropBoxPreferences *)dropBoxPreferences;
@@ -80,12 +81,14 @@ static NSString* MERGE_PROMPT_STR       = @"Merge the two safes";
 @synthesize dbClient;
 @synthesize downloadedFile;
 @synthesize downloadedFileRev;
+@synthesize doneShowingChoices;
 
 // Canonical initializer
 - (id)initWithModel:(iPWSDatabaseModel *)theModel {
     if (self = [super initWithNibName:@"iPWSDropBoxConflictResolverView" bundle:nil]) {  
         self.navigationItem.title = @"DropBox Conflicts";
         self.model                = theModel;
+        self.doneShowingChoices   = NO;
     }
     return self;
 }
@@ -134,10 +137,11 @@ static NSString* MERGE_PROMPT_STR       = @"Merge the two safes";
     [self updateStatus:@"Determining strategy..."];
     self.dbClient          = [[[DBRestClient alloc] initWithSession:[DBSession sharedSession]] autorelease];
     self.dbClient.delegate = self;
-    [self displayResolutionChoices];
+    if (!self.isDoneShowingChoices) [self displayResolutionChoices];
 }
 
 - (void)displayResolutionChoices {
+    self.doneShowingChoices = YES;
     UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:@"A conflict was detected while synchonrizing with "
                                                                  "DropBox."
                                                        delegate:self
@@ -146,7 +150,8 @@ static NSString* MERGE_PROMPT_STR       = @"Merge the two safes";
                                               otherButtonTitles:USE_MINE_PROMPT_STR,
                                                                 USE_DROPBOX_PROMPT_STR,
                                                                 MERGE_PROMPT_STR, nil];
-    [sheet showInView:self.view];
+    [sheet showFromBarButtonItem:self.cancelButton animated:YES];
+    [sheet release];
 }
 
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
@@ -178,8 +183,8 @@ static NSString* MERGE_PROMPT_STR       = @"Merge the two safes";
 }
 
 - (void)cancelButtonPressed {
-    [self popView];
     [self notifyAbandonedWithReason:@"Synchronization canceled"];
+    [self popView];
 }
 
 - (void)popView {
@@ -329,7 +334,14 @@ static NSString* MERGE_PROMPT_STR       = @"Merge the two safes";
     [self popView];
 }
 
-
+- (id<iPWSDropBoxConflictResolverDelegate>)delegate {
+    return  delegate;
+}
+- (void)setDelegate:(id<iPWSDropBoxConflictResolverDelegate>)theDelegate {
+    if (delegate != theDelegate) {
+        delegate = theDelegate;
+    }
+}
 // Delegate notifications
 - (void)notifyResolutionWithModel:(iPWSDatabaseModel *)theModel {
     if ([self.delegate respondsToSelector:@selector(dropBoxConflictResolver:resolvedConflictIntoModel:)]) {

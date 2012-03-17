@@ -62,6 +62,7 @@
     SEL                                      afterDownload;
     NSString                                *downloadedFile;
     NSString                                *downloadedFileRev;
+    BOOL                                     doneShowingChoices;
 
     IBOutlet UILabel                        *statusLabel;
     UIBarButtonItem                         *cancelButton;
