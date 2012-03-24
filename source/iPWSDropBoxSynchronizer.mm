@@ -37,9 +37,9 @@
 //------------------------------------------------------------------------------------
 // Class: iPWSDropBoxSynchronizer
 // Description:
-//  The DropBox synchronizer tracks a given database models and keeps it in sync with
-//  DropBox.  The synchronizer watches for when the model changes and typically silently merges with the
-//  same named file on DropBox.  This merge process could be transparent, or require manual intervention, depending
+//  The Dropbox synchronizer tracks a given database models and keeps it in sync with
+//  Dropbox.  The synchronizer watches for when the model changes and typically silently merges with the
+//  same named file on Dropbox.  This merge process could be transparent, or require manual intervention, depending
 //  on whether or not conflicts arise.
 
 //------------------------------------------------------------------------------------
@@ -77,7 +77,7 @@
 - (id)initWithModel:(iPWSDatabaseModel *)theModel {
     if (self = [super initWithNibName:@"iPWSDropBoxSynchronizerView" bundle:nil]) {  
         self.viewShowing          = NO;
-        self.navigationItem.title = @"DropBox Sync";
+        self.navigationItem.title = @"Dropbox Sync";
         self.model                = theModel;
         [self listenForModelChanges];
     }
@@ -194,7 +194,7 @@
 
 - (void)modelChanged:(NSNotification *)notification {
     if (![self.model isEqual:notification.object]) {
-        NSLog(@"Internal error with DropBox synchronization.  Model mistmatch, expected %@, got %@",
+        NSLog(@"Internal error with Dropbox synchronization.  Model mistmatch, expected %@, got %@",
               self.model, notification.object);
         return;
     }
@@ -230,7 +230,7 @@
         return;
     }
     
-    [self updateStatus:@"Uploading file to DropBox..."];
+    [self updateStatus:@"Uploading file to Dropbox..."];
     self.dbClient = [[[DBRestClient alloc] initWithSession:[DBSession sharedSession]] autorelease];
     self.dbClient.delegate = self;
     [self.dbClient uploadFile:[self.model.fileName lastPathComponent]
@@ -284,7 +284,7 @@
 
 - (void)dropBoxConflictResolver:(iPWSDropBoxConflictResolver *)resolver failedWithReason:(NSString *)reason {
     ShowDismissAlertView(@"Failed to resolve the conflict", 
-                         [NSString stringWithFormat:@"%@. DropBox sync will be disabled. Try it again if you like.", 
+                         [NSString stringWithFormat:@"%@. Dropbox sync will be disabled. Try it again if you like.", 
                           reason]);
     [self cancelAndDisableSynchronization];
 }

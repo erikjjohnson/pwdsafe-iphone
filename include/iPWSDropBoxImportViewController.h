@@ -34,7 +34,7 @@
 // Class: iPWSDropBoxImportViewController
 // Description:
 //  Represents a view and controller for importing a PasswordSafe database from an 
-//  existing file in DropBox
+//  existing file in Dropbox
 @interface iPWSDropBoxImportViewController : UIViewController 
     <UIPickerViewDelegate, 
      UIPickerViewDataSource, 

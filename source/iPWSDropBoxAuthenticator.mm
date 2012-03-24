@@ -25,7 +25,7 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
 // OF SUCH DAMAGE.
 
-// DropBoxKeys.h is not open source, it contains the DropBox app key and secret
+// DropBoxKeys.h is not open source, it contains the Dropbox app key and secret
 // To create your own version of this file:
 // #define DROPBOX_APP_KEY_PLIST     YOUR_KEY
 // #define DROPBOX_APP_KEY         @"YOUR_KEY"
@@ -38,7 +38,7 @@
 //------------------------------------------------------------------------------------
 // Class: iPWSDropBoxAuthenticator
 // Description:
-//  The DropBox authenticator handles the process of displaying information to the user about
+//  The Dropbox authenticator handles the process of displaying information to the user about
 //  the process of authentication.
 
 //------------------------------------------------------------------------------------
@@ -75,7 +75,7 @@
 // Canonical initializer
 - (id)init {
     if (self = [super init]) {  
-        // Register with DropBox
+        // Register with Dropbox
         DBSession* dbSession = [[[DBSession alloc] initWithAppKey:DROPBOX_APP_KEY
                                                         appSecret:DROPBOX_APP_SECRET
                                                              root:kDBRootAppFolder] autorelease];
@@ -112,17 +112,16 @@
 - (void)promptForAuthorization {
     NSString *additionalInstructions = @"";
     if ([[NSUserDefaults standardUserDefaults] boolForKey:@"require_passphrase_on_resume"]) {
-        additionalInstructions = @" Your preferences specify locking all safes on application exit.  Thus"
-                                  " after DropBox authorizes this application, you will need to re-open this"
-                                  " safe or import dialog";
+        additionalInstructions = @" Your preferences specify locking all safes on application exit. "
+                                  " After Dropbox authorizes this application, you will return to this screen";
     }
-    NSString *message = @"You will be redirected to DropBox to authorize this application.";
+    NSString *message = @"You will be redirected to Dropbox to authorize this application.";
     [self authorizationAlertWithMessage:[NSString stringWithFormat:@"%@%@", message, additionalInstructions] 
-                   authorizeButtonTitle:@"Take me to DropBox"];
+                   authorizeButtonTitle:@"Take me to Dropbox"];
 }
 
 - (void)promptForReauthorization {
-    [self authorizationAlertWithMessage:@"DropBox authorization failed" 
+    [self authorizationAlertWithMessage:@"Dropbox authorization failed" 
                    authorizeButtonTitle:@"Try authorization again"];
 }
 
@@ -130,7 +129,7 @@
 - (void)authorizationAlertWithMessage:(NSString *)message authorizeButtonTitle:(NSString *)buttonTitle {
     UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:message
                                                        delegate:self
-                                              cancelButtonTitle:@"Don't use DropBox"
+                                              cancelButtonTitle:@"Don't use Dropbox"
                                          destructiveButtonTitle:nil
                                               otherButtonTitles:buttonTitle, nil];
     [sheet showInView:self.view];
@@ -148,8 +147,8 @@
 }
 
 //------------------------------------------------------------------------------------
-// DropBox callbacks
-// Invoked when DropBox is authorizing the application to have access
+// Dropbox callbacks
+// Invoked when Dropbox is authorizing the application to have access
 - (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url {
     if ([[DBSession sharedSession] handleOpenURL:url]) {
         if ([self isAuthenticated]) {

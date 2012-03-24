@@ -62,7 +62,7 @@
 // Class variables
 static NSString *CREATE_DATABASE_BUTTON_STR = @"Create new safe";
 static NSString *IMPORT_DATABASE_BUTTON_STR = @"Import existing safe";
-static NSString *IMPORT_DROPBOX_DATABASE_BUTTON_STR = @"Import safe from DropBox";
+static NSString *IMPORT_DROPBOX_DATABASE_BUTTON_STR = @"Import safe from Dropbox";
 
 // Each time we prompt for a passphrase, we have to save context regarding what the operation was that
 // required the passphrase.  To this end, the passphrasePromptContext dictionary contains the following keys
@@ -270,7 +270,7 @@ enum {
         [vc release];
     }
     
-    // Import a database from DropBox
+    // Import a database from Dropbox
     if ([buttonText isEqualToString:IMPORT_DROPBOX_DATABASE_BUTTON_STR]) {
         iPWSDropBoxImportViewController *vc = [[iPWSDropBoxImportViewController alloc]
                                                 initWithNibName:@"iPWSDropBoxImportViewController"

@@ -34,8 +34,8 @@
 // Class: iPWSDropBoxPreferences
 // Description:
 //  The iPWSDropBoxPreferences is maintain a mapping from filename of a model to
-//    1. Whether or not that file should be synchronized with DropBox
-//    2. The last known DropBox revision of that file
+//    1. Whether or not that file should be synchronized with Dropbox
+//    2. The last known Dropbox revision of that file
 //
 
 @interface iPWSDropBoxPreferences : NSObject {

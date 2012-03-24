@@ -67,7 +67,7 @@
 - (id)initWithNibName:(NSString *)nibNameOrNil 
                bundle:(NSBundle *)nibBundleOrNil {
     if ((self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil])) {
-        self.navigationItem.title = @"Import DropBox safe";
+        self.navigationItem.title = @"Import Dropbox safe";
         psafeFiles                = [[NSMutableArray array] retain];
         dropBoxRevisions          = [[NSMutableDictionary dictionary] retain];
     }
@@ -162,20 +162,20 @@
         [importFilePicker reloadAllComponents];
     } else {
         ShowDismissAlertView(@"No safes to import", 
-                             @"No unmapped safes were found. Files on DropBox in Apps/PasswordSafes-iPhone with the"
+                             @"No unmapped safes were found. Files on Dropbox in Apps/PasswordSafes-iPhone with the"
                               " same name as existing files will not be imported.  Instead, locally import the file"
-                              " and synchronize it with DropBox");
+                              " and synchronize it with Dropbox");
         [self popView];
     }
 }
 
 - (void)restClient:(DBRestClient*)client metadataUnchangedAtPath:(NSString*)path {
-    ShowDismissAlertView(@"DropBox unexpected failure", @"Go ahead and try again if you feel lucky.");
+    ShowDismissAlertView(@"Dropbox unexpected failure", @"Go ahead and try again if you feel lucky.");
     [self popView];
 }
 
 - (void)restClient:(DBRestClient*)client loadMetadataFailedWithError:(NSError*)error {
-    ShowDismissAlertView(@"DropBox file listing failed", @"Go ahead and try again if you feel lucky.");
+    ShowDismissAlertView(@"Dropbox file listing failed", @"Go ahead and try again if you feel lucky.");
     [self popView];
 }
 
@@ -203,7 +203,7 @@
 }
 
 - (void)restClient:(DBRestClient*)client loadFileFailedWithError:(NSError*)error {
-    ShowDismissAlertView(@"DropBox load file failed", @"Failed to copy the safe");
+    ShowDismissAlertView(@"Dropbox load file failed", @"Failed to copy the safe");
     [self stopSpinner];
 }
 

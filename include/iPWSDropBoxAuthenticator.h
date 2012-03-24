@@ -34,7 +34,7 @@
 //------------------------------------------------------------------------------------
 // Protocls: iPWSDropBoxAuthenticatorDelegate
 // Description:
-//  An entity wishing for DropBox authentication must implement this protocol to receive
+//  An entity wishing for Dropbox authentication must implement this protocol to receive
 //  the response of authentication
 @protocol iPWSDropBoxAuthenticatorDelegate <NSObject>
 - (void)dropBoxAuthenticatorSucceeded:(iPWSDropBoxAuthenticator *)authenticator;
@@ -44,7 +44,7 @@
 //------------------------------------------------------------------------------------
 // Class: iPWSDropBoxAuthenticator
 // Description:
-//  The DropBox authenticator handles the process of displaying information to the user about
+//  The Dropbox authenticator handles the process of displaying information to the user about
 //  the process of authentication.
 @interface iPWSDropBoxAuthenticator : NSObject <DBSessionDelegate, UIActionSheetDelegate> {
     id<iPWSDropBoxAuthenticatorDelegate>  delegate;

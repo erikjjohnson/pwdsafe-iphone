@@ -32,8 +32,8 @@
 // Class: iPWSDropBoxPreferences
 // Description:
 //  The iPWSDropBoxPreferences is maintain a mapping from filename of a model to
-//    1. Whether or not that file should be synchronized with DropBox
-//    2. The last known DropBox revision of that file
+//    1. Whether or not that file should be synchronized with Dropbox
+//    2. The last known Dropbox revision of that file
 //
 //
 
@@ -73,11 +73,11 @@ static NSString *kiPWSDropBoxRevUserDefaults = @"kiPWSDropBoxRevUserDefaults";
 // Canonical initializer
 - (id)init {
     if (self = [super init]) {        
-        // Load the DropBox synchronization information into a mutable array
+        // Load the Dropbox synchronization information into a mutable array
         NSArray *syncs = [[NSUserDefaults standardUserDefaults] arrayForKey:kiPWSDropBoxUserDefaults];
         synchronizedFiles = [[NSMutableArray arrayWithArray:syncs] retain];
         
-        // Load the DropBox revisions information into a mutable dictionary
+        // Load the Dropbox revisions information into a mutable dictionary
         NSDictionary *revs = [[NSUserDefaults standardUserDefaults] dictionaryForKey:kiPWSDropBoxRevUserDefaults];
         dropBoxRevisions = [[NSMutableDictionary dictionaryWithDictionary:revs] retain];
 
@@ -163,7 +163,6 @@ static NSString *kiPWSDropBoxRevUserDefaults = @"kiPWSDropBoxRevUserDefaults";
     if (![self isFileSynchronizedWithDropBox:fileName]) return NO;
     if (![[self databaseFactory] doesFileNameExist:fileName]) return NO;
     if (!rev) return NO;
-    NSLog(@"DropBox rev: %@ for file %@", rev, fileName);
     [dropBoxRevisions setObject:rev forKey:fileName];
     [self synchronizeUserDefaults];
     return YES;

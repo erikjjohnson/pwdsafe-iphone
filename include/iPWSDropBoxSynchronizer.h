@@ -35,9 +35,9 @@
 //------------------------------------------------------------------------------------
 // Class: iPWSDropBoxSynchronizer
 // Description:
-//  The DropBox synchronizer tracks a given database models and keeps it in sync with
-//  DropBox.  The synchronizer watches for when the model changes and typically silently merges with the
-//  same named file on DropBox.  This merge process could be transparent, or require manual intervention, depending
+//  The Dropbox synchronizer tracks a given database models and keeps it in sync with
+//  Dropbox.  The synchronizer watches for when the model changes and typically silently merges with the
+//  same named file on Dropbox.  This merge process could be transparent, or require manual intervention, depending
 //  on whether or not conflicts arise.
 @interface iPWSDropBoxSynchronizer : UIViewController 
     <iPWSDropBoxAuthenticatorDelegate, iPWSDropBoxConflictResolverDelegate, DBRestClientDelegate> {

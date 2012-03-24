@@ -36,7 +36,7 @@
 // Description:
 //  The iPWSDatabaseFactory is represents the list of known PasswordSafe databases.
 //  Each database is represented by a friendly name, which maps to a database
-//  model, a file path, and DropBox synchronization preference.  The mapping from friendlyName to file name 
+//  model, a file path, and Dropbox synchronization preference.  The mapping from friendlyName to file name 
 //  are maintained in the application's
 //  preferences.  The mapping from friendlyName to database instance is only maintained in memory. Hence, it
 //  is possible that a friendlyName exists, but the call to obtain the database for that friendly name

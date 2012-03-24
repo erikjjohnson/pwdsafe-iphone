@@ -51,7 +51,7 @@
 //------------------------------------------------------------------------------------
 // Class: iPWSDropBoxConflictResolver
 // Description:
-//  The DropBox conflict resolver takes a given model that is synchronized with DropBox and 
+//  The Dropbox conflict resolver takes a given model that is synchronized with Dropbox and 
 //  is known to have a version conflict.  It prompts the user for the three means to resolve
 //  the conflict: keep mine, keep theirs, or merge.
 @interface iPWSDropBoxConflictResolver : UIViewController 

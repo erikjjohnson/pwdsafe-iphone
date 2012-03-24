@@ -74,12 +74,12 @@
     [window addSubview:navigationController.view];
     [window makeKeyAndVisible];
     
-    // Make sure the DropBox authenticator is alive
+    // Make sure the Dropbox authenticator is alive
     [iPWSDropBoxAuthenticator sharedDropBoxAuthenticator];
     return YES;
 }
 
-// Invoked when DropBox is authorizing the application to have access
+// Invoked when Dropbox is authorizing the application to have access
 - (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url {
     if ([[iPWSDropBoxAuthenticator sharedDropBoxAuthenticator] application:application handleOpenURL:url]) return YES;
     return NO;

@@ -151,7 +151,7 @@
 }
 
 //------------------------------------------------------------------------------------
-// DropBox handling
+// Dropbox handling
 - (void)startDropBoxSynchronizer {
     if (!dropBoxSynchronizer) {
         dropBoxSynchronizer = [[iPWSDropBoxSynchronizer alloc] initWithModel:model];
