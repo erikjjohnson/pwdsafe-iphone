@@ -41,6 +41,7 @@
     NSMutableArray				  *sectionData;
     NSMutableArray				  *searchResults;
     UIBarButtonItem				  *addButton;
+    UIBarButtonItem               *synchronizeButton;
     UIBarButtonItem               *searchDoneButton;
     UIBarButtonItem               *detailsButton;
 	ActivityOverlayViewController *searchOverlayController;

@@ -54,10 +54,12 @@
 - (ActivityOverlayViewController *)searchOverlayController;
 
 - (UIBarButtonItem *)addButton;
+- (UIBarButtonItem *)synchronizeButton;
 - (UIBarButtonItem *)searchDoneButton;
 - (UIBarButtonItem *)detailsButton;
 
 - (void)addButtonPressed;
+- (void)synchronizeButtonPressed;
 - (void)searchDoneButtonPressed;
 - (void)detailsButtonPressed;
 - (void)updateEditButton;
@@ -95,6 +97,7 @@
         iPasswordSafeAppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
         self.toolbarItems = [NSArray arrayWithObjects: self.addButton, 
                                                        appDelegate.flexibleSpaceButton,
+                                                       self.synchronizeButton,
                                                        appDelegate.lockAllDatabasesButton, 
                                                        self.detailsButton,
                                                        nil];
@@ -111,6 +114,7 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [self stopDropBoxSyncrhonizer];
     [addButton release];
+    [synchronizeButton release];
     [searchDoneButton release];
     [model release];
     [sectionData release];
@@ -139,6 +143,7 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     self.navigationController.toolbarHidden = NO;  
+    self.synchronizeButton.enabled = [[iPWSDropBoxPreferences sharedPreferences] isModelSynchronizedWithDropBox:model];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -155,7 +160,6 @@
 - (void)startDropBoxSynchronizer {
     if (!dropBoxSynchronizer) {
         dropBoxSynchronizer = [[iPWSDropBoxSynchronizer alloc] initWithModel:model];
-        [self.navigationController pushViewController:dropBoxSynchronizer animated:YES];
     }
 }
 
@@ -165,6 +169,11 @@
         [dropBoxSynchronizer release];
         dropBoxSynchronizer = nil;
     }
+}
+
+- (void)synchronizeButtonPressed {
+    [self startDropBoxSynchronizer];
+    [self.navigationController pushViewController:dropBoxSynchronizer animated:YES];    
 }
 
 //------------------------------------------------------------------------------------
@@ -177,6 +186,16 @@
                                                                   action:@selector(addButtonPressed)];        
     }
     return addButton;
+}
+
+- (UIBarButtonItem *)synchronizeButton {
+    // Lazy initialize an synchronize button
+    if (!synchronizeButton) {
+        synchronizeButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction
+                                                                          target:self
+                                                                          action:@selector(synchronizeButtonPressed)];        
+    }
+    return synchronizeButton;
 }
 
 - (UIBarButtonItem *)searchDoneButton {
