@@ -97,7 +97,7 @@
 // A cancel button to stop synchronization
 - (UIBarButtonItem *)cancelButton {
     if (!cancelButton) {
-        cancelButton = [[UIBarButtonItem alloc] initWithTitle:@"Cancel & Disable"
+        cancelButton = [[UIBarButtonItem alloc] initWithTitle:@"Cancel"
                                                         style:UIBarButtonItemStylePlain
                                                        target:self
                                                        action:@selector(cancelAndDisableSynchronization)];
