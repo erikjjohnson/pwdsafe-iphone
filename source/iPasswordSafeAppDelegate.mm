@@ -45,6 +45,15 @@
 //  of the databases.  Locking databases consists of deleting the model from memory.
 //  This locking occurs when the application enters the background state if the system preference
 //  says to.
+
+// Extend the UINavigationController to return rotation settings for iOS6
+@interface UINavigationController (iPasswordSafe)
+@end
+@implementation UINavigationController (iPasswordSafe)
+-(BOOL)shouldAutorotate { return YES; }
+-(NSUInteger)supportedInterfaceOrientations { return UIInterfaceOrientationMaskAll; }
+@end
+
 @implementation iPasswordSafeAppDelegate
 
 @synthesize window;
@@ -71,7 +80,9 @@
     [[NSUserDefaults standardUserDefaults] registerDefaults:defaults];
     
     // Add the navigation controller's view to the window and display.
-    [window addSubview:navigationController.view];
+    [window setRootViewController:navigationController];
+    //self.window.rootViewController = self.navigationController;
+    //[window addSubview:navigationController.view];
     [window makeKeyAndVisible];
     
     // Make sure the Dropbox authenticator is alive

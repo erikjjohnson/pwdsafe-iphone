@@ -301,7 +301,7 @@
     NSString *destFilename     = [[iPWSDatabaseFactory sharedDatabaseFactory].documentsDirectory 
                                   stringByAppendingPathComponent:selectedFilename];
     NSLog(@"Loading %@ into %@", self.loadingFilename, destFilename);
-    [self.dbClient loadFile:[NSString stringWithFormat:self.loadingFilename] intoPath:destFilename];
+    [self.dbClient loadFile:self.loadingFilename intoPath:destFilename];
 }
 
 @end

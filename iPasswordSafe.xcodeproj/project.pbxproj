@@ -27,6 +27,8 @@
 		304BB13D1252953500702002 /* iPWSDatabaseDetailViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 304BB13B1252953500702002 /* iPWSDatabaseDetailViewController.mm */; };
 		304BB1411252956300702002 /* iPWSDatabaseDetailViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 304BB1401252956300702002 /* iPWSDatabaseDetailViewController.xib */; };
 		30503845125B848200C55192 /* libPasswordSafe.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3013F2C2124A921400C82647 /* libPasswordSafe.a */; };
+		306D81C616152B7D0084D991 /* MainWindow-iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = 306D81C516152B7D0084D991 /* MainWindow-iPad.xib */; };
+		306D81C816152C200084D991 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 306D81C716152C200084D991 /* Default-568h@2x.png */; };
 		30933E7C124C0A8800622BFA /* iPWSDatabaseEntryModel.mm in Sources */ = {isa = PBXBuildFile; fileRef = 30933E7B124C0A8800622BFA /* iPWSDatabaseEntryModel.mm */; };
 		30933F551251314000622BFA /* iPWSDatabaseAddViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 30933F531251314000622BFA /* iPWSDatabaseAddViewController.mm */; };
 		30933F591251316F00622BFA /* iPWSDatabaseAddViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 30933F581251316F00622BFA /* iPWSDatabaseAddViewController.xib */; };
@@ -99,6 +101,8 @@
 		304BB13B1252953500702002 /* iPWSDatabaseDetailViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = iPWSDatabaseDetailViewController.mm; path = source/iPWSDatabaseDetailViewController.mm; sourceTree = "<group>"; };
 		304BB13F1252955A00702002 /* iPWSDatabaseDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = iPWSDatabaseDetailViewController.h; path = include/iPWSDatabaseDetailViewController.h; sourceTree = "<group>"; };
 		304BB1401252956300702002 /* iPWSDatabaseDetailViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = iPWSDatabaseDetailViewController.xib; path = resources/iPWSDatabaseDetailViewController.xib; sourceTree = "<group>"; };
+		306D81C516152B7D0084D991 /* MainWindow-iPad.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = "MainWindow-iPad.xib"; path = "resources/iPad/MainWindow-iPad.xib"; sourceTree = "<group>"; };
+		306D81C716152C200084D991 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		30933E7B124C0A8800622BFA /* iPWSDatabaseEntryModel.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = iPWSDatabaseEntryModel.mm; path = source/iPWSDatabaseEntryModel.mm; sourceTree = "<group>"; };
 		30933E7D124C0AA500622BFA /* iPWSDatabaseEntryModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = iPWSDatabaseEntryModel.h; path = include/iPWSDatabaseEntryModel.h; sourceTree = "<group>"; };
 		30933F531251314000622BFA /* iPWSDatabaseAddViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = iPWSDatabaseAddViewController.mm; path = source/iPWSDatabaseAddViewController.mm; sourceTree = "<group>"; };
@@ -165,6 +169,7 @@
 		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
 			isa = PBXGroup;
 			children = (
+				306D81C716152C200084D991 /* Default-568h@2x.png */,
 				A1CB19A41509A2B60006DD14 /* Security.framework */,
 				3013F2BA124A921400C82647 /* PasswordSafe.xcodeproj */,
 				3013F25B124A750500C82647 /* Headers */,
@@ -180,6 +185,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				306D81C416152B780084D991 /* iPad */,
 				30E1070D1279F32E00649034 /* diceicon.png */,
 				30DF134B1278C801005929AD /* lockbarbutton.png */,
 				A1C6BD3412626D7700F192B9 /* lockicon.png */,
@@ -246,6 +252,14 @@
 				3013F2C2124A921400C82647 /* libPasswordSafe.a */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		306D81C416152B780084D991 /* iPad */ = {
+			isa = PBXGroup;
+			children = (
+				306D81C516152B7D0084D991 /* MainWindow-iPad.xib */,
+			);
+			name = iPad;
 			sourceTree = "<group>";
 		};
 		A1CB19A61509A53B0006DD14 /* Models */ = {
@@ -426,6 +440,8 @@
 				A17F2221150EC55600AB1495 /* iPWSDropBoxImportViewController.xib in Resources */,
 				A1FD0B65151193E800FF0E8E /* iPWSDropBoxConflictResolverView.xib in Resources */,
 				A150EF471512B68E002EC340 /* iPWSDatabaseModelMerger.xib in Resources */,
+				306D81C616152B7D0084D991 /* MainWindow-iPad.xib in Resources */,
+				306D81C816152C200084D991 /* Default-568h@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -486,12 +502,13 @@
 				INFOPLIST_FILE = "iPasswordSafe-Info.plist";
 				INFOPLIST_PREFIX_HEADER = include/DropBoxKeys.h;
 				INFOPLIST_PREPROCESS = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/thirdpartysource/PasswordSafe/build/Debug-iphonesimulator\"",
 				);
 				PRODUCT_NAME = PasswordSafes;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
@@ -509,12 +526,13 @@
 				INFOPLIST_FILE = "iPasswordSafe-Info.plist";
 				INFOPLIST_PREFIX_HEADER = include/DropBoxKeys.h;
 				INFOPLIST_PREPROCESS = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/thirdpartysource/PasswordSafe/build/Debug-iphonesimulator\"",
 				);
 				PRODUCT_NAME = PasswordSafes;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -552,13 +570,14 @@
 				INFOPLIST_FILE = "iPasswordSafe-Info.plist";
 				INFOPLIST_PREFIX_HEADER = include/DropBoxKeys.h;
 				INFOPLIST_PREPROCESS = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/thirdpartysource/PasswordSafe/build/Debug-iphonesimulator\"",
 				);
 				PRODUCT_NAME = PasswordSafes;
 				PROVISIONING_PROFILE = "BCCCB5EA-6F8F-494E-A774-C3CE554CCF74";
+				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Distribution;

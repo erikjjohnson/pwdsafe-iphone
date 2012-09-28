@@ -129,6 +129,8 @@
             (interfaceOrientation == UIInterfaceOrientationLandscapeLeft) ||
             (interfaceOrientation == UIInterfaceOrientationLandscapeRight));
 }
+-(BOOL)shouldAutorotate { return YES; }
+-(NSUInteger)supportedInterfaceOrientations { return UIInterfaceOrientationMaskAll; }
 
 - (iPWSDatabaseFactory *)databaseFactory {
     return [iPWSDatabaseFactory sharedDatabaseFactory];

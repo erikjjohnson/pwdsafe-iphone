@@ -336,7 +336,8 @@ static NSString *PWSDatabaseFactoryMissingSafesMessage =
 - (BOOL)removeDatabaseNamed:(NSString *)friendlyName errorMsg:(NSError **)errorMsg {
     // Sanity checks
     if (![self doesFriendlyNameExist:friendlyName]) {
-        SET_ERROR(errorMsg, ([self errorWithStr:[NSString stringWithFormat:@"Database \"%@\" does not exist"]]));
+        SET_ERROR(errorMsg, ([self errorWithStr:
+                              [NSString stringWithFormat:@"Database \"%@\" does not exist", friendlyName]]));
         return NO;
     }
 
@@ -360,7 +361,8 @@ static NSString *PWSDatabaseFactoryMissingSafesMessage =
                       errorMsg:(NSError **)errorMsg {
     // Sanity checks
     if ([self doesFriendlyNameExist:newFriendlyName]) {
-        SET_ERROR(errorMsg, ([self errorWithStr:[NSString stringWithFormat:@"Database \"%@\" already exists"]]));
+        SET_ERROR(errorMsg, ([self errorWithStr:
+                              [NSString stringWithFormat:@"Database \"%@\" already exists", newFriendlyName]]));
         return NO;
     }
     

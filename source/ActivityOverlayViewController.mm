@@ -56,6 +56,8 @@
             (interfaceOrientation == UIInterfaceOrientationLandscapeLeft) ||
             (interfaceOrientation == UIInterfaceOrientationLandscapeRight));
 }
+-(BOOL)shouldAutorotate { return YES; }
+-(NSUInteger)supportedInterfaceOrientations { return UIInterfaceOrientationMaskAll; }
 
 - (void)showActivityIndicator {
     activityIndicatorView.hidden = NO;
