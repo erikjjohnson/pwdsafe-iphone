@@ -58,6 +58,7 @@
 
 @synthesize window;
 @synthesize navigationController;
+@synthesize splitViewController;
 
 #pragma mark -
 #pragma mark Application lifecycle
@@ -79,10 +80,13 @@
                               nil];
     [[NSUserDefaults standardUserDefaults] registerDefaults:defaults];
     
-    // Add the navigation controller's view to the window and display.
-    [window setRootViewController:navigationController];
-    //self.window.rootViewController = self.navigationController;
-    //[window addSubview:navigationController.view];
+    // Add the root view controller into the window
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+        [window setRootViewController:splitViewController];
+    } else {
+        [window setRootViewController:navigationController];
+        //[window addSubview:navigationController.view];
+    }
     [window makeKeyAndVisible];
     
     // Make sure the Dropbox authenticator is alive

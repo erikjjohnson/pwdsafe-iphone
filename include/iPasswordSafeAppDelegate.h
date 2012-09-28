@@ -42,12 +42,14 @@
 @interface iPasswordSafeAppDelegate : NSObject <UIApplicationDelegate> {
     UIWindow               *window;
     UINavigationController *navigationController;
+    UISplitViewController  *splitViewController;
     UIBarButtonItem        *lockAllDatabasesButton;
     UIBarButtonItem        *flexibleSpaceButton;
 }
 
 @property (nonatomic, retain) IBOutlet UIWindow               *window;
 @property (nonatomic, retain) IBOutlet UINavigationController *navigationController;
+@property (nonatomic, retain) IBOutlet UISplitViewController  *splitViewController;
 @property (readonly)                   UIBarButtonItem        *lockAllDatabasesButton;
 @property (readonly)                   UIBarButtonItem        *flexibleSpaceButton;
 
