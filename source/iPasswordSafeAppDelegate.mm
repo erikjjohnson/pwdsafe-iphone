@@ -81,12 +81,13 @@
     [[NSUserDefaults standardUserDefaults] registerDefaults:defaults];
     
     // Add the root view controller into the window
-    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
-        [window setRootViewController:splitViewController];
-    } else {
+    // iPad isn't ready yet
+    //if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+    //    [window setRootViewController:splitViewController];
+    //} else {
         [window setRootViewController:navigationController];
         //[window addSubview:navigationController.view];
-    }
+    //}
     [window makeKeyAndVisible];
     
     // Make sure the Dropbox authenticator is alive

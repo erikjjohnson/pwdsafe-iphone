@@ -25,8 +25,10 @@ Create a new application and get the access keys.
 
 Add a new file: include/DropBoxKeys.h
 
-  #define DROPBOX_APP_KEY_PLIST     yourappkeyunquoted
-  #define DROPBOX_APP_KEY         @"yourappkeyasnsstring"
-  #define DROPBOX_APP_SECRET      @"yourappsecretasnsstring"
+```C
+#define DROPBOX_APP_KEY_PLIST     yourappkeyunquoted
+#define DROPBOX_APP_KEY         @"yourappkeyasnsstring"
+#define DROPBOX_APP_SECRET      @"yourappsecretasnsstring"
+```
 
 
