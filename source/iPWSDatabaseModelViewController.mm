@@ -98,8 +98,8 @@
         self.toolbarItems = [NSArray arrayWithObjects: self.addButton, 
                                                        appDelegate.flexibleSpaceButton,
                                                        self.synchronizeButton,
-                                                       appDelegate.lockAllDatabasesButton, 
                                                        self.detailsButton,
+                                                       appDelegate.lockAllDatabasesButton,
                                                        nil];
         // Initialize the search results
         searchResults = [[NSMutableArray alloc] init];
@@ -191,7 +191,7 @@
 - (UIBarButtonItem *)synchronizeButton {
     // Lazy initialize an synchronize button
     if (!synchronizeButton) {
-        synchronizeButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction
+        synchronizeButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh
                                                                           target:self
                                                                           action:@selector(synchronizeButtonPressed)];        
     }
@@ -211,7 +211,7 @@
 - (UIBarButtonItem *)detailsButton {
     // Lazy initialize a page curl button
     if (!detailsButton) {
-        detailsButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemPageCurl
+        detailsButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction
                                                                       target:self
                                                                       action:@selector(detailsButtonPressed)];
     }
@@ -472,8 +472,8 @@
                                             model:model];
     [UIView beginAnimations:nil context:NULL];
     [UIView setAnimationDuration: 1];
-    [UIView setAnimationTransition:UIViewAnimationTransitionFlipFromRight 
-                           forView:self.navigationController.view 
+    [UIView setAnimationTransition:UIViewAnimationTransitionFlipFromRight
+                           forView:self.navigationController.view
                              cache:YES];
     [self.navigationController pushViewController:vc animated:NO];
     [UIView commitAnimations];

@@ -99,8 +99,8 @@ NSString* iPWSDatabaseEntryViewControllerEntryUserInfoKey =
          
         // Add the toolbar
         iPasswordSafeAppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
-        self.toolbarItems = [NSArray arrayWithObjects: self.copyAndLaunchButton,
-                                                       appDelegate.flexibleSpaceButton,
+        self.toolbarItems = [NSArray arrayWithObjects: appDelegate.flexibleSpaceButton,
+                                                       self.copyAndLaunchButton,
                                                        appDelegate.lockAllDatabasesButton, 
                                                        nil];
     }

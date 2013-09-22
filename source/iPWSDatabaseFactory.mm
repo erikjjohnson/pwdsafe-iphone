@@ -80,8 +80,8 @@ NSString* iPWSDatabaseFactoryNewModelNameUserInfoKey  = @"iPWSDatabaseFactoryNew
 
 // The keys placed in the UserDefaults
 static NSString *kiPWSDatabaseFactoryUserDefaults    = @"kiPWSDatabaseFactoryUserDefaults";
-static NSString *kiPWSDatabaseDropBoxUserDefaults    = @"kiPWSDatabaseDropBoxUserDefaults";
-static NSString *kiPWSDatabaseDropBoxRevUserDefaults = @"kiPWSDatabaseDropBoxRevUserDefaults";
+//static NSString *kiPWSDatabaseDropBoxUserDefaults    = @"kiPWSDatabaseDropBoxUserDefaults";
+//static NSString *kiPWSDatabaseDropBoxRevUserDefaults = @"kiPWSDatabaseDropBoxRevUserDefaults";
 
 static NSString *PWSDatabaseFactoryMissingSafesMessage = 
 @"The location of the safes is missing.  Try backing up safes with iTunes file sharing then reinstall the application.";
