@@ -27,6 +27,7 @@
 		304BB0811252835C00702002 /* iPWSDatabaseImportViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 304BB0801252835C00702002 /* iPWSDatabaseImportViewController.xib */; };
 		304BB13D1252953500702002 /* iPWSDatabaseDetailViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 304BB13B1252953500702002 /* iPWSDatabaseDetailViewController.mm */; };
 		304BB1411252956300702002 /* iPWSDatabaseDetailViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 304BB1401252956300702002 /* iPWSDatabaseDetailViewController.xib */; };
+		305DD87817EE970B0080A436 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 305DD87717EE970B0080A436 /* Images.xcassets */; };
 		306D81C616152B7D0084D991 /* MainWindow-iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = 306D81C516152B7D0084D991 /* MainWindow-iPad.xib */; };
 		306D81C816152C200084D991 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 306D81C716152C200084D991 /* Default-568h@2x.png */; };
 		30933E7C124C0A8800622BFA /* iPWSDatabaseEntryModel.mm in Sources */ = {isa = PBXBuildFile; fileRef = 30933E7B124C0A8800622BFA /* iPWSDatabaseEntryModel.mm */; };
@@ -45,7 +46,6 @@
 		A17F2221150EC55600AB1495 /* iPWSDropBoxImportViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = A17F2220150EC55600AB1495 /* iPWSDropBoxImportViewController.xib */; };
 		A1851335150C35970081EE26 /* iPWSDropBoxSynchronizer.mm in Sources */ = {isa = PBXBuildFile; fileRef = A1851334150C35970081EE26 /* iPWSDropBoxSynchronizer.mm */; };
 		A1851346150D20CC0081EE26 /* iPWSDropBoxSynchronizerView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A1851345150D20CC0081EE26 /* iPWSDropBoxSynchronizerView.xib */; };
-		A1C6BD3512626D7700F192B9 /* lockicon.png in Resources */ = {isa = PBXBuildFile; fileRef = A1C6BD3412626D7700F192B9 /* lockicon.png */; };
 		A1CB19A31509A2880006DD14 /* DropboxSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A1CB19A21509A2880006DD14 /* DropboxSDK.framework */; };
 		A1CB19A51509A2B60006DD14 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A1CB19A41509A2B60006DD14 /* Security.framework */; };
 		A1FD0B5E1511798800FF0E8E /* iPWSDropBoxPreferences.mm in Sources */ = {isa = PBXBuildFile; fileRef = A1FD0B5D1511798800FF0E8E /* iPWSDropBoxPreferences.mm */; };
@@ -101,6 +101,7 @@
 		304BB13B1252953500702002 /* iPWSDatabaseDetailViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = iPWSDatabaseDetailViewController.mm; path = source/iPWSDatabaseDetailViewController.mm; sourceTree = "<group>"; };
 		304BB13F1252955A00702002 /* iPWSDatabaseDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = iPWSDatabaseDetailViewController.h; path = include/iPWSDatabaseDetailViewController.h; sourceTree = "<group>"; };
 		304BB1401252956300702002 /* iPWSDatabaseDetailViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = iPWSDatabaseDetailViewController.xib; path = resources/iPWSDatabaseDetailViewController.xib; sourceTree = "<group>"; };
+		305DD87717EE970B0080A436 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = iPasswordSafe/Images.xcassets; sourceTree = "<group>"; };
 		306D81C516152B7D0084D991 /* MainWindow-iPad.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = "MainWindow-iPad.xib"; path = "resources/iPad/MainWindow-iPad.xib"; sourceTree = "<group>"; };
 		306D81C716152C200084D991 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		30933E7B124C0A8800622BFA /* iPWSDatabaseEntryModel.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = iPWSDatabaseEntryModel.mm; path = source/iPWSDatabaseEntryModel.mm; sourceTree = "<group>"; };
@@ -129,7 +130,6 @@
 		A1851333150C358B0081EE26 /* iPWSDropBoxSynchronizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = iPWSDropBoxSynchronizer.h; path = include/iPWSDropBoxSynchronizer.h; sourceTree = "<group>"; };
 		A1851334150C35970081EE26 /* iPWSDropBoxSynchronizer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = iPWSDropBoxSynchronizer.mm; path = source/iPWSDropBoxSynchronizer.mm; sourceTree = "<group>"; };
 		A1851345150D20CC0081EE26 /* iPWSDropBoxSynchronizerView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = iPWSDropBoxSynchronizerView.xib; path = resources/iPWSDropBoxSynchronizerView.xib; sourceTree = "<group>"; };
-		A1C6BD3412626D7700F192B9 /* lockicon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = lockicon.png; path = resources/lockicon.png; sourceTree = "<group>"; };
 		A1CB19A21509A2880006DD14 /* DropboxSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DropboxSDK.framework; path = thirdpartysource/DropboxSDK.framework; sourceTree = "<group>"; };
 		A1CB19A41509A2B60006DD14 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		A1F18B65150AFFB200DA947E /* DropBoxKeys.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DropBoxKeys.h; path = include/DropBoxKeys.h; sourceTree = "<group>"; };
@@ -185,10 +185,10 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				305DD87717EE970B0080A436 /* Images.xcassets */,
 				306D81C416152B780084D991 /* iPad */,
 				30E1070D1279F32E00649034 /* diceicon.png */,
 				30DF134B1278C801005929AD /* lockbarbutton.png */,
-				A1C6BD3412626D7700F192B9 /* lockicon.png */,
 				DB6E421B125BDC4700011FA3 /* iPasswordSafe-Info.plist */,
 				3013F256124A74E100C82647 /* iPWSDatabasesViewController.xib */,
 				30933F581251316F00622BFA /* iPWSDatabaseAddViewController.xib */,
@@ -382,6 +382,11 @@
 			attributes = {
 				LastUpgradeCheck = 0500;
 				ORGANIZATIONNAME = JasonJohnsonSoftware;
+				TargetAttributes = {
+					1D6058900D05DD3D006BFB54 = {
+						DevelopmentTeam = 22EHEB62E8;
+					};
+				};
 			};
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "iPasswordSafe" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -432,13 +437,13 @@
 				303CC30F125688DB005E4970 /* iPWSDatabaseModelViewController.xib in Resources */,
 				303CC358125696D0005E4970 /* iPWSDatabaseEntryViewController.xib in Resources */,
 				3020EDC8125FB18900DCDDB0 /* Settings.bundle in Resources */,
-				A1C6BD3512626D7700F192B9 /* lockicon.png in Resources */,
 				30DF134C1278C801005929AD /* lockbarbutton.png in Resources */,
 				30E1070E1279F32E00649034 /* diceicon.png in Resources */,
 				A10F649712F3CBCE00FFC851 /* ActivityOverlayViewController.xib in Resources */,
 				A1851346150D20CC0081EE26 /* iPWSDropBoxSynchronizerView.xib in Resources */,
 				A17F2221150EC55600AB1495 /* iPWSDropBoxImportViewController.xib in Resources */,
 				A1FD0B65151193E800FF0E8E /* iPWSDropBoxConflictResolverView.xib in Resources */,
+				305DD87817EE970B0080A436 /* Images.xcassets in Resources */,
 				A150EF471512B68E002EC340 /* iPWSDatabaseModelMerger.xib in Resources */,
 				306D81C616152B7D0084D991 /* MainWindow-iPad.xib in Resources */,
 				306D81C816152C200084D991 /* Default-568h@2x.png in Resources */,
@@ -490,7 +495,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -507,6 +515,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_NAME = PasswordSafes;
+				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALID_ARCHS = "armv7s armv7 arm64";
 			};
@@ -516,7 +525,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -531,6 +543,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_NAME = PasswordSafes;
+				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 				VALID_ARCHS = "armv7s armv7 arm64";
@@ -557,8 +570,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Erik Johnson";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -573,7 +588,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_NAME = PasswordSafes;
-				PROVISIONING_PROFILE = "BCCCB5EA-6F8F-494E-A774-C3CE554CCF74";
+				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 				VALID_ARCHS = "armv7s armv7 arm64";
