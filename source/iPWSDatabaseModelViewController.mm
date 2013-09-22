@@ -211,9 +211,10 @@
 - (UIBarButtonItem *)detailsButton {
     // Lazy initialize a page curl button
     if (!detailsButton) {
-        detailsButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction
-                                                                      target:self
-                                                                      action:@selector(detailsButtonPressed)];
+        detailsButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"settings.png"]
+                                                         style:UIBarButtonItemStylePlain
+                                                        target:self
+                                                        action:@selector(detailsButtonPressed)];
     }
     return detailsButton;
 }

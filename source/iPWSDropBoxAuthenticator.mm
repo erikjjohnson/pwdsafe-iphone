@@ -34,6 +34,7 @@
 
 #import "iPWSDropBoxAuthenticator.h"
 #import "DropboxSDK/DropboxSDK.h"
+#import "iPasswordSafeAppDelegate.h"
 
 //------------------------------------------------------------------------------------
 // Class: iPWSDropBoxAuthenticator
@@ -142,7 +143,8 @@
         if ([[NSUserDefaults standardUserDefaults] boolForKey:@"require_passphrase_on_resume"]) {
             self.delegate = nil;
         }
-        [[DBSession sharedSession] link];        
+        iPasswordSafeAppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
+        [[DBSession sharedSession] linkFromController:appDelegate.navigationController];
     }
 }
 
