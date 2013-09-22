@@ -28,6 +28,8 @@
 		304BB13D1252953500702002 /* iPWSDatabaseDetailViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 304BB13B1252953500702002 /* iPWSDatabaseDetailViewController.mm */; };
 		304BB1411252956300702002 /* iPWSDatabaseDetailViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 304BB1401252956300702002 /* iPWSDatabaseDetailViewController.xib */; };
 		305DD87817EE970B0080A436 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 305DD87717EE970B0080A436 /* Images.xcassets */; };
+		305DD87C17EEAE1B0080A436 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 305DD87B17EEAE1B0080A436 /* QuartzCore.framework */; };
+		305DD88017EEB2570080A436 /* DropboxSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 305DD87F17EEB2570080A436 /* DropboxSDK.framework */; };
 		306D81C616152B7D0084D991 /* MainWindow-iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = 306D81C516152B7D0084D991 /* MainWindow-iPad.xib */; };
 		306D81C816152C200084D991 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 306D81C716152C200084D991 /* Default-568h@2x.png */; };
 		30933E7C124C0A8800622BFA /* iPWSDatabaseEntryModel.mm in Sources */ = {isa = PBXBuildFile; fileRef = 30933E7B124C0A8800622BFA /* iPWSDatabaseEntryModel.mm */; };
@@ -46,7 +48,6 @@
 		A17F2221150EC55600AB1495 /* iPWSDropBoxImportViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = A17F2220150EC55600AB1495 /* iPWSDropBoxImportViewController.xib */; };
 		A1851335150C35970081EE26 /* iPWSDropBoxSynchronizer.mm in Sources */ = {isa = PBXBuildFile; fileRef = A1851334150C35970081EE26 /* iPWSDropBoxSynchronizer.mm */; };
 		A1851346150D20CC0081EE26 /* iPWSDropBoxSynchronizerView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A1851345150D20CC0081EE26 /* iPWSDropBoxSynchronizerView.xib */; };
-		A1CB19A31509A2880006DD14 /* DropboxSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A1CB19A21509A2880006DD14 /* DropboxSDK.framework */; };
 		A1CB19A51509A2B60006DD14 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A1CB19A41509A2B60006DD14 /* Security.framework */; };
 		A1FD0B5E1511798800FF0E8E /* iPWSDropBoxPreferences.mm in Sources */ = {isa = PBXBuildFile; fileRef = A1FD0B5D1511798800FF0E8E /* iPWSDropBoxPreferences.mm */; };
 		A1FD0B611511939E00FF0E8E /* iPWSDropBoxConflictResolver.mm in Sources */ = {isa = PBXBuildFile; fileRef = A1FD0B601511939E00FF0E8E /* iPWSDropBoxConflictResolver.mm */; };
@@ -102,6 +103,8 @@
 		304BB13F1252955A00702002 /* iPWSDatabaseDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = iPWSDatabaseDetailViewController.h; path = include/iPWSDatabaseDetailViewController.h; sourceTree = "<group>"; };
 		304BB1401252956300702002 /* iPWSDatabaseDetailViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = iPWSDatabaseDetailViewController.xib; path = resources/iPWSDatabaseDetailViewController.xib; sourceTree = "<group>"; };
 		305DD87717EE970B0080A436 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = iPasswordSafe/Images.xcassets; sourceTree = "<group>"; };
+		305DD87B17EEAE1B0080A436 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		305DD87F17EEB2570080A436 /* DropboxSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DropboxSDK.framework; path = thirdpartysource/DropboxSDK.framework; sourceTree = "<group>"; };
 		306D81C516152B7D0084D991 /* MainWindow-iPad.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = "MainWindow-iPad.xib"; path = "resources/iPad/MainWindow-iPad.xib"; sourceTree = "<group>"; };
 		306D81C716152C200084D991 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		30933E7B124C0A8800622BFA /* iPWSDatabaseEntryModel.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = iPWSDatabaseEntryModel.mm; path = source/iPWSDatabaseEntryModel.mm; sourceTree = "<group>"; };
@@ -130,7 +133,6 @@
 		A1851333150C358B0081EE26 /* iPWSDropBoxSynchronizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = iPWSDropBoxSynchronizer.h; path = include/iPWSDropBoxSynchronizer.h; sourceTree = "<group>"; };
 		A1851334150C35970081EE26 /* iPWSDropBoxSynchronizer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = iPWSDropBoxSynchronizer.mm; path = source/iPWSDropBoxSynchronizer.mm; sourceTree = "<group>"; };
 		A1851345150D20CC0081EE26 /* iPWSDropBoxSynchronizerView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = iPWSDropBoxSynchronizerView.xib; path = resources/iPWSDropBoxSynchronizerView.xib; sourceTree = "<group>"; };
-		A1CB19A21509A2880006DD14 /* DropboxSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DropboxSDK.framework; path = thirdpartysource/DropboxSDK.framework; sourceTree = "<group>"; };
 		A1CB19A41509A2B60006DD14 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		A1F18B65150AFFB200DA947E /* DropBoxKeys.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DropBoxKeys.h; path = include/DropBoxKeys.h; sourceTree = "<group>"; };
 		A1FD0B5C1511796900FF0E8E /* iPWSDropBoxPreferences.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = iPWSDropBoxPreferences.h; path = include/iPWSDropBoxPreferences.h; sourceTree = "<group>"; };
@@ -146,12 +148,13 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				305DD87C17EEAE1B0080A436 /* QuartzCore.framework in Frameworks */,
 				303505E817EE6AE30011CBEE /* libPasswordSafe.a in Frameworks */,
+				305DD88017EEB2570080A436 /* DropboxSDK.framework in Frameworks */,
 				A1CB19A51509A2B60006DD14 /* Security.framework in Frameworks */,
 				1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */,
 				1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */,
 				2892E4100DC94CBA00A64D0F /* CoreGraphics.framework in Frameworks */,
-				A1CB19A31509A2880006DD14 /* DropboxSDK.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -171,7 +174,6 @@
 			children = (
 				303505DD17EE69AC0011CBEE /* PasswordSafe.xcodeproj */,
 				306D81C716152C200084D991 /* Default-568h@2x.png */,
-				A1CB19A41509A2B60006DD14 /* Security.framework */,
 				3013F25B124A750500C82647 /* Headers */,
 				3013F25A124A74FD00C82647 /* Sources */,
 				29B97317FDCFA39411CA2CEA /* Resources */,
@@ -209,7 +211,9 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				A1CB19A21509A2880006DD14 /* DropboxSDK.framework */,
+				305DD87F17EEB2570080A436 /* DropboxSDK.framework */,
+				305DD87B17EEAE1B0080A436 /* QuartzCore.framework */,
+				A1CB19A41509A2B60006DD14 /* Security.framework */,
 				1DF5F4DF0D08C38300B7A737 /* UIKit.framework */,
 				1D30AB110D05D00D00671497 /* Foundation.framework */,
 				2892E40F0DC94CBA00A64D0F /* CoreGraphics.framework */,
@@ -494,7 +498,7 @@
 		1D6058940D05DD3E006BFB54 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = YES;
+				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
@@ -502,7 +506,7 @@
 				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/thirdpartysource\"",
+					"/Users/ejjohns1/Development/Git/pwdsafe-iphone/thirdpartysource",
 				);
 				GCC_C_LANGUAGE_STANDARD = "compiler-default";
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -517,6 +521,7 @@
 				PRODUCT_NAME = PasswordSafes;
 				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
+				USER_HEADER_SEARCH_PATHS = "include thirdpartysource/PasswordSafe";
 				VALID_ARCHS = "armv7s armv7 arm64";
 			};
 			name = Debug;
@@ -524,7 +529,7 @@
 		1D6058950D05DD3E006BFB54 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = YES;
+				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
@@ -532,7 +537,7 @@
 				COPY_PHASE_STRIP = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/thirdpartysource\"",
+					"/Users/ejjohns1/Development/Git/pwdsafe-iphone/thirdpartysource",
 				);
 				GCC_C_LANGUAGE_STANDARD = "compiler-default";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -545,6 +550,7 @@
 				PRODUCT_NAME = PasswordSafes;
 				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
+				USER_HEADER_SEARCH_PATHS = "include thirdpartysource/PasswordSafe";
 				VALIDATE_PRODUCT = YES;
 				VALID_ARCHS = "armv7s armv7 arm64";
 			};
@@ -569,7 +575,7 @@
 		A166E75C126FDBAC00A8C66E /* Distribution */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = YES;
+				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
@@ -577,7 +583,7 @@
 				COPY_PHASE_STRIP = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/thirdpartysource\"",
+					"/Users/ejjohns1/Development/Git/pwdsafe-iphone/thirdpartysource",
 				);
 				GCC_C_LANGUAGE_STANDARD = "compiler-default";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -590,6 +596,7 @@
 				PRODUCT_NAME = PasswordSafes;
 				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
+				USER_HEADER_SEARCH_PATHS = "include thirdpartysource/PasswordSafe";
 				VALIDATE_PRODUCT = YES;
 				VALID_ARCHS = "armv7s armv7 arm64";
 			};
