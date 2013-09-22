@@ -37,7 +37,7 @@ NSString *iPWSDatabaseEntryModelChangedNotification = @"iPWSDatabaseEntryModelCh
 //  stores the data encrypted in memory
  
 #define SET_FIELD(f, m)                   \
-  if ([f isEqualToString:self.f]) return; \
+  if ((f == nil) || [f isEqualToString:self.f]) return; \
   data.m ([(f) UTF8String]);              \
   [self changed];
 
