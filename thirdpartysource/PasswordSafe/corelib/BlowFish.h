@@ -30,8 +30,8 @@ union aword
 class BlowFish : public Fish
 {
 public:
-  static BlowFish *MakeBlowFish(const unsigned char *pass, int passlen,
-    const unsigned char *salt, int saltlen);
+  static BlowFish *MakeBlowFish(const unsigned char *pass, unsigned int passlen,
+    const unsigned char *salt, unsigned int saltlen);
   enum {BLOCKSIZE=8};
   BlowFish(unsigned char* key, int keylen);
   virtual ~BlowFish();
