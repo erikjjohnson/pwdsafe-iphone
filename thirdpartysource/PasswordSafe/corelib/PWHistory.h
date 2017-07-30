@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2003-2009 Rony Shapiro <ronys@users.sourceforge.net>.
+ * Copyright (c) 2003-2017 Rony Shapiro <ronys@pwsafe.org>.
  * All rights reserved. Use of the code is allowed under the
  * Artistic License 2.0 terms, as specified in the LICENSE file
  * distributed with this code, or available from
@@ -13,19 +13,19 @@
  * Password history is represented in the entry record as a textual field
  * with the following semantics:
  *
- * Password History Header: 
- * %01x - status for saving PWH for this entry (0 = no; 1 = yes) 
- * %02x - maximum number of entries in this entry 
- * %02x - number of entries currently saved 
+ * Password History Header:
+ * %01x - status for saving PWH for this entry (0 = no; 1 = yes)
+ * %02x - maximum number of entries in this entry
+ * %02x - number of entries currently saved
  *
- * Each Password History Entry: 
- * %08x - time of this old password was set (time_t) 
+ * Each Password History Entry:
+ * %08x - time of this old password was set (time_t)
  * %04x - length of old password (in TCHAR)
- * %s   - old password 
+ * %s   - old password
  *
  * No history being kept for a record can be represented either by the lack
  * of the PWH field (preferred), or by a header of _T("00000"):
- * status = 0, max = 00, num = 00 
+ * status = 0, max = 00, num = 00
  *
  * Note that 0aabb where bb <= aa is possible if password history was enabled in the past
  * but has been disabled and the history hasn't been cleared.
@@ -40,33 +40,32 @@
 #if !defined PWHistory_h
 #define PWHistory_h
 
-#ifdef _WIN32
-#include <afx.h>
-#endif
 #include <time.h> // for time_t
 #include <vector>
 #include "StringX.h"
+#include "Util.h"
 
 struct PWHistEntry {
-  time_t changetttdate;
-  // "yyyy/mm/dd hh:mm:ss" - format used in ListCtrl & copied to clipboard (best for sorting)
-  // "yyyy-mm-ddThh:mm:ss" - format used in XML
-  StringX changedate;
-  StringX password;
-
-PWHistEntry() : changetttdate(0), changedate(), password() {}
-  // copy c'tor and assignment operator, standard idioms
-PWHistEntry(const PWHistEntry &that) :
-  changetttdate(that.changetttdate), changedate(that.changedate),
+    time_t changetttdate;
+    // "yyyy/mm/dd hh:mm:ss" - format used in ListCtrl & copied to clipboard (best for sorting)
+    // "yyyy-mm-ddThh:mm:ss" - format used in XML
+    StringX changedate;
+    StringX password;
+    
+    PWHistEntry() : changetttdate(0), changedate(), password() {}
+    // copy c'tor and assignment operator, standard idioms
+    PWHistEntry(const PWHistEntry &that) :
+    changetttdate(that.changetttdate), changedate(that.changedate),
     password(that.password) {}
-  PWHistEntry &operator=(const PWHistEntry &that)
-  { if (this != &that) {
-      changetttdate = that.changetttdate;
-      changedate = that.changedate;
-      password = that.password;
+    
+    PWHistEntry &operator=(const PWHistEntry &that)
+    { if (this != &that) {
+        changetttdate = that.changetttdate;
+        changedate = that.changedate;
+        password = that.password;
     }
-    return *this;
-  }
+        return *this;
+    }
 };
 
 typedef std::vector<PWHistEntry> PWHistList;
@@ -78,14 +77,15 @@ typedef std::vector<PWHistEntry> PWHistList;
 // num_err will have the number of ill-formed entries.
 
 bool CreatePWHistoryList(const StringX &pwh_str,
-                        size_t &pwh_max, size_t &num_err,
-                        PWHistList &pwhl, int time_format);
+                         size_t &pwh_max, size_t &num_err,
+                         PWHistList &pwhl, PWSUtil::TMC time_format);
 
-StringX MakePWHistoryHeader(bool status, size_t pwh_max, size_t pwh_num);
+StringX GetPreviousPassword(const StringX &pwh_str);
+
+StringX MakePWHistoryHeader(BOOL status, size_t pwh_max, size_t pwh_num);
 
 #endif
 //-----------------------------------------------------------------------------
 // Local variables:
 // mode: c++
 // End:
-

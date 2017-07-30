@@ -186,7 +186,7 @@ static NSString *PWSDatabaseFactoryMissingSafesMessage =
 - (NSString *)createUniqueFilenameWithPrefix: (NSString *)prefix {
     // First strip all of the non-alpha/digit characters from the prefix
     NSMutableString *cleanPrefix = [NSMutableString string];
-    int prefixLen = [prefix length];
+    unsigned long prefixLen = [prefix length];
     for (int i = 0; i < prefixLen; ++i) {
         char c = [prefix characterAtIndex:i];
         if (isalnum(c)) {
