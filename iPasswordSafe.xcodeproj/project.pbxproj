@@ -53,6 +53,7 @@
 		A1FD0B5E1511798800FF0E8E /* iPWSDropBoxPreferences.mm in Sources */ = {isa = PBXBuildFile; fileRef = A1FD0B5D1511798800FF0E8E /* iPWSDropBoxPreferences.mm */; };
 		A1FD0B611511939E00FF0E8E /* iPWSDropBoxConflictResolver.mm in Sources */ = {isa = PBXBuildFile; fileRef = A1FD0B601511939E00FF0E8E /* iPWSDropBoxConflictResolver.mm */; };
 		A1FD0B65151193E800FF0E8E /* iPWSDropBoxConflictResolverView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A1FD0B64151193E800FF0E8E /* iPWSDropBoxConflictResolverView.xib */; };
+		FC4778C31F362EE500301484 /* DropBoxKeys.h in Headers */ = {isa = PBXBuildFile; fileRef = FC4778C21F362EE500301484 /* DropBoxKeys.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -143,6 +144,7 @@
 		A1FD0B601511939E00FF0E8E /* iPWSDropBoxConflictResolver.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = iPWSDropBoxConflictResolver.mm; path = source/iPWSDropBoxConflictResolver.mm; sourceTree = "<group>"; };
 		A1FD0B64151193E800FF0E8E /* iPWSDropBoxConflictResolverView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = iPWSDropBoxConflictResolverView.xib; path = resources/iPWSDropBoxConflictResolverView.xib; sourceTree = "<group>"; };
 		DB6E421B125BDC4700011FA3 /* iPasswordSafe-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "iPasswordSafe-Info.plist"; sourceTree = "<group>"; };
+		FC4778C21F362EE500301484 /* DropBoxKeys.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DropBoxKeys.h; path = include/DropBoxKeys.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -174,6 +176,7 @@
 		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
 			isa = PBXGroup;
 			children = (
+				FC4778C21F362EE500301484 /* DropBoxKeys.h */,
 				303505DD17EE69AC0011CBEE /* PasswordSafe.xcodeproj */,
 				306D81C716152C200084D991 /* Default-568h@2x.png */,
 				3013F25B124A750500C82647 /* Headers */,
@@ -362,6 +365,17 @@
 		};
 /* End PBXGroup section */
 
+/* Begin PBXHeadersBuildPhase section */
+		FC4778C11F362ECC00301484 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FC4778C31F362EE500301484 /* DropBoxKeys.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
 /* Begin PBXNativeTarget section */
 		1D6058900D05DD3D006BFB54 /* iPasswordSafe */ = {
 			isa = PBXNativeTarget;
@@ -370,6 +384,7 @@
 				1D60588D0D05DD3D006BFB54 /* Resources */,
 				1D60588E0D05DD3D006BFB54 /* Sources */,
 				1D60588F0D05DD3D006BFB54 /* Frameworks */,
+				FC4778C11F362ECC00301484 /* Headers */,
 			);
 			buildRules = (
 			);

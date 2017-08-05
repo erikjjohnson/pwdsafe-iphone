@@ -88,6 +88,22 @@
 		FC47789B1F36292100301484 /* Item.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FC47789A1F36292100301484 /* Item.cpp */; };
 		FC47789D1F36295100301484 /* core_st.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FC47789C1F36295100301484 /* core_st.cpp */; };
 		FC47789F1F3629A900301484 /* core_st.h in Headers */ = {isa = PBXBuildFile; fileRef = FC47789E1F3629A900301484 /* core_st.h */; };
+		FC4778A21F362AEC00301484 /* funcwrap.h in Headers */ = {isa = PBXBuildFile; fileRef = FC4778A11F362AEB00301484 /* funcwrap.h */; };
+		FC4778A41F362B1600301484 /* core.h in Headers */ = {isa = PBXBuildFile; fileRef = FC4778A31F362B1600301484 /* core.h */; };
+		FC4778A61F362B4200301484 /* Item.h in Headers */ = {isa = PBXBuildFile; fileRef = FC4778A51F362B4200301484 /* Item.h */; };
+		FC4778A81F362B6B00301484 /* UUID.h in Headers */ = {isa = PBXBuildFile; fileRef = FC4778A71F362B6B00301484 /* UUID.h */; };
+		FC4778AA1F362B9B00301484 /* ItemAtt.h in Headers */ = {isa = PBXBuildFile; fileRef = FC4778A91F362B9B00301484 /* ItemAtt.h */; };
+		FC4778AC1F362BC300301484 /* coredefs.h in Headers */ = {isa = PBXBuildFile; fileRef = FC4778AB1F362BC300301484 /* coredefs.h */; };
+		FC4778AE1F362C1600301484 /* UIinterface.h in Headers */ = {isa = PBXBuildFile; fileRef = FC4778AD1F362C1600301484 /* UIinterface.h */; };
+		FC4778B01F362C4F00301484 /* Command.h in Headers */ = {isa = PBXBuildFile; fileRef = FC4778AF1F362C4F00301484 /* Command.h */; };
+		FC4778B21F362C9000301484 /* registry.h in Headers */ = {isa = PBXBuildFile; fileRef = FC4778B11F362C9000301484 /* registry.h */; };
+		FC4778B41F362CBC00301484 /* CommandInterface.h in Headers */ = {isa = PBXBuildFile; fileRef = FC4778B31F362CBC00301484 /* CommandInterface.h */; };
+		FC4778B61F362CDE00301484 /* DBCompareData.h in Headers */ = {isa = PBXBuildFile; fileRef = FC4778B51F362CDE00301484 /* DBCompareData.h */; };
+		FC4778B81F362D0300301484 /* ExpiredList.h in Headers */ = {isa = PBXBuildFile; fileRef = FC4778B71F362D0300301484 /* ExpiredList.h */; };
+		FC4778BA1F362D2D00301484 /* logit.h in Headers */ = {isa = PBXBuildFile; fileRef = FC4778B91F362D2D00301484 /* logit.h */; };
+		FC4778BC1F362DA800301484 /* XMLDefs.h in Headers */ = {isa = PBXBuildFile; fileRef = FC4778BB1F362DA800301484 /* XMLDefs.h */; };
+		FC4778BE1F362DEB00301484 /* sleep.h in Headers */ = {isa = PBXBuildFile; fileRef = FC4778BD1F362DEB00301484 /* sleep.h */; };
+		FC4778C01F362E3300301484 /* media.h in Headers */ = {isa = PBXBuildFile; fileRef = FC4778BF1F362E3300301484 /* media.h */; };
 		FC874EE51F12AEBE00C05F00 /* ItemAtt.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FC874EE41F12AEBE00C05F00 /* ItemAtt.cpp */; };
 		FC874EEC1F16F73C00C05F00 /* pugixml.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FC874EEB1F16F73C00C05F00 /* pugixml.cpp */; };
 		FC874F031F16F7BA00C05F00 /* debug.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FC874EEE1F16F7BA00C05F00 /* debug.cpp */; };
@@ -211,6 +227,22 @@
 		FC47789A1F36292100301484 /* Item.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Item.cpp; path = corelib/Item.cpp; sourceTree = "<group>"; };
 		FC47789C1F36295100301484 /* core_st.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = core_st.cpp; path = corelib/core_st.cpp; sourceTree = "<group>"; };
 		FC47789E1F3629A900301484 /* core_st.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = core_st.h; path = corelib/core_st.h; sourceTree = "<group>"; };
+		FC4778A11F362AEB00301484 /* funcwrap.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = funcwrap.h; path = os/funcwrap.h; sourceTree = "<group>"; };
+		FC4778A31F362B1600301484 /* core.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = core.h; path = corelib/core.h; sourceTree = "<group>"; };
+		FC4778A51F362B4200301484 /* Item.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Item.h; path = corelib/Item.h; sourceTree = "<group>"; };
+		FC4778A71F362B6B00301484 /* UUID.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = UUID.h; path = os/UUID.h; sourceTree = "<group>"; };
+		FC4778A91F362B9B00301484 /* ItemAtt.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ItemAtt.h; path = corelib/ItemAtt.h; sourceTree = "<group>"; };
+		FC4778AB1F362BC300301484 /* coredefs.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = coredefs.h; path = corelib/coredefs.h; sourceTree = "<group>"; };
+		FC4778AD1F362C1600301484 /* UIinterface.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = UIinterface.h; path = corelib/UIinterface.h; sourceTree = "<group>"; };
+		FC4778AF1F362C4F00301484 /* Command.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Command.h; path = corelib/Command.h; sourceTree = "<group>"; };
+		FC4778B11F362C9000301484 /* registry.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = registry.h; path = os/registry.h; sourceTree = "<group>"; };
+		FC4778B31F362CBC00301484 /* CommandInterface.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CommandInterface.h; path = corelib/CommandInterface.h; sourceTree = "<group>"; };
+		FC4778B51F362CDE00301484 /* DBCompareData.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DBCompareData.h; path = corelib/DBCompareData.h; sourceTree = "<group>"; };
+		FC4778B71F362D0300301484 /* ExpiredList.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ExpiredList.h; path = corelib/ExpiredList.h; sourceTree = "<group>"; };
+		FC4778B91F362D2D00301484 /* logit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = logit.h; path = os/logit.h; sourceTree = "<group>"; };
+		FC4778BB1F362DA800301484 /* XMLDefs.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = XMLDefs.h; path = corelib/XML/XMLDefs.h; sourceTree = "<group>"; };
+		FC4778BD1F362DEB00301484 /* sleep.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = sleep.h; path = os/sleep.h; sourceTree = "<group>"; };
+		FC4778BF1F362E3300301484 /* media.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = media.h; path = os/media.h; sourceTree = "<group>"; };
 		FC874EE41F12AEBE00C05F00 /* ItemAtt.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ItemAtt.cpp; path = corelib/ItemAtt.cpp; sourceTree = "<group>"; };
 		FC874EE71F12C43700C05F00 /* mac */ = {isa = PBXFileReference; lastKnownFileType = folder; path = mac; sourceTree = "<group>"; };
 		FC874EEB1F16F73C00C05F00 /* pugixml.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = pugixml.cpp; path = corelib/pugixml/pugixml.cpp; sourceTree = "<group>"; };
@@ -263,6 +295,22 @@
 		08FB7794FE84155DC02AAC07 /* PasswordSafe */ = {
 			isa = PBXGroup;
 			children = (
+				FC4778BF1F362E3300301484 /* media.h */,
+				FC4778BD1F362DEB00301484 /* sleep.h */,
+				FC4778BB1F362DA800301484 /* XMLDefs.h */,
+				FC4778B91F362D2D00301484 /* logit.h */,
+				FC4778B71F362D0300301484 /* ExpiredList.h */,
+				FC4778B51F362CDE00301484 /* DBCompareData.h */,
+				FC4778B31F362CBC00301484 /* CommandInterface.h */,
+				FC4778B11F362C9000301484 /* registry.h */,
+				FC4778AF1F362C4F00301484 /* Command.h */,
+				FC4778AD1F362C1600301484 /* UIinterface.h */,
+				FC4778AB1F362BC300301484 /* coredefs.h */,
+				FC4778A91F362B9B00301484 /* ItemAtt.h */,
+				FC4778A71F362B6B00301484 /* UUID.h */,
+				FC4778A51F362B4200301484 /* Item.h */,
+				FC4778A31F362B1600301484 /* core.h */,
+				FC4778A11F362AEB00301484 /* funcwrap.h */,
 				FC47789E1F3629A900301484 /* core_st.h */,
 				FC47789C1F36295100301484 /* core_st.cpp */,
 				FC47789A1F36292100301484 /* Item.cpp */,
@@ -443,6 +491,22 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FC4778C01F362E3300301484 /* media.h in Headers */,
+				FC4778BE1F362DEB00301484 /* sleep.h in Headers */,
+				FC4778BC1F362DA800301484 /* XMLDefs.h in Headers */,
+				FC4778BA1F362D2D00301484 /* logit.h in Headers */,
+				FC4778B81F362D0300301484 /* ExpiredList.h in Headers */,
+				FC4778B61F362CDE00301484 /* DBCompareData.h in Headers */,
+				FC4778B41F362CBC00301484 /* CommandInterface.h in Headers */,
+				FC4778B21F362C9000301484 /* registry.h in Headers */,
+				FC4778B01F362C4F00301484 /* Command.h in Headers */,
+				FC4778AE1F362C1600301484 /* UIinterface.h in Headers */,
+				FC4778AC1F362BC300301484 /* coredefs.h in Headers */,
+				FC4778AA1F362B9B00301484 /* ItemAtt.h in Headers */,
+				FC4778A81F362B6B00301484 /* UUID.h in Headers */,
+				FC4778A61F362B4200301484 /* Item.h in Headers */,
+				FC4778A41F362B1600301484 /* core.h in Headers */,
+				FC4778A21F362AEC00301484 /* funcwrap.h in Headers */,
 				FC47789F1F3629A900301484 /* core_st.h in Headers */,
 				3013F145124A6BD900C82647 /* CheckVersion.h in Headers */,
 				3013F147124A6BD900C82647 /* corelib.h in Headers */,
