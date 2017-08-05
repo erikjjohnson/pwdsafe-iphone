@@ -81,12 +81,12 @@
 		3013F1BD124A6C0600C82647 /* sys.h in Headers */ = {isa = PBXBuildFile; fileRef = 3013F1A4124A6C0600C82647 /* sys.h */; };
 		3013F1BE124A6C0600C82647 /* typedefs.h in Headers */ = {isa = PBXBuildFile; fileRef = 3013F1A5124A6C0600C82647 /* typedefs.h */; };
 		3013F1BF124A6C0600C82647 /* utf8conv.h in Headers */ = {isa = PBXBuildFile; fileRef = 3013F1A6124A6C0600C82647 /* utf8conv.h */; };
-		FC318D1C1F184DE1009A0A69 /* core_st.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FC318D181F184D55009A0A69 /* core_st.cpp */; };
 		FC318D1D1F184E7D009A0A69 /* PWCharPool.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3013F107124A6BD900C82647 /* PWCharPool.cpp */; };
-		FC318D1E1F184EA0009A0A69 /* Item.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FC318D0B1F182CDB009A0A69 /* Item.cpp */; };
 		FC318D201F1850FE009A0A69 /* PWSrand.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FC318D1F1F1850FE009A0A69 /* PWSrand.cpp */; };
-		FC318D211F1A4F76009A0A69 /* BlowFish.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FC318D141F184D38009A0A69 /* BlowFish.cpp */; };
 		FC318D221F1A5056009A0A69 /* PWSprefs.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3013F11C124A6BD900C82647 /* PWSprefs.cpp */; };
+		FC4778991F36290000301484 /* BlowFish.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FC4778981F36290000301484 /* BlowFish.cpp */; };
+		FC47789B1F36292100301484 /* Item.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FC47789A1F36292100301484 /* Item.cpp */; };
+		FC47789D1F36295100301484 /* core_st.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FC47789C1F36295100301484 /* core_st.cpp */; };
 		FC874EE51F12AEBE00C05F00 /* ItemAtt.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FC874EE41F12AEBE00C05F00 /* ItemAtt.cpp */; };
 		FC874EEC1F16F73C00C05F00 /* pugixml.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FC874EEB1F16F73C00C05F00 /* pugixml.cpp */; };
 		FC874F031F16F7BA00C05F00 /* debug.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FC874EEE1F16F7BA00C05F00 /* debug.cpp */; };
@@ -206,6 +206,9 @@
 		FC318D181F184D55009A0A69 /* core_st.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = core_st.cpp; path = ../../../../thirdpartysource/PasswordSafe/corelib/core_st.cpp; sourceTree = "<group>"; };
 		FC318D191F184D55009A0A69 /* core_st.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = core_st.h; path = ../../../../thirdpartysource/PasswordSafe/corelib/core_st.h; sourceTree = "<group>"; };
 		FC318D1F1F1850FE009A0A69 /* PWSrand.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PWSrand.cpp; sourceTree = "<group>"; };
+		FC4778981F36290000301484 /* BlowFish.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = BlowFish.cpp; path = corelib/BlowFish.cpp; sourceTree = "<group>"; };
+		FC47789A1F36292100301484 /* Item.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Item.cpp; path = corelib/Item.cpp; sourceTree = "<group>"; };
+		FC47789C1F36295100301484 /* core_st.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = core_st.cpp; path = corelib/core_st.cpp; sourceTree = "<group>"; };
 		FC874EE41F12AEBE00C05F00 /* ItemAtt.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ItemAtt.cpp; path = corelib/ItemAtt.cpp; sourceTree = "<group>"; };
 		FC874EE71F12C43700C05F00 /* mac */ = {isa = PBXFileReference; lastKnownFileType = folder; path = mac; sourceTree = "<group>"; };
 		FC874EEB1F16F73C00C05F00 /* pugixml.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = pugixml.cpp; path = corelib/pugixml/pugixml.cpp; sourceTree = "<group>"; };
@@ -258,6 +261,9 @@
 		08FB7794FE84155DC02AAC07 /* PasswordSafe */ = {
 			isa = PBXGroup;
 			children = (
+				FC47789C1F36295100301484 /* core_st.cpp */,
+				FC47789A1F36292100301484 /* Item.cpp */,
+				FC4778981F36290000301484 /* BlowFish.cpp */,
 				FC874EEE1F16F7BA00C05F00 /* debug.cpp */,
 				FC874EEF1F16F7BA00C05F00 /* dir.cpp */,
 				FC874EF01F16F7BA00C05F00 /* env.cpp */,
@@ -541,11 +547,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FC47789D1F36295100301484 /* core_st.cpp in Sources */,
+				FC47789B1F36292100301484 /* Item.cpp in Sources */,
+				FC4778991F36290000301484 /* BlowFish.cpp in Sources */,
 				FC318D221F1A5056009A0A69 /* PWSprefs.cpp in Sources */,
-				FC318D211F1A4F76009A0A69 /* BlowFish.cpp in Sources */,
-				FC318D1E1F184EA0009A0A69 /* Item.cpp in Sources */,
 				FC318D1D1F184E7D009A0A69 /* PWCharPool.cpp in Sources */,
-				FC318D1C1F184DE1009A0A69 /* core_st.cpp in Sources */,
 				FC874EEC1F16F73C00C05F00 /* pugixml.cpp in Sources */,
 				FC874F201F170A8B00C05F00 /* PWSfileV4.cpp in Sources */,
 				3013F144124A6BD900C82647 /* CheckVersion.cpp in Sources */,
