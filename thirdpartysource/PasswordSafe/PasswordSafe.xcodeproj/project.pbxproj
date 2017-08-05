@@ -87,6 +87,7 @@
 		FC4778991F36290000301484 /* BlowFish.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FC4778981F36290000301484 /* BlowFish.cpp */; };
 		FC47789B1F36292100301484 /* Item.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FC47789A1F36292100301484 /* Item.cpp */; };
 		FC47789D1F36295100301484 /* core_st.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FC47789C1F36295100301484 /* core_st.cpp */; };
+		FC47789F1F3629A900301484 /* core_st.h in Headers */ = {isa = PBXBuildFile; fileRef = FC47789E1F3629A900301484 /* core_st.h */; };
 		FC874EE51F12AEBE00C05F00 /* ItemAtt.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FC874EE41F12AEBE00C05F00 /* ItemAtt.cpp */; };
 		FC874EEC1F16F73C00C05F00 /* pugixml.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FC874EEB1F16F73C00C05F00 /* pugixml.cpp */; };
 		FC874F031F16F7BA00C05F00 /* debug.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FC874EEE1F16F7BA00C05F00 /* debug.cpp */; };
@@ -209,6 +210,7 @@
 		FC4778981F36290000301484 /* BlowFish.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = BlowFish.cpp; path = corelib/BlowFish.cpp; sourceTree = "<group>"; };
 		FC47789A1F36292100301484 /* Item.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Item.cpp; path = corelib/Item.cpp; sourceTree = "<group>"; };
 		FC47789C1F36295100301484 /* core_st.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = core_st.cpp; path = corelib/core_st.cpp; sourceTree = "<group>"; };
+		FC47789E1F3629A900301484 /* core_st.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = core_st.h; path = corelib/core_st.h; sourceTree = "<group>"; };
 		FC874EE41F12AEBE00C05F00 /* ItemAtt.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ItemAtt.cpp; path = corelib/ItemAtt.cpp; sourceTree = "<group>"; };
 		FC874EE71F12C43700C05F00 /* mac */ = {isa = PBXFileReference; lastKnownFileType = folder; path = mac; sourceTree = "<group>"; };
 		FC874EEB1F16F73C00C05F00 /* pugixml.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = pugixml.cpp; path = corelib/pugixml/pugixml.cpp; sourceTree = "<group>"; };
@@ -261,6 +263,7 @@
 		08FB7794FE84155DC02AAC07 /* PasswordSafe */ = {
 			isa = PBXGroup;
 			children = (
+				FC47789E1F3629A900301484 /* core_st.h */,
 				FC47789C1F36295100301484 /* core_st.cpp */,
 				FC47789A1F36292100301484 /* Item.cpp */,
 				FC4778981F36290000301484 /* BlowFish.cpp */,
@@ -440,6 +443,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FC47789F1F3629A900301484 /* core_st.h in Headers */,
 				3013F145124A6BD900C82647 /* CheckVersion.h in Headers */,
 				3013F147124A6BD900C82647 /* corelib.h in Headers */,
 				FC874F1E1F170A7900C05F00 /* PWSfileV4.h in Headers */,
