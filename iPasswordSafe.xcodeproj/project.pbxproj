@@ -53,7 +53,7 @@
 		A1FD0B5E1511798800FF0E8E /* iPWSDropBoxPreferences.mm in Sources */ = {isa = PBXBuildFile; fileRef = A1FD0B5D1511798800FF0E8E /* iPWSDropBoxPreferences.mm */; };
 		A1FD0B611511939E00FF0E8E /* iPWSDropBoxConflictResolver.mm in Sources */ = {isa = PBXBuildFile; fileRef = A1FD0B601511939E00FF0E8E /* iPWSDropBoxConflictResolver.mm */; };
 		A1FD0B65151193E800FF0E8E /* iPWSDropBoxConflictResolverView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A1FD0B64151193E800FF0E8E /* iPWSDropBoxConflictResolverView.xib */; };
-		FC4778C31F362EE500301484 /* DropBoxKeys.h in Headers */ = {isa = PBXBuildFile; fileRef = FC4778C21F362EE500301484 /* DropBoxKeys.h */; };
+		FC4778C51F362FE700301484 /* DropBoxKeys.h in Headers */ = {isa = PBXBuildFile; fileRef = FC4778C21F362EE500301484 /* DropBoxKeys.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -370,7 +370,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FC4778C31F362EE500301484 /* DropBoxKeys.h in Headers */,
+				FC4778C51F362FE700301484 /* DropBoxKeys.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
