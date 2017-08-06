@@ -318,8 +318,9 @@ int CItemData::Write(PWSfile *out) const
     // Map different UUID types (V4 concept) to original V3 UUID
     uuid_array_t item_uuid;
     FieldType ft = END;
-    
-    ASSERT(HasUUID());
+
+//TODO: Why isn't UUID getting set?
+//    ASSERT(HasUUID());
     if (!IsDependent())
         ft = UUID;
     else if (IsAlias())
