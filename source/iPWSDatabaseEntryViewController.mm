@@ -435,9 +435,10 @@ NSString* iPWSDatabaseEntryViewControllerEntryUserInfoKey =
         [v show];
         [v release];
     } else {
-//  TODO: delete
-//        passphraseTextField.text = [NSString stringWithFormat:@"%s", policy.MakeRandomPassword().c_str()];
-        passphraseTextField.text = [NSString stringWithFormat:@"%ls", policy.MakeRandomPassword().c_str()];
+        StringX retval = policy.MakeRandomPassword();
+        passphraseTextField.text = [[[NSString alloc] initWithBytes: retval.c_str()
+                                                             length: retval.length()*sizeof(wchar_t)
+                                                           encoding: NSUTF32LittleEndianStringEncoding] autorelease];
     }
 }
 
