@@ -32,6 +32,12 @@
 #import "corelib/PWSprefs.h"
 #import "DismissAlertView.h"
 
+#if TARGET_RT_BIG_ENDIAN
+const NSStringEncoding kEncoding_wchar_t = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingUTF32BE);
+#else
+const NSStringEncoding kEncoding_wchar_t = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingUTF32LE);
+#endif
+
 //------------------------------------------------------------------------------------
 // Private implementation
 @interface iPWSDatabaseEntryViewController ()
@@ -438,7 +444,7 @@ NSString* iPWSDatabaseEntryViewControllerEntryUserInfoKey =
         StringX retval = policy.MakeRandomPassword();
         passphraseTextField.text = [[[NSString alloc] initWithBytes: retval.c_str()
                                                              length: retval.length()*sizeof(wchar_t)
-                                                           encoding: NSUTF32LittleEndianStringEncoding] autorelease];
+                                                           encoding: kEncoding_wchar_t] autorelease];
     }
 }
 
