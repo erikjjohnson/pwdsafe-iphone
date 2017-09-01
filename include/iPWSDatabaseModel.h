@@ -52,21 +52,21 @@ extern NSString* iPWSDatabaseModelChangedEntryUserInfoKey;
     NSString              *fileName;
     NSString              *friendlyName;
     NSString              *passphrase;
-    PWSfile::HeaderRecord  headerRecord;
+    PWSfileHeader          headerRecord;
     PWSfile               *pwsFileHandle;
     NSError               *lastError;
 }
 
 // Class methods
 + (NSString *)databaseVersionToString:(PWSfile::VERSION)version;
-+ (BOOL)isPasswordSafeFile:(NSString *)filePath;
+//+ (BOOL)isPasswordSafeFile:(NSString *)filePath;
 
 // Accessors 
 @property (readonly) NSArray                       *entries;
 @property (copy)     NSString                      *fileName;
 @property (copy)     NSString                      *friendlyName;
 @property (readonly) PWSfile::VERSION              version;
-@property (readonly) const PWSfile::HeaderRecord   *headerRecord;
+@property (readonly) const PWSfileHeader           *headerRecord;
 @property (readonly) NSString                      *passphrase;
 
 // Initialization - if the file does not exist, a new database is created.
