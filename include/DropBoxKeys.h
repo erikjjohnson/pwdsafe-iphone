@@ -9,5 +9,8 @@
 #ifndef DropBoxKeys_h
 #define DropBoxKeys_h
 
+#define DROPBOX_APP_KEY_PLIST     yourappkeyunquoted
+#define DROPBOX_APP_KEY         @"yourappkeyasnsstring"
+#define DROPBOX_APP_SECRET      @"yourappsecretasnsstring"
 
 #endif /* DropBoxKeys_h */
