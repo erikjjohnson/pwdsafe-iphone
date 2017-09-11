@@ -206,13 +206,10 @@
 }
 
 - (NSString *)modelLastSavedBy {
-//    return [NSString stringWithFormat:@"%s", model.headerRecord->m_lastsavedby.c_str()];
    return [NSString stringWithFormat:@"%ls", model.headerRecord->m_lastsavedby.c_str()];
 }
 
 - (NSString *)modelLastSavedOn {
-// TODO: Delete
-//    return [NSString stringWithFormat:@"%s", model.headerRecord->m_lastsavedon.c_str()];
     return [NSString stringWithFormat:@"%ls", model.headerRecord->m_lastsavedon.c_str()];
 }
 
