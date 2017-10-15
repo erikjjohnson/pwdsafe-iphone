@@ -38,6 +38,7 @@
 		30933F591251316F00622BFA /* iPWSDatabaseAddViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 30933F581251316F00622BFA /* iPWSDatabaseAddViewController.xib */; };
 		30DF134C1278C801005929AD /* lockbarbutton.png in Resources */ = {isa = PBXBuildFile; fileRef = 30DF134B1278C801005929AD /* lockbarbutton.png */; };
 		30E1070E1279F32E00649034 /* diceicon.png in Resources */ = {isa = PBXBuildFile; fileRef = 30E1070D1279F32E00649034 /* diceicon.png */; };
+		5C4324F61F5F69AF0012EDB6 /* NSString+CppStringAdditions.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5C4324F51F5F69AF0012EDB6 /* NSString+CppStringAdditions.mm */; };
 		A10F649712F3CBCE00FFC851 /* ActivityOverlayViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = A10F649612F3CBCE00FFC851 /* ActivityOverlayViewController.xib */; };
 		A10F649912F3CBDF00FFC851 /* ActivityOverlayViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = A10F649812F3CBDF00FFC851 /* ActivityOverlayViewController.mm */; };
 		A119225B150D90EE00A8C520 /* iPWSDropBoxAuthenticator.mm in Sources */ = {isa = PBXBuildFile; fileRef = A119225A150D90ED00A8C520 /* iPWSDropBoxAuthenticator.mm */; };
@@ -53,7 +54,6 @@
 		A1FD0B5E1511798800FF0E8E /* iPWSDropBoxPreferences.mm in Sources */ = {isa = PBXBuildFile; fileRef = A1FD0B5D1511798800FF0E8E /* iPWSDropBoxPreferences.mm */; };
 		A1FD0B611511939E00FF0E8E /* iPWSDropBoxConflictResolver.mm in Sources */ = {isa = PBXBuildFile; fileRef = A1FD0B601511939E00FF0E8E /* iPWSDropBoxConflictResolver.mm */; };
 		A1FD0B65151193E800FF0E8E /* iPWSDropBoxConflictResolverView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A1FD0B64151193E800FF0E8E /* iPWSDropBoxConflictResolverView.xib */; };
-		FC4778C51F362FE700301484 /* DropBoxKeys.h in Headers */ = {isa = PBXBuildFile; fileRef = FC4778C21F362EE500301484 /* DropBoxKeys.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -117,6 +117,8 @@
 		30933F581251316F00622BFA /* iPWSDatabaseAddViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = iPWSDatabaseAddViewController.xib; path = resources/iPWSDatabaseAddViewController.xib; sourceTree = "<group>"; };
 		30DF134B1278C801005929AD /* lockbarbutton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = lockbarbutton.png; path = resources/lockbarbutton.png; sourceTree = "<group>"; };
 		30E1070D1279F32E00649034 /* diceicon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = diceicon.png; path = resources/diceicon.png; sourceTree = "<group>"; };
+		5C4324F41F5F69570012EDB6 /* NSString+CppStringAdditions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "NSString+CppStringAdditions.h"; path = "include/NSString+CppStringAdditions.h"; sourceTree = "<group>"; };
+		5C4324F51F5F69AF0012EDB6 /* NSString+CppStringAdditions.mm */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; fileEncoding = 4; name = "NSString+CppStringAdditions.mm"; path = "source/NSString+CppStringAdditions.mm"; sourceTree = "<group>"; };
 		A10F649612F3CBCE00FFC851 /* ActivityOverlayViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = ActivityOverlayViewController.xib; path = resources/ActivityOverlayViewController.xib; sourceTree = "<group>"; };
 		A10F649812F3CBDF00FFC851 /* ActivityOverlayViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = ActivityOverlayViewController.mm; path = source/ActivityOverlayViewController.mm; sourceTree = "<group>"; };
 		A10F649A12F3CBEE00FFC851 /* ActivityOverlayViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ActivityOverlayViewController.h; path = include/ActivityOverlayViewController.h; sourceTree = "<group>"; };
@@ -144,7 +146,6 @@
 		A1FD0B601511939E00FF0E8E /* iPWSDropBoxConflictResolver.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = iPWSDropBoxConflictResolver.mm; path = source/iPWSDropBoxConflictResolver.mm; sourceTree = "<group>"; };
 		A1FD0B64151193E800FF0E8E /* iPWSDropBoxConflictResolverView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = iPWSDropBoxConflictResolverView.xib; path = resources/iPWSDropBoxConflictResolverView.xib; sourceTree = "<group>"; };
 		DB6E421B125BDC4700011FA3 /* iPasswordSafe-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "iPasswordSafe-Info.plist"; sourceTree = "<group>"; };
-		FC4778C21F362EE500301484 /* DropBoxKeys.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DropBoxKeys.h; path = include/DropBoxKeys.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -176,7 +177,6 @@
 		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
 			isa = PBXGroup;
 			children = (
-				FC4778C21F362EE500301484 /* DropBoxKeys.h */,
 				303505DD17EE69AC0011CBEE /* PasswordSafe.xcodeproj */,
 				306D81C716152C200084D991 /* Default-568h@2x.png */,
 				3013F25B124A750500C82647 /* Headers */,
@@ -237,6 +237,7 @@
 				A150EF441512B671002EC340 /* iPWSDatabaseModelMerger.mm */,
 				3013F25F124A752200C82647 /* iPasswordSafeAppDelegate.mm */,
 				3013F260124A752200C82647 /* main.mm */,
+				5C4324F51F5F69AF0012EDB6 /* NSString+CppStringAdditions.mm */,
 			);
 			name = Sources;
 			sourceTree = "<group>";
@@ -252,6 +253,7 @@
 				A16BF23B15070DA50035960A /* iPWSMacros.h */,
 				3013F266124A753400C82647 /* iPasswordSafeAppDelegate.h */,
 				3013F270124A76E100C82647 /* iPasswordSafe_Prefix.pch */,
+				5C4324F41F5F69570012EDB6 /* NSString+CppStringAdditions.h */,
 			);
 			name = Headers;
 			sourceTree = "<group>";
@@ -370,7 +372,6 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FC4778C51F362FE700301484 /* DropBoxKeys.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -481,6 +482,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3013F262124A752200C82647 /* iPasswordSafeAppDelegate.mm in Sources */,
+				5C4324F61F5F69AF0012EDB6 /* NSString+CppStringAdditions.mm in Sources */,
 				3013F263124A752200C82647 /* main.mm in Sources */,
 				3013F264124A752200C82647 /* iPWSDatabasesViewController.mm in Sources */,
 				3013F38E124BB7FA00C82647 /* iPWSDatabaseFactory.mm in Sources */,

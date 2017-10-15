@@ -63,8 +63,7 @@
         psafeFiles            = [[NSMutableArray array] retain];
         NSString *docDir      = databaseFactory.documentsDirectory;
         for (NSString *file in [[NSFileManager defaultManager] contentsOfDirectoryAtPath:docDir error:NULL]) {
-            if ([docDir stringByAppendingPathComponent:file] && 
-                ![databaseFactory isFileNameMapped:file]) {
+            if (![databaseFactory isFileNameMapped:file]) {
                 [psafeFiles addObject: file];
             }
         }

@@ -35,6 +35,7 @@
 
 #import "iPWSDatabaseModel.h"
 #import "iPWSMacros.h"
+#import "NSString+CppStringAdditions.h"
 
 //------------------------------------------------------------------------------------
 // Private interface
@@ -95,57 +96,6 @@ static NSDictionary *iPWSDatabaseModelErrorCodesMap =
 
 
 //------------------------------------------------------------------------------------
-// Class variables
-//static BOOL sessionKeyInitialized = NO;
-
-#if TARGET_RT_BIG_ENDIAN
-const NSStringEncoding kEncoding_wchar_t = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingUTF32BE);
-#else
-const NSStringEncoding kEncoding_wchar_t = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingUTF32LE);
-#endif
-
-@implementation NSString (cppstring_additions)
-
-+(NSString*) stringWithStringX:(const StringX&)sx
-{
-    char* data = (char*)sx.data();
-    unsigned long size = sx.size() * sizeof(wchar_t);
-    
-    NSString* result = [[NSString alloc] initWithBytes:data length:size encoding:kEncoding_wchar_t];
-    return result;
-}
-+(NSString*) stringWithwstring:(const std::wstring&)ws
-{
-    char* data = (char*)ws.data();
-    unsigned long size = ws.size() * sizeof(wchar_t);
-    
-    NSString* result = [[NSString alloc] initWithBytes:data length:size encoding:kEncoding_wchar_t];
-    return result;
-}
-+(NSString*) stringWithstring:(const std::string&)s
-{
-    NSString* result = [[NSString alloc] initWithUTF8String:s.c_str()];
-    return result;
-}
-
--(StringX) getStringX
-{
-    NSData* asData = [self dataUsingEncoding:kEncoding_wchar_t];
-    return StringX((wchar_t*)[asData bytes], [asData length] / sizeof(wchar_t));
-}
--(std::wstring) getwstring
-{
-    NSData* asData = [self dataUsingEncoding:kEncoding_wchar_t];
-    return std::wstring((wchar_t*)[asData bytes], [asData length] / sizeof(wchar_t));
-}
--(std::string) getstring
-{
-    return [self UTF8String];
-}
-
-@end
-
-//------------------------------------------------------------------------------------
 // Model implementation
 @implementation iPWSDatabaseModel
 
@@ -169,11 +119,6 @@ const NSStringEncoding kEncoding_wchar_t = CFStringConvertEncodingToNSStringEnco
                         passphrase:thePassphrase
                            errorMsg:errorMsg] autorelease];
 }
-
-//+ (BOOL)isPasswordSafeFile:(NSString *)filePath {
-//    return (PWSfile::UNKNOWN_VERSION != PWSfile::ReadVersion([filePath UTF8String]));
-//}
-
 
 //------------------------------------------------------------------------------------
 // Instance methods
@@ -247,12 +192,6 @@ const NSStringEncoding kEncoding_wchar_t = CFStringConvertEncodingToNSStringEnco
       fileNamed:(NSString *)theFileName 
      passphrase:(NSString *)thePassphrase
        errorMsg:(NSError **)errorMsg {
-    
-    // Ensure the password safe library is initialized
-//    if (!sessionKeyInitialized) {
-//        CItemData::SetSessionKey();
-//        sessionKeyInitialized = YES;
-//    }
     
     // Sanity checks on the name, file name, and passphrase
     if (!theFriendlyName || ![theFriendlyName length] || !theFileName || ![theFileName length]) {

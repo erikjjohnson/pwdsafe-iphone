@@ -31,12 +31,8 @@
 #import "corelib/PWPolicy.h"
 #import "corelib/PWSprefs.h"
 #import "DismissAlertView.h"
+#import "NSString+CppStringAdditions.h"
 
-#if TARGET_RT_BIG_ENDIAN
-const NSStringEncoding kEncoding_wchar_t = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingUTF32BE);
-#else
-const NSStringEncoding kEncoding_wchar_t = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingUTF32LE);
-#endif
 
 //------------------------------------------------------------------------------------
 // Private implementation
@@ -366,14 +362,14 @@ NSString* iPWSDatabaseEntryViewControllerEntryUserInfoKey =
     return cancelButton;
 }
 
-//- (UIBarButtonItem *)copyButton {
-//    if (!copyButton) {
-//       copyButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCompose
-//                                                                   target:self
-//                                                                   action:@selector(copyButtonPressed)];
-//    }
-//    return copyButton;
-//}
+- (UIBarButtonItem *)copyButton {
+    if (!copyButton) {
+       copyButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCompose
+                                                                   target:self
+                                                                   action:@selector(copyButtonPressed)];
+    }
+    return copyButton;
+}
 
 - (UIBarButtonItem *)copyAndLaunchButton {
     if (!copyAndLaunchButton) {
