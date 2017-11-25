@@ -690,7 +690,10 @@
 				GCC_PREPROCESSOR_DEFINITIONS = "";
 				INSTALL_PATH = /usr/local/lib;
 				OTHER_CFLAGS = "";
-				"OTHER_CFLAGS[arch=*]" = "-DUNICODE";
+				"OTHER_CFLAGS[arch=*]" = (
+					"-DUNICODE",
+					"-DMAC",
+				);
 				"OTHER_CPLUSPLUSFLAGS[arch=*]" = (
 					"$(OTHER_CFLAGS)",
 					"-std=c++11",
@@ -712,10 +715,9 @@
 				GCC_PREPROCESSOR_DEFINITIONS = "";
 				INSTALL_PATH = /usr/local/lib;
 				OTHER_CFLAGS = "";
-				"OTHER_CFLAGS[arch=*]" = "-DUNICODE";
-				"OTHER_CPLUSPLUSFLAGS[arch=*]" = (
-					"$(OTHER_CFLAGS)",
-					"-std=c++11",
+				"OTHER_CFLAGS[arch=*]" = (
+					"-DUNICODE",
+					"-DMAC",
 				);
 				PRODUCT_NAME = PasswordSafe;
 				SDKROOT = iphoneos;

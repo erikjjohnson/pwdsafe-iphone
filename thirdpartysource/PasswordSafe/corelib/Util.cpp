@@ -31,6 +31,10 @@
 #include <sstream>
 #include <iomanip>
 
+#ifdef MAC
+#include <CoreFoundation/CoreFoundation.h>
+#endif
+
 #include <errno.h>
 
 using namespace std;
@@ -93,13 +97,23 @@ void ConvertString(const StringX &text,
                    size_t &txtlen)
 {
     LPCTSTR txtstr = text.c_str();
+    int len;
     txtlen = text.length();
     
 #ifdef _WIN32
     txt = new unsigned char[3 * txtlen]; // safe upper limit
-    int len = WideCharToMultiByte(CP_ACP, 0, txtstr, static_cast<int>(txtlen),
+    len = WideCharToMultiByte(CP_ACP, 0, txtstr, static_cast<int>(txtlen),
                                   LPSTR(txt), static_cast<int>(3 * txtlen), NULL, NULL);
     ASSERT(len != 0);
+#elif defined MAC
+    CFStringRef tempString;
+    CFRange rangeToProcess;
+    
+    txt = new unsigned char[3 * txtlen]; // safe upper limit
+    int temp = txtlen*sizeof(TCHAR);
+    tempString = CFStringCreateWithBytes(kCFAllocatorDefault, (UInt8 *)txtstr, temp, kCFStringEncodingUTF32LE, false);
+    rangeToProcess = CFRangeMake(0, CFStringGetLength(tempString));
+    CFStringGetBytes(tempString, rangeToProcess, kCFStringEncodingUTF8, '?', FALSE, (UInt8 *)txt, (CFIndex) (3*txtlen), (CFIndex*)&len);
 #else
     mbstate_t mbs;
     memset(&mbs, 0, sizeof(mbstate_t));
